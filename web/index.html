@@ -202,7 +202,7 @@
             position: relative;
             width: 100%;
             max-width: 1200px;
-            height: 360px;
+            height: 420px; /* Увеличено с 360px */
             margin: 0 auto 25px auto;
             background-color: var(--game-background);
             background-image: url('/images/game-background.png');
@@ -258,7 +258,7 @@
         #track {
             position: absolute;
             width: 100%;
-            height: 48px;
+            height: 55px; /* Увеличено с 48px */
             bottom: 0;
             background-color: rgba(42, 56, 45, 0.7);
             background-image: 
@@ -269,39 +269,49 @@
                 rgba(45, 60, 48, 0.6) 80%, rgba(55, 75, 60, 0.5) 90%, 
                 rgba(45, 60, 48, 0.6) 100%);
             border-top: 5px solid rgba(35, 45, 40, 0.8);
-            z-index: 0; /* Уменьшаем z-index, чтобы препятствия были над дорожкой */
+            z-index: 0;
             box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.15);
+            overflow: hidden; /* Добавлено для ограничения видимости элементов */
         }
         
-        /* Растительность на дорожке */
-        #track::before {
-            content: '';
+        /* Базовая дорожка */
+        .track-layer {
             position: absolute;
-            width: 100%;
-            height: 150%;
-            bottom: 0;
-            background-image: url('/images/terrain/jungle-grass.png'), url('/images/terrain/footprints.png');
-            background-size: 180px 72px, 120px 36px;
-            background-position: bottom, center;
-            background-repeat: repeat-x;
-            opacity: 0.8;
-            pointer-events: none; /* Чтобы растительность не мешала кликам */
-        }
-        
-        /* Дополнительные элементы растительности */
-        #track::after {
-            content: '';
-            position: absolute;
-            width: 100%;
+            width: 200%;
             height: 100%;
-            bottom: 10px;
+            bottom: 0;
+            left: 0;
+            background-repeat: repeat-x;
+            background-position: 0 0;
+            will-change: transform; /* Оптимизация производительности */
+        }
+        
+        /* Слой с травой */
+        #track-grass {
+            background-image: url('/images/terrain/jungle-grass.png');
+            background-size: 180px 72px;
+            height: 72px;
+            z-index: 1;
+            opacity: 0.8;
+        }
+        
+        /* Слой со следами */
+        #track-footprints {
+            background-image: url('/images/terrain/footprints.png');
+            background-size: 120px 36px;
+            height: 36px;
+            z-index: 2;
+            opacity: 0.7;
+        }
+        
+        /* Слой с листьями */
+        #track-leaves {
             background-image: url('/images/terrain/jungle-leaves.png');
             background-size: 250px 60px;
-            background-position: bottom;
-            background-repeat: repeat-x;
+            height: 60px;
+            bottom: 10px;
+            z-index: 3;
             opacity: 0.6;
-            pointer-events: none;
-            z-index: -1; /* Чтобы растительность была за препятствиями */
         }
         
         #score-container {
@@ -2910,14 +2920,14 @@
                 player.style.filter = 'none';
             }
             
-            // Настраиваем интервалы появления объектов с начальными значениями
-            nextObstacleTime = performance.now() + 2000; // 2 секунды до первого препятствия (было 2.5)
-            nextCoinTime = performance.now() + 800; // 0.8 секунды до первой монеты (было 1)
-            nextBonusTime = performance.now() + 8000; // 8 секунд до первого бонуса (было 10)
+            // Настраиваем интервалы появления объектов с начальными значениями по принципу Chrome динозаврика
+            nextObstacleTime = performance.now() + 1500; // 1.5 секунды до первого препятствия (как в Chrome)
+            nextCoinTime = performance.now() + 800; // 0.8 секунды до первой монеты
+            nextBonusTime = performance.now() + 8000; // 8 секунд до первого бонуса
             
-            obstacleInterval = 1800; // 1.8 секунды между препятствиями (было 2)
-            coinInterval = 1200; // 1.2 секунды между монетами (было 1.5)
-            bonusInterval = 12000; // 12 секунд между бонусами (было 15)
+            obstacleInterval = 2000; // Начальный интервал между препятствиями (как в Chrome)
+            coinInterval = 1200; // 1.2 секунды между монетами
+            bonusInterval = 12000; // 12 секунд между бонусами
             
             // Запускаем фоновую музыку, если звук включен
             if (soundEnabled && !musicPlaying) {
@@ -3005,15 +3015,15 @@
         function jump() {
             if (!activeCharacter) return;
             
-            // Если уже в прыжке, не позволяем прыгать снова
+            // Если уже в прыжке, не позволяем прыгать снова (как в Chrome Dino)
             if (isJumping) return;
             
             isJumping = true;
             
             // Создаем стиль для индивидуальной анимации прыжка
-            // Увеличиваем базовую высоту прыжка на 25% для всех персонажей
-            const jumpHeight = (activeCharacter.jumpHeight || 150) * 1.25;
-            const jumpDuration = 750; // Увеличиваем длительность прыжка для более долгого пребывания в воздухе (было 600)
+            // В Chrome динозаврике прыжок имеет характерную форму с быстрым подъемом и плавным спуском
+            const jumpHeight = (activeCharacter.jumpHeight || 150);
+            const jumpDuration = 600; // В Chrome прыжок длится около 600мс
             
             // Создаем или получаем существующий стиль
             let jumpStyle = document.getElementById('jump-style');
@@ -3023,17 +3033,17 @@
                 document.head.appendChild(jumpStyle);
             }
             
-            // Обновляем стиль с новой высотой прыжка и более плавной анимацией
-            // Используем специальную кривую безье, чтобы персонаж дольше оставался в верхней точке прыжка
+            // Обновляем стиль с новой высотой прыжка и анимацией в стиле Chrome
+            // Используем cubic-bezier, который имитирует физику прыжка Chrome-динозаврика
             jumpStyle.textContent = `
                 @keyframes jump {
                     0% { bottom: 0; }
-                    35% { bottom: ${jumpHeight}px; }
-                    65% { bottom: ${jumpHeight}px; }
+                    40% { bottom: ${jumpHeight}px; }
+                    70% { bottom: ${jumpHeight * 0.7}px; }
                     100% { bottom: 0; }
                 }
                 .jumping {
-                    animation: jump ${jumpDuration}ms cubic-bezier(0.33, 0.1, 0.67, 1);
+                    animation: jump ${jumpDuration}ms cubic-bezier(0.4, 0.0, 0.2, 1);
                 }
             `;
             
@@ -3525,9 +3535,9 @@
             }
             
             // Интервал препятствий уменьшается с ростом счета
-            const minObstacleInterval = 700; // Минимальный интервал (было 800)
-            const maxObstacleInterval = 1800; // Максимальный интервал (было 2000)
-            const intervalReduction = Math.floor(score / 150) * 80; // Ускорил снижение интервала
+            const minObstacleInterval = 700; // Минимальный интервал
+            const maxObstacleInterval = 2000; // Максимальный интервал в начале игры
+            const intervalReduction = Math.floor(score / 100) * 50; // Уменьшение интервала каждые 100 очков
             obstacleInterval = Math.max(maxObstacleInterval - intervalReduction, minObstacleInterval);
             
             // Создаем новые препятствия
@@ -3637,8 +3647,8 @@
         
         // Обновление фона для эффекта движения
         function updateBackground() {
-            // Управление скоростью прокрутки фона
-            backgroundPos -= gameSpeed * 0.5; // Фон движется медленнее препятствий
+            // Управление скоростью прокрутки фона в стиле Chrome динозаврика
+            backgroundPos -= gameSpeed * 0.6; // В Chrome фон движется чуть быстрее чем было раньше (0.5)
             
             // Сбрасываем позицию, когда она выходит за пределы изображения
             if (backgroundPos <= -1000) { // Ширина фона
@@ -3647,6 +3657,17 @@
             
             // Обновляем позицию фона
             gameContainer.style.backgroundPosition = `${backgroundPos}px bottom`;
+            
+            // Обновляем слои трека для параллакс-эффекта
+            if (document.getElementById('track-grass')) {
+                document.getElementById('track-grass').style.transform = `translateX(${backgroundPos * 0.8}px)`;
+            }
+            if (document.getElementById('track-footprints')) {
+                document.getElementById('track-footprints').style.transform = `translateX(${backgroundPos}px)`;
+            }
+            if (document.getElementById('track-leaves')) {
+                document.getElementById('track-leaves').style.transform = `translateX(${backgroundPos * 0.6}px)`;
+            }
         }
         
         // Окончание игры
