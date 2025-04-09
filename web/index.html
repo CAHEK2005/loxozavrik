@@ -662,22 +662,23 @@
             cursor: pointer;
         }
         
-        .user-profile:hover .profile-menu {
+        /* Убираем ховер, который может конфликтовать с новым подходом */
+        /* .user-profile:hover .profile-menu {
             display: block;
             opacity: 1;
             transform: translateY(0);
-        }
+        } */
         
         .profile-menu {
             display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
+            position: fixed;
+            top: auto;
+            right: auto;
             background-color: var(--card-bg);
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             padding: 5px 0;
-            z-index: 1000;
+            z-index: 9999;
             min-width: 150px;
             margin-top: 5px;
             opacity: 0;
@@ -1914,13 +1915,58 @@
                 userProfile.appendChild(details);
                 userProfile.appendChild(menu);
                 
+                // Добавляем обработчик для отображения меню
+                userProfile.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const menu = this.querySelector('.profile-menu');
+                    const rect = this.getBoundingClientRect();
+                    
+                    // Устанавливаем позицию выпадающего меню
+                    menu.style.top = (rect.bottom + 5) + 'px';
+                    menu.style.right = (window.innerWidth - rect.right) + 'px';
+                    
+                    // Показываем/скрываем меню
+                    const isDisplayed = menu.style.display === 'block';
+                    menu.style.display = isDisplayed ? 'none' : 'block';
+                    
+                    // Плавное появление/исчезновение
+                    setTimeout(() => {
+                        menu.style.opacity = isDisplayed ? '0' : '1';
+                        menu.style.transform = isDisplayed ? 'translateY(-10px)' : 'translateY(0)';
+                    }, 10);
+                });
+                
+                // Закрываем меню при клике в другую область
+                document.addEventListener('click', function(e) {
+                    const menu = document.querySelector('.profile-menu');
+                    if (menu && menu.style.display === 'block' && !e.target.closest('.user-profile')) {
+                        menu.style.opacity = '0';
+                        menu.style.transform = 'translateY(-10px)';
+                        setTimeout(() => {
+                            menu.style.display = 'none';
+                        }, 300);
+                    }
+                });
+                
                 // Добавляем обработчик для тач-устройств
                 userProfile.addEventListener('touchstart', function(e) {
                     e.preventDefault();
                     const menu = this.querySelector('.profile-menu');
-                    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-                    menu.style.opacity = menu.style.display === 'block' ? '1' : '0';
-                    menu.style.transform = menu.style.display === 'block' ? 'translateY(0)' : 'translateY(-10px)';
+                    const rect = this.getBoundingClientRect();
+                    
+                    // Устанавливаем позицию выпадающего меню
+                    menu.style.top = (rect.bottom + 5) + 'px';
+                    menu.style.right = (window.innerWidth - rect.right) + 'px';
+                    
+                    // Показываем/скрываем меню
+                    const isDisplayed = menu.style.display === 'block';
+                    menu.style.display = isDisplayed ? 'none' : 'block';
+                    
+                    // Плавное появление/исчезновение
+                    setTimeout(() => {
+                        menu.style.opacity = isDisplayed ? '0' : '1';
+                        menu.style.transform = isDisplayed ? 'translateY(-10px)' : 'translateY(0)';
+                    }, 10);
                 });
                 
                 authContainer.appendChild(userProfile);
