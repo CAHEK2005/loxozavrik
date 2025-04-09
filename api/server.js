@@ -22,15 +22,30 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Проверка соединения с базой данных
-pool.getConnection()
-  .then(conn => {
-    console.log('Connected to MySQL database!');
-    conn.release();
-  })
-  .catch(err => {
-    console.error('Database connection error:', err);
-  });
+// Функция для проверки соединения с базой данных с повторными попытками
+async function connectWithRetry(retries = 5, delay = 5000) {
+  let lastError;
+  for (let i = 0; i < retries; i++) {
+    try {
+      const conn = await pool.getConnection();
+      console.log('Connected to MySQL database!');
+      conn.release();
+      return true;
+    } catch (err) {
+      lastError = err;
+      console.error(`Database connection attempt ${i + 1} failed:`, err);
+      if (i < retries - 1) {
+        console.log(`Retrying in ${delay / 1000} seconds...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  console.error('Failed to connect to database after multiple attempts:', lastError);
+  return false;
+}
+
+// Запускаем проверку соединения с повторными попытками
+connectWithRetry();
 
 // Middleware для проверки токенов авторизации
 const authenticateToken = (req, res, next) => {

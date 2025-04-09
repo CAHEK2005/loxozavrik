@@ -24,7 +24,8 @@ services:
       - ./api:/app
       - /app/node_modules
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: always
 
   # База данных MySQL
@@ -41,6 +42,12 @@ services:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
 
   # Инструмент для управления базой данных (опционально)
   phpmyadmin:
@@ -53,7 +60,8 @@ services:
     ports:
       - "6666:80"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   
   # Backup сервис с cron
   backup:
@@ -68,7 +76,8 @@ services:
     entrypoint: /bin/bash
     command: -c "apt-get update && apt-get install -y cron && chmod +x /backup.sh && (crontab -l 2>/dev/null; echo '0 0 * * * /backup.sh >> /backup/backup.log 2>&1') | crontab - && cron -f"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   
   prometheus:
     image: prom/prometheus
