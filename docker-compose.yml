@@ -58,7 +58,7 @@ services:
       PMA_USER: root
       PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
     ports:
-      - "6666:80"
+      - "88:80"
     depends_on:
       db:
         condition: service_healthy
