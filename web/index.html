@@ -158,8 +158,8 @@
         #game-container {
             position: relative;
             width: 100%;
-            max-width: 1000px;
-            height: 280px;
+            max-width: 1200px;
+            height: 360px;
             margin: 0 auto 20px auto;
             background-color: var(--game-background);
             background-image: url('/images/game-background.png');
@@ -194,6 +194,29 @@
             height: 1px;
             bottom: 0;
             background-color: var(--border-color);
+        }
+        
+        #track {
+            position: absolute;
+            width: 100%;
+            height: 48px;
+            bottom: 0;
+            background-color: #5a3921;
+            background-image: linear-gradient(to right, rgba(121, 85, 61, 0.8) 0%, rgba(121, 85, 61, 0.2) 10%, rgba(121, 85, 61, 0.8) 20%, rgba(121, 85, 61, 0.2) 30%, rgba(121, 85, 61, 0.8) 40%, rgba(121, 85, 61, 0.2) 50%, rgba(121, 85, 61, 0.8) 60%, rgba(121, 85, 61, 0.2) 70%, rgba(121, 85, 61, 0.8) 80%, rgba(121, 85, 61, 0.2) 90%, rgba(121, 85, 61, 0.8) 100%);
+            border-top: 5px solid #472f1a;
+            z-index: 1;
+        }
+        
+        /* Отпечатки следов на дорожке */
+        #track::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url('/images/footprints.png');
+            background-size: 120px 36px;
+            background-repeat: repeat-x;
+            opacity: 0.4;
         }
         
         #score-container {
@@ -340,7 +363,7 @@
                 bottom: 0;
             }
             50% {
-                bottom: 150px;
+                bottom: 204px;
             }
             100% {
                 bottom: 0;
@@ -997,6 +1020,8 @@
         
         <div id="ground"></div>
         
+        <div id="track"></div>
+        
         <div id="score-container">
             <div>Счёт: <span id="score">0</span></div>
             <div>Монет: <span id="coins">0</span></div>
@@ -1186,11 +1211,11 @@
                 id: 'default',
                 name: 'Лохозаврик',
                 image: '/images/players/default/player_default.png',
-                width: 60,
-                height: 65,
-                hitboxWidth: 42,
-                hitboxHeight: 50,
-                jumpHeight: 150,
+                width: 78,
+                height: 90,
+                hitboxWidth: 54,
+                hitboxHeight: 72,
+                jumpHeight: 204,
                 price: 0,
                 unlocked: true,
                 sounds: {
@@ -1204,11 +1229,11 @@
                 id: 'character1',
                 name: 'Сиськослав',
                 image: '/images/players/player_svyat.png',
-                width: 62,
-                height: 68,
-                hitboxWidth: 44,
-                hitboxHeight: 52,
-                jumpHeight: 165,
+                width: 80,
+                height: 94,
+                hitboxWidth: 58,
+                hitboxHeight: 74,
+                jumpHeight: 222,
                 price: 10,
                 sounds: {
                     jump: '/sounds/svyat/jump.mp3',
@@ -1221,11 +1246,11 @@
                 id: 'character2',
                 name: 'Скуфлик',
                 image: '/images/players/player_skuflik.png',
-                width: 58,
-                height: 64,
-                hitboxWidth: 40,
-                hitboxHeight: 48,
-                jumpHeight: 140,
+                width: 76,
+                height: 89,
+                hitboxWidth: 53,
+                hitboxHeight: 70,
+                jumpHeight: 192,
                 price: 25,
                 sounds: {
                     jump: '/sounds/skuflik/jump.mp3',
@@ -1238,11 +1263,11 @@
                 id: 'character3',
                 name: 'Зуаайцэнид',
                 image: '/images/players/player_leonid.png',
-                width: 64,
-                height: 70,
-                hitboxWidth: 46,
-                hitboxHeight: 54,
-                jumpHeight: 175,
+                width: 83,
+                height: 96,
+                hitboxWidth: 60,
+                hitboxHeight: 77,
+                jumpHeight: 234,
                 price: 50,
                 sounds: {
                     jump: '/sounds/leonid/jump.mp3',
@@ -1255,11 +1280,11 @@
                 id: 'character4',
                 name: 'Пидиди',
                 image: '/images/players/player_pididi.png',
-                width: 62,
-                height: 72,
-                hitboxWidth: 42,
-                hitboxHeight: 58,
-                jumpHeight: 160,
+                width: 80,
+                height: 98,
+                hitboxWidth: 55,
+                hitboxHeight: 82,
+                jumpHeight: 216,
                 price: 100,
                 sounds: {
                     jump: '/sounds/pididi/jump.mp3',
@@ -1272,11 +1297,11 @@
                 id: 'character5',
                 name: 'Скибиди Туалет',
                 image: '/images/players/player_skibidi.png',
-                width: 66,
-                height: 70,
-                hitboxWidth: 48,
-                hitboxHeight: 56,
-                jumpHeight: 180,
+                width: 86,
+                height: 96,
+                hitboxWidth: 62,
+                hitboxHeight: 79,
+                jumpHeight: 240,
                 price: 100,
                 sounds: {
                     jump: '/sounds/skibidi/jump.mp3',
@@ -1292,51 +1317,51 @@
             {
                 id: 'penguin',
                 image: '/images/obstacles/penguin.png',
-                width: 35,
-                height: 70,
-                hitboxWidth: 20, // Уменьшил с 25
-                hitboxHeight: 60, // Уменьшил с 65
+                width: 42,
+                height: 84,
+                hitboxWidth: 18, // Уменьшенный хитбокс
+                hitboxHeight: 56, // Уменьшенный хитбокс
                 speed: 1.0 // Множитель скорости (1.0 = стандарт)
             },
             {
                 id: 'rock',
                 image: '/images/obstacles/rock.png',
-                width: 40,
-                height: 35,
-                hitboxWidth: 30, // Уменьшил с 38
-                hitboxHeight: 28, // Уменьшил с 32
+                width: 48,
+                height: 42,
+                hitboxWidth: 28, // Уменьшенный хитбокс
+                hitboxHeight: 24, // Уменьшенный хитбокс
                 speed: 1.2 // Движется быстрее
             },
             {
                 id: 'bird',
                 image: '/images/obstacles/bird.png',
-                width: 45,
-                height: 35,
-                hitboxWidth: 35, // Уменьшил с 40
-                hitboxHeight: 25, // Уменьшил с 30
+                width: 54,
+                height: 42,
+                hitboxWidth: 32, // Уменьшенный хитбокс
+                hitboxHeight: 20, // Уменьшенный хитбокс
                 speed: 1.3, // Самый быстрый
                 isFlying: true, // Летающее препятствие
-                minHeight: 50, // Минимальная высота от земли
-                maxHeight: 120 // Максимальная высота от земли
+                minHeight: 60, // Минимальная высота от земли (увеличена на 20%)
+                maxHeight: 144 // Максимальная высота от земли (увеличена на 20%)
             },
             {
                 id: 'spike',
                 image: '/images/obstacles/spike.png',
-                width: 30,
-                height: 25,
-                hitboxWidth: 22, // Уменьшил с 27
-                hitboxHeight: 18, // Уменьшил с 22
+                width: 36,
+                height: 30,
+                hitboxWidth: 18, // Уменьшенный хитбокс
+                hitboxHeight: 14, // Уменьшенный хитбокс
                 speed: 0.9, // Медленнее
                 count: 3, // Может появляться группами
-                spacing: 40 // Расстояние между шипами в группе
+                spacing: 48 // Расстояние между шипами в группе (увеличено на 20%)
             },
             {
                 id: 'log',
                 image: '/images/obstacles/log.png',
-                width: 60,
-                height: 40,
-                hitboxWidth: 50, // Уменьшил с 58
-                hitboxHeight: 30, // Уменьшил с 35
+                width: 72,
+                height: 48,
+                hitboxWidth: 45, // Уменьшенный хитбокс
+                hitboxHeight: 24, // Уменьшенный хитбокс
                 speed: 0.8 // Самый медленный, но широкий
             }
         ];
@@ -1346,29 +1371,29 @@
             {
                 id: 'bronze',
                 image: '/images/coins/coin_bronze.png',
-                width: 25,
-                height: 25,
-                hitboxWidth: 20,
-                hitboxHeight: 20,
+                width: 30,
+                height: 30,
+                hitboxWidth: 24,
+                hitboxHeight: 24,
                 value: 1 // Обычная монета
             },
             {
                 id: 'silver',
                 image: '/images/coins/coin_silver.png',
-                width: 28,
-                height: 28,
-                hitboxWidth: 22,
-                hitboxHeight: 22,
+                width: 34,
+                height: 34,
+                hitboxWidth: 26,
+                hitboxHeight: 26,
                 value: 3, // Серебряная монета = 3 очка
                 rarity: 0.3 // Вероятность появления (30%)
             },
             {
                 id: 'gold',
                 image: '/images/coins/coin_gold.png',
-                width: 30,
-                height: 30,
-                hitboxWidth: 24,
-                hitboxHeight: 24,
+                width: 36,
+                height: 36,
+                hitboxWidth: 29,
+                hitboxHeight: 29,
                 value: 5, // Золотая монета = 5 очков
                 rarity: 0.1 // Вероятность появления (10%)
             }
@@ -1379,10 +1404,10 @@
             {
                 id: 'shield',
                 image: '/images/bonuses/bonus_shield.png',
-                width: 35,
-                height: 35,
-                hitboxWidth: 30,
-                hitboxHeight: 30,
+                width: 42,
+                height: 42,
+                hitboxWidth: 36,
+                hitboxHeight: 36,
                 effect: 'shield', // Защита от одного столкновения
                 duration: 10000, // 10 секунд
                 rarity: 0.05 // Вероятность появления (5%)
@@ -1390,10 +1415,10 @@
             {
                 id: 'slow',
                 image: '/images/bonuses/bonus_slow.png',
-                width: 35,
-                height: 35,
-                hitboxWidth: 30,
-                hitboxHeight: 30,
+                width: 42,
+                height: 42,
+                hitboxWidth: 36,
+                hitboxHeight: 36,
                 effect: 'slow', // Замедление игры
                 duration: 5000, // 5 секунд
                 rarity: 0.08 // Вероятность появления (8%)
@@ -1401,10 +1426,10 @@
             {
                 id: 'magnet',
                 image: '/images/bonuses/bonus_magnet.png',
-                width: 35,
-                height: 35,
-                hitboxWidth: 30,
-                hitboxHeight: 30,
+                width: 42,
+                height: 42,
+                hitboxWidth: 36,
+                hitboxHeight: 36,
                 effect: 'magnet', // Притягивает монеты
                 duration: 8000, // 8 секунд
                 rarity: 0.07 // Вероятность появления (7%)
