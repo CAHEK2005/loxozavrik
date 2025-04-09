@@ -928,8 +928,8 @@
             const authContainer = document.getElementById('auth-container');
             
             // Очищаем содержимое
-            authContainer.innerHTML = '';
-            
+                authContainer.innerHTML = '';
+                
             if (gameAPI.currentUser) {
                 // Создаем UI для авторизованного пользователя
                 const userProfile = document.createElement('div');
@@ -1829,56 +1829,48 @@
             clearTimeout(shieldTimer);
             clearTimeout(magnetTimer);
             clearTimeout(slowTimer);
-            
-            // Делаем активной кнопку прыжка только на мобильных устройствах
+
             if (isMobileDevice()) {
                 mobileJumpButton.style.display = 'block';
             } else {
                 mobileJumpButton.style.display = 'none';
             }
-            
-            // Очищаем все игровые объекты
-            document.querySelectorAll('.obstacle, .coin, .bonus, .explosion, .floating-text, .level-up-container').forEach(el => el.remove());
-            
-            // Очищаем отладочные хитбоксы
-            document.querySelectorAll('[id^="player-hitbox"], [id^="obstacle-hitbox"], [id^="coin-hitbox"], [id^="bonus-hitbox"]').forEach(el => el.remove());
-            
-            // Обновляем отображение
+
+            document.querySelectorAll('.obstacle, .coin, .bonus, .explosion, .floating-text, .level-up-container, [id^="player-hitbox"], [id^="obstacle-hitbox"], [id^="coin-hitbox"], [id^="bonus-hitbox"]').forEach(el => el.remove());
+
             scoreDisplay.textContent = score;
             coinsDisplay.textContent = coinCount;
             gameOverScreen.style.display = 'none';
             modalOverlay.style.display = 'none';
-            
-            // Сбрасываем стили персонажа
+
             if (player) {
                 player.style.filter = 'none';
             }
+
+            // Начальные интервалы генерации - как в Chrome Dino
+            nextObstacleTime = performance.now() + 2000; // Первое препятствие чуть позже
+            nextCoinTime = performance.now() + 800; 
+            nextBonusTime = performance.now() + 15000; // Бонусы реже
             
-            // Настраиваем интервалы появления объектов с начальными значениями по принципу Chrome динозаврика
-            nextObstacleTime = performance.now() + 1500; // 1.5 секунды до первого препятствия (как в Chrome)
-            nextCoinTime = performance.now() + 800; // 0.8 секунды до первой монеты
-            nextBonusTime = performance.now() + 8000; // 8 секунд до первого бонуса
-            
-            obstacleInterval = 2000; // Начальный интервал между препятствиями (как в Chrome)
-            coinInterval = 1200; // 1.2 секунды между монетами
-            bonusInterval = 12000; // 12 секунд между бонусами
-            
-            // Запускаем фоновую музыку, если звук включен
+            obstacleInterval = 1500; // Начальный интервал для update() 
+            coinInterval = 1200; 
+            bonusInterval = 15000; 
+
             if (soundEnabled && !musicPlaying) {
                 toggleMusic();
             }
-            
-            // Воспроизводим звук начала игры, если звук включен
+
             if (soundEnabled && gameStartSound.src) {
                 gameStartSound.volume = SOUND_VOLUME.effects;
                 gameStartSound.currentTime = 0;
                 gameStartSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
             }
-            
-            // Показываем стартовую анимацию
+
             showStartAnimation();
             
-            // Запускаем игровой цикл
+            // Убираем старый gameLoop, если он был
+            cancelAnimationFrame(gameLoop);
+            // Запускаем новый игровой цикл
             gameLoop = requestAnimationFrame(update);
         }
         
@@ -1945,21 +1937,16 @@
             }, 250);
         }
         
-        // Прыжок с индивидуальной высотой для каждого персонажа
+        // Прыжок с индивидуальной высотой для каждого персонажа - Механика Chrome Dino
         function jump() {
-            if (!activeCharacter) return;
-            
-            // Если уже в прыжке, не позволяем прыгать снова (как в Chrome Dino)
-            if (isJumping) return;
+            if (!activeCharacter || isJumping) return;
             
             isJumping = true;
             
-            // Создаем стиль для индивидуальной анимации прыжка
-            // Используем более плавную анимацию с естественной траекторией
-            const jumpHeight = (activeCharacter.jumpHeight || 150);
-            const jumpDuration = 700; // Увеличиваем длительность для большей плавности
+            const jumpHeight = activeCharacter.jumpHeight || 100; // Базовая высота прыжка Chrome Dino
+            const jumpDuration = 600; // Примерная длительность прыжка в Chrome Dino
+            const gravityFactor = 1.6; // Коэффициент гравитации для более реалистичного падения
             
-            // Создаем или получаем существующий стиль
             let jumpStyle = document.getElementById('jump-style');
             if (!jumpStyle) {
                 jumpStyle = document.createElement('style');
@@ -1967,36 +1954,26 @@
                 document.head.appendChild(jumpStyle);
             }
             
-            // Обновляем стиль с более плавной кривой прыжка
-            // Используем больше ключевых кадров для более плавной анимации
+            // Анимация прыжка с использованием cubic-bezier, похожей на Chrome Dino
             jumpStyle.textContent = `
                 @keyframes jump {
-                    0% { bottom: 0; transform: scaleY(1.03); }
-                    10% { bottom: ${jumpHeight * 0.2}px; transform: scaleY(1.05); }
-                    25% { bottom: ${jumpHeight * 0.6}px; transform: scaleY(1); }
-                    50% { bottom: ${jumpHeight}px; transform: scaleY(0.97); }
-                    70% { bottom: ${jumpHeight * 0.7}px; transform: scaleY(1); }
-                    85% { bottom: ${jumpHeight * 0.3}px; transform: scaleY(1.02); }
-                    95% { bottom: ${jumpHeight * 0.1}px; transform: scaleY(1.04); }
-                    100% { bottom: 0; transform: scaleY(1); }
+                    0% { bottom: 0; animation-timing-function: cubic-bezier(0.33, 0.66, 0.66, 1); }
+                    50% { bottom: ${jumpHeight}px; }
+                    100% { bottom: 0; animation-timing-function: cubic-bezier(0.33, 0, 0.66, 0.33); } 
                 }
                 .jumping {
-                    animation: jump ${jumpDuration}ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
-                    will-change: transform, bottom;
+                    animation: jump ${jumpDuration}ms linear;
+                    will-change: bottom;
                 }
             `;
             
             player.classList.add('jumping');
             
-            // Проигрываем персональный звук прыжка
             if (soundEnabled) {
-                const soundSrc = activeCharacter.sounds && activeCharacter.sounds.jump ?
-                              activeCharacter.sounds.jump : SOUNDS.jump;
-                                
+                const soundSrc = activeCharacter.sounds?.jump || SOUNDS.jump;
                 if (jumpSound.src !== soundSrc) {
                     jumpSound.src = soundSrc;
                 }
-                
                 jumpSound.volume = SOUND_VOLUME.effects;
                 jumpSound.currentTime = 0;
                 jumpSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
@@ -2006,6 +1983,22 @@
                 player.classList.remove('jumping');
                 isJumping = false;
             }, jumpDuration);
+        }
+
+        // Получение текущей высоты прыжка - Механика Chrome Dino
+        function getJumpHeight() {
+            if (!isJumping) return 0;
+
+            const jumpDuration = 600;
+            const jumpHeight = activeCharacter.jumpHeight || 100;
+            const timeInJump = Date.now() % jumpDuration; // Время с начала текущей анимации прыжка
+            const progress = timeInJump / jumpDuration;
+
+            // Имитация параболической траектории, как в Chrome Dino
+            // Используем простую параболу: y = 4 * h * x * (1 - x), где h - макс высота, x - прогресс (0 до 1)
+            const currentHeight = 4 * jumpHeight * progress * (1 - progress);
+            
+            return Math.max(0, currentHeight); // Убедимся, что высота не отрицательная
         }
         
         // Проверка столкновений с учетом хитбоксов пропорциональных размеру
@@ -2212,37 +2205,6 @@
             showFloatingText('+100', obstacle.x, (obstacle.isFlying ? obstacle.y : 30), '#00ffff');
         }
         
-        // Получение текущей высоты прыжка (для коллизий)
-        function getJumpHeight() {
-            // Адаптируем для новой длительности прыжка 700мс
-            const jumpTime = Date.now() % 700;
-            const jumpHeight = activeCharacter.jumpHeight || 150;
-            
-            // Создаем более плавную параболическую траекторию прыжка
-            // для соответствия новой CSS-анимации с большим числом ключевых кадров
-            if (jumpTime < 70) { // 0-10%
-                return (jumpTime / 70) * jumpHeight * 0.2;
-            } else if (jumpTime < 175) { // 10-25%
-                const progress = (jumpTime - 70) / 105;
-                return jumpHeight * 0.2 + progress * (jumpHeight * 0.4);
-            } else if (jumpTime < 350) { // 25-50%
-                const progress = (jumpTime - 175) / 175;
-                return jumpHeight * 0.6 + progress * (jumpHeight * 0.4);
-            } else if (jumpTime < 490) { // 50-70%
-                const progress = (jumpTime - 350) / 140;
-                return jumpHeight - progress * (jumpHeight * 0.3);
-            } else if (jumpTime < 595) { // 70-85%
-                const progress = (jumpTime - 490) / 105;
-                return jumpHeight * 0.7 - progress * (jumpHeight * 0.4);
-            } else if (jumpTime < 665) { // 85-95%
-                const progress = (jumpTime - 595) / 70;
-                return jumpHeight * 0.3 - progress * (jumpHeight * 0.2);
-            } else { // 95-100%
-                const progress = (jumpTime - 665) / 35;
-                return jumpHeight * 0.1 - progress * (jumpHeight * 0.1);
-            }
-        }
-        
         // Сбор монетки с учетом ее стоимости
         function collectCoin(coin) {
             coin.collected = true;
@@ -2445,7 +2407,7 @@
             }
         }
         
-        // Обновление игры
+        // Обновление игры - механика как в Chrome Dino
         function update(timestamp) {
             if (isGameOver) return;
             
@@ -2486,74 +2448,79 @@
                 gameSpeed = Math.min(gameSpeed, MAX_SPEED); // Не превышаем максимум
             }
             
-            // Интервал препятствий уменьшается с ростом счета
-            const minObstacleInterval = 700; // Минимальный интервал
-            const maxObstacleInterval = 2000; // Максимальный интервал в начале игры
-            const intervalReduction = Math.floor(score / 150) * 40; // Уменьшение интервала каждые 150 очков, меньше понижение
-            obstacleInterval = Math.max(maxObstacleInterval - intervalReduction, minObstacleInterval);
+            // Плавно увеличиваем скорость до максимальной
+            if (gameSpeed < MAX_SPEED) {
+                gameSpeed += ACCELERATION;
+                gameSpeed = Math.min(gameSpeed, MAX_SPEED); // Не превышаем максимум
+            }
             
-            // Создаем новые препятствия
+            // 3. Интервал препятствий (как в Chrome Dino)
+            // Уменьшается с ростом скорости, но имеет минимальный предел
+            const BASE_OBSTACLE_INTERVAL_MS = 1500; // Начальный интервал в мс
+            const MIN_OBSTACLE_INTERVAL_MS = 600; // Минимальный интервал
+            const INTERVAL_SPEED_FACTOR = 50; // На сколько мс уменьшать интервал на единицу скорости
+            
+            obstacleInterval = Math.max(
+                MIN_OBSTACLE_INTERVAL_MS,
+                BASE_OBSTACLE_INTERVAL_MS - (gameSpeed - BASE_SPEED) * INTERVAL_SPEED_FACTOR
+            );
+            
+            // 4. Генерация препятствий
             if (timestamp >= nextObstacleTime) {
                 createObstacle();
                 
-                // Немного случайности в следующем интервале с меньшим разбросом для предсказуемости
-                nextObstacleTime = timestamp + obstacleInterval + (Math.random() * 400 - 200); // Уменьшил разброс с 500
+                // Следующее препятствие появится через obstacleInterval + небольшой рандом
+                // Рандом уменьшается с ростом скорости (как в Chrome Dino)
+                const randomFactor = Math.max(0, 1 - (gameSpeed / MAX_SPEED)); // От 1 до 0
+                const randomOffset = (Math.random() * obstacleInterval * 0.5) * randomFactor; // Уменьшающийся рандом
+                nextObstacleTime = timestamp + obstacleInterval + randomOffset;
             }
             
-            // Создаем новые монетки
+            // 5. Генерация монеток (оставляем как было, но можно настроить)
             if (timestamp >= nextCoinTime) {
                 createCoin();
-                
-                // Немного случайности в следующем интервале
                 nextCoinTime = timestamp + coinInterval + (Math.random() * 1000 - 500);
             }
             
-            // Создаем бонусы
+            // 6. Генерация бонусов (оставляем как было)
             if (timestamp >= nextBonusTime) {
                 createBonus();
-                
-                // Большой интервал между бонусами
                 nextBonusTime = timestamp + bonusInterval + Math.random() * 5000;
             }
             
+            // 7. Обновление позиций объектов (препятствия, монеты, бонусы)
             // Обновляем положение препятствий
-            for (let i = 0; i < obstacles.length; i++) {
+            for (let i = obstacles.length - 1; i >= 0; i--) { // Итерация с конца для безопасного удаления
                 const obstacle = obstacles[i];
-                
-                // Скорость движения с учетом типа препятствия
-                obstacle.x -= gameSpeed * obstacle.speed;
+                obstacle.x -= gameSpeed * (obstacle.speed || 1.0); // Учитываем индивидуальную скорость препятствия
                 obstacle.element.style.left = obstacle.x + 'px';
                 
-                // Удаляем препятствия, которые ушли за экран
                 if (obstacle.x < -obstacle.width) {
                     obstacle.element.remove();
                     obstacles.splice(i, 1);
-                    i--;
                 }
             }
             
             // Обновляем положение монеток
-            for (let i = 0; i < coins.length; i++) {
+            for (let i = coins.length - 1; i >= 0; i--) {
                 const coin = coins[i];
-                
-                // Если активен магнит, притягиваем монеты
-                if (hasMagnet && !coin.collected) {
+                if (coin.collected) continue; // Пропускаем собранные
+
+                // Притягивание магнитом
+                if (hasMagnet) {
                     const playerCenterX = 50 + (activeCharacter.width / 2);
-                    const playerCenterY = isJumping ? getJumpHeight() + (activeCharacter.height / 2) : activeCharacter.height / 2;
-                    
+                    const playerCenterY = (isJumping ? getJumpHeight() : 0) + (activeCharacter.height / 2);
                     const coinCenterX = coin.x + (coin.width / 2);
                     const coinCenterY = coin.y + (coin.height / 2);
-                    
-                    // Расстояние от игрока до монеты
                     const dx = playerCenterX - coinCenterX;
                     const dy = playerCenterY - coinCenterY;
                     const distance = Math.sqrt(dx * dx + dy * dy);
+                    const MAGNET_RADIUS = 150;
+                    const MAGNET_STRENGTH = 0.1;
                     
-                    // Если монета достаточно близко, притягиваем ее
-                    if (distance < 150) {
-                        const magnetStrength = 0.1;
-                        coin.x += dx * magnetStrength;
-                        coin.y += dy * magnetStrength;
+                    if (distance < MAGNET_RADIUS) {
+                        coin.x += dx * MAGNET_STRENGTH;
+                        coin.y += dy * MAGNET_STRENGTH;
                     } else {
                         coin.x -= gameSpeed;
                     }
@@ -2561,40 +2528,38 @@
                     coin.x -= gameSpeed;
                 }
                 
-                // Обновляем позицию
                 coin.element.style.left = coin.x + 'px';
                 coin.element.style.bottom = coin.y + 'px';
                 
-                // Удаляем монетки, которые ушли за экран
                 if (coin.x < -coin.width) {
                     coin.element.remove();
                     coins.splice(i, 1);
-                    i--;
                 }
             }
             
             // Обновляем положение бонусов
-            for (let i = 0; i < bonuses.length; i++) {
+            for (let i = bonuses.length - 1; i >= 0; i--) {
                 const bonus = bonuses[i];
+                if(bonus.collected) continue;
                 bonus.x -= gameSpeed;
                 bonus.element.style.left = bonus.x + 'px';
                 
-                // Удаляем бонусы, которые ушли за экран
                 if (bonus.x < -bonus.width) {
                     bonus.element.remove();
                     bonuses.splice(i, 1);
-                    i--;
                 }
             }
             
-            // Обновляем фон с учетом скорости
+            // 8. Обновляем фон
             updateBackground();
             
-            // Проверяем столкновения
+            // 9. Проверяем столкновения
             checkCollisions();
             
-            // Продолжаем игровой цикл
-            gameLoop = requestAnimationFrame(update);
+            // 10. Продолжаем игровой цикл
+            if (!isGameOver) {
+                gameLoop = requestAnimationFrame(update);
+            }
         }
         
         // Обновление фона для эффекта движения
