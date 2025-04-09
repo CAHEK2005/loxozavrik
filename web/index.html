@@ -1227,6 +1227,10 @@
     <audio id="purchase-sound">
         <source src="/sounds/defaults/purchase.mp3" type="audio/mpeg">
     </audio>
+    
+    <audio id="game-start-sound">
+        <source src="/sounds/defaults/game-start.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         // ============= НАСТРОЙКИ ИЗОБРАЖЕНИЙ И ЗВУКОВ =============
@@ -1246,7 +1250,8 @@
                 sounds: {
                     jump: '/sounds/players/default/jump.mp3',
                     coin: '/sounds/players/default/coin.mp3',
-                    gameOver: '/sounds/players/default/game_over.mp3'
+                    gameOver: ['/sounds/players/default/game_over_0.mp3', '/sounds/players/default/game_over_1.mp3', '/sounds/players/default/game_over_2.mp3'],
+                    gameStart: ['/sounds/players/default/game_start_0.mp3', '/sounds/players/default/game_start_1.mp3', '/sounds/players/default/game_start_2.mp3']
                 },
                 color: '#4285f4'
             },
@@ -1263,7 +1268,8 @@
                 sounds: {
                     jump: '/sounds/svyat/jump.mp3',
                     coin: '/sounds/svyat/coin.mp3',
-                    gameOver: '/sounds/svyat/game_over.mp3'
+                    gameOver: ['/sounds/svyat/game_over_0.mp3', '/sounds/svyat/game_over_1.mp3', '/sounds/svyat/game_over_2.mp3'],
+                    gameStart: ['/sounds/svyat/game_start_0.mp3', '/sounds/svyat/game_start_1.mp3', '/sounds/svyat/game_start_2.mp3']
                 },
                 color: '#d81b60'
             },
@@ -1271,69 +1277,73 @@
                 id: 'character2',
                 name: 'Скуфлик',
                 image: '/images/players/player_skuflik.png',
-                width: 76,
-                height: 89,
-                hitboxWidth: 53,
+                width: 75,
+                height: 88,
+                hitboxWidth: 56,
                 hitboxHeight: 70,
-                jumpHeight: 192,
-                price: 25,
+                jumpHeight: 198,
+                price: 15,
                 sounds: {
                     jump: '/sounds/skuflik/jump.mp3',
                     coin: '/sounds/skuflik/coin.mp3',
-                    gameOver: '/sounds/skuflik/game_over.mp3'
+                    gameOver: ['/sounds/skuflik/game_over_0.mp3', '/sounds/skuflik/game_over_1.mp3', '/sounds/skuflik/game_over_2.mp3'],
+                    gameStart: ['/sounds/skuflik/game_start_0.mp3', '/sounds/skuflik/game_start_1.mp3', '/sounds/skuflik/game_start_2.mp3']
                 },
-                color: '#43a047'
+                color: '#ff9800'
             },
             {
                 id: 'character3',
-                name: 'Зуаайцэнид',
+                name: 'Леонид',
                 image: '/images/players/player_leonid.png',
-                width: 83,
+                width: 82,
                 height: 96,
                 hitboxWidth: 60,
-                hitboxHeight: 77,
-                jumpHeight: 234,
-                price: 50,
+                hitboxHeight: 76,
+                jumpHeight: 210,
+                price: 20,
                 sounds: {
                     jump: '/sounds/leonid/jump.mp3',
                     coin: '/sounds/leonid/coin.mp3',
-                    gameOver: '/sounds/leonid/game_over.mp3'
+                    gameOver: ['/sounds/leonid/game_over_0.mp3', '/sounds/leonid/game_over_1.mp3', '/sounds/leonid/game_over_2.mp3'],
+                    gameStart: ['/sounds/leonid/game_start_0.mp3', '/sounds/leonid/game_start_1.mp3', '/sounds/leonid/game_start_2.mp3']
                 },
-                color: '#fb8c00'
+                color: '#4caf50'
             },
             {
                 id: 'character4',
                 name: 'Пидиди',
                 image: '/images/players/player_pididi.png',
-                width: 80,
-                height: 98,
-                hitboxWidth: 55,
-                hitboxHeight: 82,
-                jumpHeight: 216,
-                price: 100,
+                width: 70,
+                height: 84,
+                hitboxWidth: 52,
+                hitboxHeight: 68,
+                jumpHeight: 192,
+                price: 25,
                 sounds: {
                     jump: '/sounds/pididi/jump.mp3',
                     coin: '/sounds/pididi/coin.mp3',
-                    gameOver: '/sounds/pididi/game_over.mp3'
+                    gameOver: ['/sounds/pididi/game_over_0.mp3', '/sounds/pididi/game_over_1.mp3', '/sounds/pididi/game_over_2.mp3'],
+                    gameStart: ['/sounds/pididi/game_start_0.mp3', '/sounds/pididi/game_start_1.mp3', '/sounds/pididi/game_start_2.mp3']
                 },
-                color: '#00897b'
+                color: '#9c27b0'
             },
             {
                 id: 'character5',
-                name: 'Скибиди Туалет',
+                name: 'Скибиди',
                 image: '/images/players/player_skibidi.png',
-                width: 86,
-                height: 96,
-                hitboxWidth: 62,
-                hitboxHeight: 79,
-                jumpHeight: 240,
-                price: 100,
+                width: 78,
+                height: 90,
+                hitboxWidth: 55,
+                hitboxHeight: 72,
+                jumpHeight: 216,
+                price: 30,
                 sounds: {
                     jump: '/sounds/skibidi/jump.mp3',
                     coin: '/sounds/skibidi/coin.mp3',
-                    gameOver: '/sounds/skibidi/game_over.mp3'
+                    gameOver: ['/sounds/skibidi/game_over_0.mp3', '/sounds/skibidi/game_over_1.mp3', '/sounds/skibidi/game_over_2.mp3'],
+                    gameStart: ['/sounds/skibidi/game_start_0.mp3', '/sounds/skibidi/game_start_1.mp3', '/sounds/skibidi/game_start_2.mp3']
                 },
-                color: '#7b1fa2'
+                color: '#e91e63'
             }
         ];
 
@@ -1466,7 +1476,8 @@
             background: '/sounds/defaults/background.mp3',
             jump: '/sounds/defaults/jump.mp3', // Стандартный звук прыжка (если у персонажа нет своего)
             coin: '/sounds/defaults/coin.mp3', // Стандартный звук монеты
-            gameOver: '/sounds/defaults/game-over.mp3', // Стандартный звук проигрыша
+            gameOver: ['/sounds/defaults/game-over.mp3'], // Стандартный звук проигрыша
+            gameStart: ['/sounds/defaults/game-start.mp3'], // Стандартный звук начала игры
             purchase: '/sounds/defaults/purchase.mp3',
             bonus: '/sounds/defaults/bonus.mp3', // Звук сбора бонуса
             shieldEnd: '/sounds/defaults/shield_end.mp3', // Звук окончания щита
@@ -1852,6 +1863,7 @@
         const coinSound = document.getElementById('coin-sound');
         const gameOverSound = document.getElementById('game-over-sound');
         const purchaseSound = document.getElementById('purchase-sound');
+        const gameStartSound = document.getElementById('game-start-sound');
         
         // Установка источников звуков
         backgroundMusic.src = SOUNDS.background;
@@ -1859,6 +1871,7 @@
         coinSound.src = SOUNDS.coin;
         gameOverSound.src = SOUNDS.gameOver;
         purchaseSound.src = SOUNDS.purchase;
+        gameStartSound.src = SOUNDS.gameStart;
         
         // Игровые переменные
         let activeCharacter = null;
@@ -2830,6 +2843,12 @@
                 toggleMusic();
             }
             
+            // Воспроизводим звук начала игры, если звук включен
+            if (soundEnabled && gameStartSound.src) {
+                gameStartSound.currentTime = 0;
+                gameStartSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+            }
+            
             // Показываем стартовую анимацию
             showStartAnimation();
             
@@ -3570,6 +3589,7 @@
                 musicPlaying = false;
                 
                 if (gameOverSound.src) {
+                    gameOverSound.currentTime = 0;
                     gameOverSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
                 }
             }
@@ -3926,6 +3946,170 @@
                 e.preventDefault();
             }
         }, { passive: false });
+
+        // Функция для получения случайного звука из массива или обычного пути
+        function getRandomSound(soundSource) {
+            if (!soundSource) return null;
+            
+            // Если это массив, выбираем случайный звук
+            if (Array.isArray(soundSource) && soundSource.length > 0) {
+                const randomIndex = Math.floor(Math.random() * soundSource.length);
+                return soundSource[randomIndex];
+            }
+            
+            // Если это строка, возвращаем её
+            return soundSource;
+        }
+
+        function setCharacter(characterId) {
+            // Находим персонажа по ID
+            const character = CHARACTERS.find(char => char.id === characterId);
+            if (!character) return;
+            
+            // Сбрасываем все стили и классы персонажа
+            player.style.width = character.width + 'px';
+            player.style.height = character.height + 'px';
+            player.style.backgroundImage = `url(${character.image})`;
+            
+            // Сохраняем текущую палитру персонажа
+            document.documentElement.style.setProperty('--character-color', character.color || '#4285f4');
+            
+            // Сохраняем активного персонажа
+            activeCharacter = character;
+            
+            // Обновляем звуки персонажа
+            if (character.sounds) {
+                jumpSound.src = character.sounds.jump || SOUNDS.jump;
+                coinSound.src = character.sounds.coin || SOUNDS.coin;
+                gameOverSound.src = getRandomSound(character.sounds.gameOver) || SOUNDS.gameOver;
+                gameStartSound.src = getRandomSound(character.sounds.gameStart) || SOUNDS.gameStart;
+            }
+            
+            if (gameAPI.currentUser) {
+                gameAPI.saveCharacter(gameAPI.currentUser.id, characterId)
+                    .catch(error => console.log('Ошибка сохранения персонажа:', error));
+            } else {
+                localStorage.setItem('selectedCharacter', characterId);
+            }
+        }
+
+        // Выбираем состав магазина
+        function populateShop() {
+            const shopContainer = document.getElementById('shop-characters');
+            shopContainer.innerHTML = '';
+            
+            // Проверяем наличие разблокированных/купленных персонажей
+            const unlockedCharacters = getUnlockedCharacters();
+            
+            // Создаем карточки персонажей для магазина
+            CHARACTERS.forEach(character => {
+                const isUnlocked = character.unlocked || unlockedCharacters.includes(character.id);
+                const isSelected = activeCharacter && activeCharacter.id === character.id;
+                
+                const characterCard = document.createElement('div');
+                characterCard.className = `shop-item ${isUnlocked ? 'unlocked' : ''} ${isSelected ? 'current' : ''}`;
+                characterCard.style.backgroundColor = isSelected ? character.color + '33' : '';
+                characterCard.style.borderColor = character.color;
+                
+                // Содержимое карточки персонажа
+                characterCard.innerHTML = `
+                    <div class="character-image" style="background-image: url(${character.image})"></div>
+                    <div class="character-name">${character.name}</div>
+                    <div class="character-stats">
+                        <div class="stat">Высота прыжка: <span class="value">${Math.floor(character.jumpHeight / 2)}</span></div>
+                        <div class="stat">Скорость: <span class="value">${Math.floor((character.width / 80) * 10)}</span></div>
+                    </div>
+                    <button class="shop-button ${!isUnlocked ? 'buy' : 'select'}" 
+                        data-character="${character.id}" 
+                        data-unlocked="${isUnlocked}" 
+                        data-price="${character.price}"
+                        style="background-color: ${isUnlocked ? 'var(--shop-button-select)' : 'var(--shop-button-buy)'}">
+                        ${!isUnlocked ? `Купить за ${character.price} монет` : (isSelected ? 'Выбрано' : 'Выбрать')}
+                    </button>
+                `;
+                
+                shopContainer.appendChild(characterCard);
+                
+                // Логика кнопки покупки/выбора персонажа
+                const button = characterCard.querySelector('.shop-button');
+                button.addEventListener('click', function() {
+                    const characterId = this.dataset.character;
+                    const unlocked = this.dataset.unlocked === 'true';
+                    const price = parseInt(this.dataset.price);
+                    
+                    if (unlocked) {
+                        // Если персонаж разблокирован, выбираем его
+                        const character = CHARACTERS.find(c => c.id === characterId);
+                        if (character) {
+                            setCharacter(characterId);
+                            updateShopButtons();
+                        }
+                    } else {
+                        // Если персонаж заблокирован, пытаемся купить
+                        buyCharacter(characterId, price);
+                    }
+                });
+            });
+        }
+        
+        // Обновляем состояние кнопок в магазине
+        function updateShopButtons() {
+            const buttons = document.querySelectorAll('.shop-button');
+            buttons.forEach(button => {
+                const characterId = button.dataset.character;
+                const unlocked = button.dataset.unlocked === 'true';
+                const isSelected = activeCharacter && activeCharacter.id === characterId;
+                
+                if (unlocked) {
+                    button.textContent = isSelected ? 'Выбрано' : 'Выбрать';
+                    button.style.backgroundColor = 'var(--shop-button-select)';
+                    button.closest('.shop-item').classList.toggle('current', isSelected);
+                    button.closest('.shop-item').style.backgroundColor = isSelected ? 
+                        activeCharacter.color + '33' : '';
+                }
+            });
+        }
+        
+        // Инициализируем выбранного персонажа
+        function initializeCharacter() {
+            // Создаем персонажа
+            player = document.createElement('div');
+            player.id = 'player';
+            gameContainer.appendChild(player);
+            
+            // Определяем начального персонажа
+            let selectedCharacterId = 'default';
+            
+            // Если пользователь авторизован, берем сохраненного персонажа
+            if (gameAPI.currentUser && gameAPI.currentUser.activeCharacter) {
+                selectedCharacterId = gameAPI.currentUser.activeCharacter;
+            } else {
+                // Иначе берем из локального хранилища
+                const localSelectedCharacter = localStorage.getItem('selectedCharacter');
+                if (localSelectedCharacter) {
+                    selectedCharacterId = localSelectedCharacter;
+                }
+            }
+            
+            // Находим персонажа и применяем его стили
+            const character = CHARACTERS.find(char => char.id === selectedCharacterId);
+            if (character) {
+                activeCharacter = character;
+                player.style.width = character.width + 'px';
+                player.style.height = character.height + 'px';
+                player.style.backgroundImage = `url(${character.image})`;
+                
+                document.documentElement.style.setProperty('--character-color', character.color || '#4285f4');
+                
+                // Устанавливаем звуки персонажа
+                if (character.sounds) {
+                    jumpSound.src = character.sounds.jump || SOUNDS.jump;
+                    coinSound.src = character.sounds.coin || SOUNDS.coin;
+                    gameOverSound.src = getRandomSound(character.sounds.gameOver) || SOUNDS.gameOver;
+                    gameStartSound.src = getRandomSound(character.sounds.gameStart) || SOUNDS.gameStart;
+                }
+            }
+        }
     </script>
 </body>
 </html>
