@@ -877,13 +877,32 @@
         const purchaseSound = document.getElementById('purchase-sound');
         const gameStartSound = document.getElementById('game-start-sound');
         
+        // Создаем дополнительные аудио-элементы для бонусов
+        let bonusSound = document.createElement('audio');
+        let shieldEndSound = document.createElement('audio');
+        let levelUpSound = document.createElement('audio');
+        
         // Установка источников звуков
         backgroundMusic.src = SOUNDS.background;
         jumpSound.src = SOUNDS.jump;
         coinSound.src = SOUNDS.coin;
-        gameOverSound.src = SOUNDS.gameOver;
+        gameOverSound.src = SOUNDS.gameOver[0] || SOUNDS.gameOver; // Берем или первый из массива, или строку
         purchaseSound.src = SOUNDS.purchase;
-        gameStartSound.src = SOUNDS.gameStart;
+        gameStartSound.src = SOUNDS.gameStart[0] || SOUNDS.gameStart; // Берем или первый из массива, или строку
+        bonusSound.src = SOUNDS.bonus;
+        shieldEndSound.src = SOUNDS.shieldEnd;
+        levelUpSound.src = SOUNDS.levelUp;
+        
+        // Устанавливаем громкость для всех звуков
+        backgroundMusic.volume = SOUND_VOLUME.background;
+        jumpSound.volume = SOUND_VOLUME.effects;
+        coinSound.volume = SOUND_VOLUME.effects;
+        gameOverSound.volume = SOUND_VOLUME.effects;
+        purchaseSound.volume = SOUND_VOLUME.effects;
+        gameStartSound.volume = SOUND_VOLUME.effects;
+        bonusSound.volume = SOUND_VOLUME.effects;
+        shieldEndSound.volume = SOUND_VOLUME.effects;
+        levelUpSound.volume = SOUND_VOLUME.effects;
         
         // Игровые переменные
         let activeCharacter = null;
@@ -1860,10 +1879,23 @@
                 toggleMusic();
             }
             
-            if (soundEnabled && gameStartSound.src) {
-                gameStartSound.volume = SOUND_VOLUME.effects;
-                gameStartSound.currentTime = 0;
-                gameStartSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+            // Воспроизведение звука начала игры
+            if (soundEnabled) {
+                // Устанавливаем случайный звук начала игры для текущего персонажа
+                let soundSrc = null;
+                
+                if (activeCharacter && activeCharacter.sounds && activeCharacter.sounds.gameStart) {
+                    soundSrc = getRandomSound(activeCharacter.sounds.gameStart);
+                } else if (SOUNDS.gameStart) {
+                    soundSrc = getRandomSound(SOUNDS.gameStart);
+                }
+                
+                if (soundSrc) {
+                    gameStartSound.src = soundSrc;
+                    gameStartSound.volume = SOUND_VOLUME.effects;
+                    gameStartSound.currentTime = 0;
+                    gameStartSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+                }
             }
 
             showStartAnimation();
@@ -2624,22 +2656,17 @@
                 }
                 
                 if (soundSrc) {
-                    try {
+                    gameOverSound.src = soundSrc;
+                    gameOverSound.volume = SOUND_VOLUME.effects;
+                    gameOverSound.currentTime = 0;
+                    gameOverSound.play().catch(e => {
+                        console.log('Ошибка воспроизведения звука поражения:', e);
+                        
                         // Используем новый экземпляр Audio для гарантированного воспроизведения
                         const gameOverAudio = new Audio(soundSrc);
                         gameOverAudio.volume = SOUND_VOLUME.effects;
-                        gameOverAudio.play().catch(e => {
-                            console.log('Ошибка воспроизведения звука поражения через Audio:', e);
-                            
-                            // Используем стандартный элемент для резервного воспроизведения
-                            gameOverSound.src = soundSrc;
-                            gameOverSound.volume = SOUND_VOLUME.effects;
-                            gameOverSound.currentTime = 0;
-                            gameOverSound.play().catch(e => console.log('Ошибка резервного воспроизведения звука:', e));
-                        });
-                    } catch (error) {
-                        console.log('Произошла ошибка при воспроизведении звука поражения:', error);
-                    }
+                        gameOverAudio.play().catch(e => console.log('Ошибка воспроизведения через Audio API:', e));
+                    });
                 }
             }
             
