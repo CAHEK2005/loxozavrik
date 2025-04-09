@@ -1892,22 +1892,19 @@
                     showProfileModal();
                 });
                 
-                const shopItem = document.createElement('div');
-                shopItem.className = 'profile-menu-item';
-                shopItem.textContent = 'Магазин';
-                shopItem.addEventListener('click', function() {
-                    showShop();
-                });
-                
                 const logoutItem = document.createElement('div');
                 logoutItem.className = 'profile-menu-item logout';
                 logoutItem.textContent = 'Выйти';
                 logoutItem.addEventListener('click', function() {
-                    logout();
+                    const result = gameAPI.logout();
+                    if (result.success) {
+                        updateAuthUI();
+                        createShopItems();
+                        initPlayerImage();
+                    }
                 });
                 
                 menu.appendChild(profileItem);
-                menu.appendChild(shopItem);
                 menu.appendChild(logoutItem);
                 
                 // Собираем всё вместе
