@@ -18,7 +18,7 @@ services:
       - DB_HOST=db
       - DB_USER=root
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
-      - DB_NAME=${DB_NAME:-loxozavrik_db}
+      - DB_NAME=lohozavrik_db
       - JWT_SECRET=${JWT_SECRET:-secret}
     volumes:
       - ./api:/app
@@ -33,7 +33,7 @@ services:
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
-      - MYSQL_DATABASE=${DB_NAME:-loxozavrik_db}
+      - MYSQL_DATABASE=lohozavrik_db
       - MYSQL_USER=${DB_USER:-user}
       - MYSQL_PASSWORD=${DB_PASSWORD:-password}
     volumes:
@@ -64,7 +64,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
       - MYSQL_HOST=db
-      - MYSQL_DATABASE=${DB_NAME:-loxozavrik_db}
+      - MYSQL_DATABASE=lohozavrik_db
     entrypoint: /bin/bash
     command: -c "apt-get update && apt-get install -y cron && chmod +x /backup.sh && (crontab -l 2>/dev/null; echo '0 0 * * * /backup.sh >> /backup/backup.log 2>&1') | crontab - && cron -f"
     depends_on:

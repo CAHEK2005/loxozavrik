@@ -1,7 +1,11 @@
+-- Создаем базу данных, если не существует
+CREATE DATABASE IF NOT EXISTS lohozavrik_db;
+USE lohozavrik_db;
+
 -- Создаем пользователя и права
 DROP USER IF EXISTS 'lohozavrik_app'@'%';
 CREATE USER 'lohozavrik_app'@'%' IDENTIFIED BY 'Srvpenis16';
-GRANT ALL PRIVILEGES ON loxozavrik_db.* TO 'lohozavrik_app'@'%';
+GRANT ALL PRIVILEGES ON lohozavrik_db.* TO 'lohozavrik_app'@'%';
 FLUSH PRIVILEGES;
 
 -- Таблица пользователей
