@@ -1178,7 +1178,7 @@
         <source src="/sounds/defaults/purchase.mp3" type="audio/mpeg">
     </audio>
     
-    <audio id="bird-sound">
+    <audio id="bird-sound" loop>
         <source src="/sounds/defaults/bird.mp3" type="audio/mpeg">
     </audio>
 
@@ -1388,7 +1388,7 @@
                 hitboxWidth: 30,
                 hitboxHeight: 30,
                 effect: 'shield', // Защита от одного столкновения
-                duration: 10000, // 10 секунд
+                duration: 5000, // 10 секунд
                 rarity: 0.05 // Вероятность появления (5%)
             },
             {
@@ -1425,7 +1425,7 @@
             bonus: '/sounds/defaults/bonus.mp3', // Звук сбора бонуса
             shieldEnd: '/sounds/defaults/shield_end.mp3', // Звук окончания щита
             levelUp: '/sounds/defaults/level_up.mp3', // Звук перехода на новый уровень
-            bird: '/sounds/defaults/bird.mp3' // Звук птицы
+            bird: '/sounds/defaults/bird.mp3' // Звук пролетающей птицы
         };
         
         // API URL для работы с базой данных
@@ -1760,48 +1760,14 @@
         const leaderboardBody = document.getElementById('leaderboard-body');
         const themeToggle = document.getElementById('theme-toggle');
         const soundToggle = document.getElementById('sound-toggle');
-        const musicToggle = document.getElementById('music-toggle');
+        const startButton = document.getElementById('start-button');
         const shopButton = document.getElementById('shop-button');
         const profileButton = document.getElementById('profile-button');
-        const shopModal = document.getElementById('shop-modal');
-        const shopClose = document.getElementById('shop-close');
-        const modalOverlay = document.getElementById('modal-overlay');
-        const characterList = document.getElementById('character-list');
-        const shopCoinsDisplay = document.getElementById('shop-coins');
-        const ownedCountDisplay = document.getElementById('owned-count');
-        const totalCountDisplay = document.getElementById('total-count');
-        const startButton = document.getElementById('start-button');
         const mobileJumpButton = document.getElementById('mobile-jump');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const musicToggle = document.getElementById('music-toggle');
         
-        // Элементы авторизации
-        const authContainer = document.getElementById('auth-container');
-        const loginButton = document.getElementById('login-button');
-        const registerButton = document.getElementById('register-button');
-        const loginModal = document.getElementById('login-modal');
-        const loginClose = document.getElementById('login-close');
-        const loginUsername = document.getElementById('login-username');
-        const loginPassword = document.getElementById('login-password');
-        const loginSubmit = document.getElementById('login-submit');
-        const loginMessage = document.getElementById('login-message');
-        const registerModal = document.getElementById('register-modal');
-        const registerClose = document.getElementById('register-close');
-        const registerUsername = document.getElementById('register-username');
-        const registerPassword = document.getElementById('register-password');
-        const registerConfirm = document.getElementById('register-confirm');
-        const registerSubmit = document.getElementById('register-submit');
-        const registerMessage = document.getElementById('register-message');
-        const toRegister = document.getElementById('to-register');
-        const toLogin = document.getElementById('to-login');
-        const profileModal = document.getElementById('profile-modal');
-        const profileClose = document.getElementById('profile-close');
-        const profileUsername = document.getElementById('profile-username');
-        const profileCoins = document.getElementById('profile-coins');
-        const profileHighscore = document.getElementById('profile-highscore');
-        const profileGames = document.getElementById('profile-games');
-        const profileTime = document.getElementById('profile-time');
-        const logoutButton = document.getElementById('logout-button');
-        
-        // Аудио элементы
+        // Звуковые элементы
         const backgroundMusic = document.getElementById('background-music');
         const jumpSound = document.getElementById('jump-sound');
         const coinSound = document.getElementById('coin-sound');
@@ -2757,13 +2723,6 @@
             hasMagnet = false;
             hasSlowMotion = false;
             
-            // Очищаем активные звуки птиц
-            activeBirdSounds.forEach(sound => {
-                sound.pause();
-                sound.currentTime = 0;
-            });
-            activeBirdSounds.clear();
-            
             // Очищаем таймеры, если они были активны
             clearTimeout(shieldTimer);
             clearTimeout(magnetTimer);
@@ -3479,22 +3438,23 @@
         
         // Окончание игры
         async function gameOver() {
-            if (isGameOver) return;
             isGameOver = true;
             isGameStarted = false;
-            
-            // Останавливаем игровой цикл
             cancelAnimationFrame(gameLoop);
-            
-            // Очищаем активные звуки птиц
-            activeBirdSounds.forEach(sound => {
-                sound.pause();
-                sound.currentTime = 0;
-            });
-            activeBirdSounds.clear();
             
             // Прячем кнопку прыжка
             mobileJumpButton.style.display = 'none';
+            
+            // Останавливаем все звуки
+            if (soundEnabled) {
+                backgroundMusic.pause();
+                musicPlaying = false;
+                birdSound.pause();
+                
+                if (gameOverSound.src) {
+                    gameOverSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+                }
+            }
             
             // Обновляем статистику пользователя, если он авторизован
             if (gameAPI.currentUser) {
@@ -3502,23 +3462,12 @@
                 updateAuthUI();
             }
             
-            // Обновляем отображение финального счета
             finalScoreDisplay.textContent = score;
             finalCoinsDisplay.textContent = coinCount;
             
             // Показываем модальное окно "Игра окончена"
             gameOverScreen.style.display = 'block';
             modalOverlay.style.display = 'block';
-            
-            // Останавливаем фоновую музыку и проигрываем звук проигрыша
-            if (soundEnabled) {
-                backgroundMusic.pause();
-                musicPlaying = false;
-                
-                if (gameOverSound.src) {
-                    gameOverSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
-                }
-            }
             
             // Обновляем таблицу рекордов
             await updateLeaderboard();
@@ -3875,104 +3824,68 @@
 
         // Обновление положения препятствий
         function updateObstacles() {
-            // Обрабатываем все препятствия
-            for (let i = obstacles.length - 1; i >= 0; i--) {
+            for (let i = 0; i < obstacles.length; i++) {
                 const obstacle = obstacles[i];
                 
-                // Двигаем препятствие влево с учетом скорости и умножителя скорости
+                // Скорость движения с учетом типа препятствия
                 obstacle.x -= gameSpeed * obstacle.speed;
                 obstacle.element.style.left = obstacle.x + 'px';
-                
-                // Если препятствие - птица, обрабатываем звуковой эффект
+
+                // Обработка звука для птицы
                 if (obstacle.type === 'bird' && soundEnabled) {
-                    updateBirdSound(obstacle, i);
+                    handleBirdSound(obstacle);
                 }
                 
-                // Если препятствие ушло за левый край экрана, удаляем его
-                if (obstacle.x + obstacle.width < 0) {
-                    obstacle.element.remove();
-                    
-                    // Если это была птица, удаляем звук
-                    if (obstacle.type === 'bird') {
-                        stopBirdSound(i);
+                // Удаляем препятствия, которые ушли за экран
+                if (obstacle.x < -obstacle.width) {
+                    // Если это птица, прекращаем звук
+                    if (obstacle.type === 'bird' && soundEnabled) {
+                        birdSound.pause();
+                        birdSound.currentTime = 0;
                     }
                     
+                    obstacle.element.remove();
                     obstacles.splice(i, 1);
+                    i--;
                 }
             }
         }
 
-        // Функция для обработки звукового эффекта Доплера для птицы
-        function updateBirdSound(obstacle, obstacleId) {
-            const playerX = 50; // Позиция игрока по X
+        // Обработка звука для птицы в зависимости от положения на экране
+        function handleBirdSound(bird) {
             const gameWidth = gameContainer.offsetWidth;
             
-            // Рассчитываем расстояние от птицы до игрока (по X)
-            let distance = obstacle.x - playerX;
-            
-            // Если птица подлетает к игроку
-            if (distance >= 0 && distance <= gameWidth) {
-                // Нормализуем расстояние (0 = далеко, 1 = рядом с игроком)
-                const proximity = 1 - (distance / gameWidth);
-                
-                // Создаем или обновляем звук для этой птицы
-                if (!activeBirdSounds.has(obstacleId)) {
-                    // Создаем новый звук для этой птицы
-                    const newBirdSound = new Audio(SOUNDS.bird);
-                    newBirdSound.volume = 0; // Начинаем с нулевой громкости
-                    newBirdSound.loop = true;
-                    newBirdSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
-                    
-                    activeBirdSounds.set(obstacleId, newBirdSound);
-                }
-                
-                // Получаем звук для этой птицы
-                const birdSoundInstance = activeBirdSounds.get(obstacleId);
-                
-                // Устанавливаем громкость в зависимости от близости к игроку
-                // Кубическая функция для более естественного звучания эффекта Доплера
-                birdSoundInstance.volume = Math.pow(proximity, 3) * 0.8; // Максимальная громкость 0.8
-                
-                // Изменяем частоту воспроизведения для эффекта Доплера
-                // Увеличиваем высоту при приближении и уменьшаем при удалении
-                if (birdSoundInstance.playbackRate !== undefined) {
-                    const baseRate = 1.0;
-                    const doppler = (distance > gameWidth / 2) ? 
-                        baseRate + (0.4 * proximity) : // Приближение: повышаем тон
-                        baseRate - (0.3 * proximity);  // Удаление: понижаем тон
-                    
-                    birdSoundInstance.playbackRate = doppler;
-                }
-            } else if (distance < 0 && activeBirdSounds.has(obstacleId)) {
-                // Птица пролетела мимо игрока, постепенно уменьшаем громкость
-                const birdSoundInstance = activeBirdSounds.get(obstacleId);
-                
-                // Расстояние после пролета (абсолютное значение)
-                const pastDistance = Math.abs(distance);
-                
-                if (pastDistance > gameWidth / 2) {
-                    // Если птица улетела достаточно далеко, останавливаем звук
-                    stopBirdSound(obstacleId);
-                } else {
-                    // Иначе уменьшаем громкость по мере удаления
-                    const fadeOutFactor = 1 - (pastDistance / (gameWidth / 2));
-                    birdSoundInstance.volume = fadeOutFactor * 0.5; // Максимум 0.5 при удалении
-                    
-                    // Уменьшаем высоту тона при удалении (эффект Доплера)
-                    if (birdSoundInstance.playbackRate !== undefined) {
-                        birdSoundInstance.playbackRate = 0.7 + (fadeOutFactor * 0.3); // От 0.7 до 1.0
-                    }
+            // Если птица только что появилась на экране
+            if (bird.x <= gameWidth && bird.x > gameWidth - 10) {
+                if (birdSound.paused) {
+                    birdSound.volume = 0;
+                    birdSound.play().catch(e => console.log('Автоматическое воспроизведение звука птицы заблокировано:', e));
                 }
             }
-        }
-
-        // Функция для остановки звука птицы
-        function stopBirdSound(obstacleId) {
-            if (activeBirdSounds.has(obstacleId)) {
-                const birdSoundInstance = activeBirdSounds.get(obstacleId);
-                birdSoundInstance.pause();
-                birdSoundInstance.currentTime = 0;
-                activeBirdSounds.delete(obstacleId);
+            
+            // Регулируем громкость в зависимости от положения птицы
+            // Максимальная громкость, когда птица в середине экрана
+            let volume = 0;
+            const midPoint = gameWidth / 2;
+            
+            if (bird.x >= 0 && bird.x <= gameWidth) {
+                // Расстояние от центра экрана (в процентах от 0 до 1)
+                const distanceFromCenter = Math.abs(bird.x - midPoint) / midPoint;
+                // Громкость обратно пропорциональна расстоянию от центра
+                volume = 1 - distanceFromCenter;
+                
+                // Ограничиваем от 0.1 до 0.7 для более плавного эффекта
+                volume = Math.max(0.1, Math.min(0.7, volume));
+                birdSound.volume = volume;
+            }
+            
+            // Если птица уходит с экрана, постепенно уменьшаем громкость до 0
+            if (bird.x < 0) {
+                birdSound.volume = Math.max(0, birdSound.volume - 0.05);
+                if (birdSound.volume <= 0) {
+                    birdSound.pause();
+                    birdSound.currentTime = 0;
+                }
             }
         }
     </script>
