@@ -3331,8 +3331,8 @@
         
         // Проверка достижения нового уровня
         function checkLevelUp() {
-            // Каждые 500 очков - новый уровень
-            const newLevel = Math.floor(score / 500) + 1;
+            // Каждые 1000 очков - новый уровень (увеличено с 500 для соответствия медленному начислению очков)
+            const newLevel = Math.floor(score / 1000) + 1;
             
             if (newLevel > currentLevel) {
                 currentLevel = newLevel;
