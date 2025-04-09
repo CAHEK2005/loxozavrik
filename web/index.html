@@ -1484,6 +1484,12 @@
             levelUp: '/sounds/defaults/level_up.mp3' // Звук перехода на новый уровень
         };
         
+        // Настройки громкости звуков
+        const SOUND_VOLUME = {
+            background: 0.09, // 30% от текущего значения 0.3
+            effects: 0.4,    // 40% громкость для всех эффектов
+        };
+        
         // API URL для работы с базой данных
         const API_URL = 'http://192.168.0.240/api';
         
@@ -2099,6 +2105,7 @@
                     musicPlaying = false;
                     musicToggle.textContent = '🔇';
                 } else {
+                    backgroundMusic.volume = SOUND_VOLUME.background;
                     backgroundMusic.play().catch(e => console.log('Автоматическое воспроизведение музыки заблокировано:', e));
                     musicPlaying = true;
                     musicToggle.textContent = '🔊';
@@ -2274,6 +2281,7 @@
                         if (result.success) {
                             // Проигрываем звук покупки
                             if (soundEnabled && purchaseSound.src) {
+                                purchaseSound.volume = SOUND_VOLUME.effects;
                                 purchaseSound.currentTime = 0;
                                 purchaseSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
                             }
@@ -2845,6 +2853,7 @@
             
             // Воспроизводим звук начала игры, если звук включен
             if (soundEnabled && gameStartSound.src) {
+                gameStartSound.volume = SOUND_VOLUME.effects;
                 gameStartSound.currentTime = 0;
                 gameStartSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
             }
@@ -2966,6 +2975,7 @@
                     jumpSound.src = soundSrc;
                 }
                 
+                jumpSound.volume = SOUND_VOLUME.effects;
                 jumpSound.currentTime = 0;
                 jumpSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
             }
@@ -3168,6 +3178,7 @@
             // Проигрываем звук окончания щита
             if (soundEnabled && SOUNDS.shieldEnd) {
                 const shieldEndSound = new Audio(SOUNDS.shieldEnd);
+                shieldEndSound.volume = SOUND_VOLUME.effects;
                 shieldEndSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
             }
             
@@ -3221,6 +3232,7 @@
                     coinSound.src = soundSrc;
                 }
                 
+                coinSound.volume = SOUND_VOLUME.effects;
                 coinSound.currentTime = 0;
                 coinSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
             }
@@ -3248,6 +3260,7 @@
                 // Проигрываем звук уровня
                 if (soundEnabled && SOUNDS.levelUp) {
                     const levelUpSound = new Audio(SOUNDS.levelUp);
+                    levelUpSound.volume = SOUND_VOLUME.effects;
                     levelUpSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
                 }
             }
@@ -3320,6 +3333,7 @@
             // Проигрываем звук сбора бонуса
             if (soundEnabled && SOUNDS.bonus) {
                 const bonusSound = new Audio(SOUNDS.bonus);
+                bonusSound.volume = SOUND_VOLUME.effects;
                 bonusSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
             }
             
@@ -3361,6 +3375,7 @@
                         // Проигрываем звук окончания щита
                         if (soundEnabled && SOUNDS.shieldEnd) {
                             const shieldEndSound = new Audio(SOUNDS.shieldEnd);
+                            shieldEndSound.volume = SOUND_VOLUME.effects;
                             shieldEndSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
                         }
                     }, duration);
@@ -3601,12 +3616,13 @@
                     try {
                         // Используем новый экземпляр Audio для гарантированного воспроизведения
                         const gameOverAudio = new Audio(soundSrc);
-                        gameOverAudio.volume = 1.0;
+                        gameOverAudio.volume = SOUND_VOLUME.effects;
                         gameOverAudio.play().catch(e => {
                             console.log('Ошибка воспроизведения звука поражения через Audio:', e);
                             
                             // Используем стандартный элемент для резервного воспроизведения
                             gameOverSound.src = soundSrc;
+                            gameOverSound.volume = SOUND_VOLUME.effects;
                             gameOverSound.currentTime = 0;
                             gameOverSound.play().catch(e => console.log('Ошибка резервного воспроизведения звука:', e));
                         });
@@ -4133,6 +4149,17 @@
             }
         }
 
+        // Настройка громкости всех звуков в игре
+        function setupAudioVolumes() {
+            // Устанавливаем громкость для элементов аудио на странице
+            jumpSound.volume = SOUND_VOLUME.effects;
+            coinSound.volume = SOUND_VOLUME.effects;
+            gameOverSound.volume = SOUND_VOLUME.effects;
+            gameStartSound.volume = SOUND_VOLUME.effects;
+            purchaseSound.volume = SOUND_VOLUME.effects;
+            backgroundMusic.volume = SOUND_VOLUME.background;
+        }
+
         // Инициализация игровых элементов и начальных установок
         function initialize() {
             initializeCharacter();
@@ -4140,6 +4167,7 @@
             
             // Инициализируем звуки
             preloadSounds();
+            setupAudioVolumes();
             
             // API и авторизация
             gameAPI = new GameAPI();
@@ -4160,7 +4188,7 @@
             
             // Запускаем фоновую музыку, если звук включен
             if (soundEnabled) {
-                backgroundMusic.volume = 0.3;
+                backgroundMusic.volume = SOUND_VOLUME.background;
                 backgroundMusic.loop = true;
             }
             
