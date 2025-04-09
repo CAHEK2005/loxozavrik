@@ -3588,9 +3588,31 @@
                 backgroundMusic.pause();
                 musicPlaying = false;
                 
-                if (gameOverSound.src) {
-                    gameOverSound.currentTime = 0;
-                    gameOverSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+                // Устанавливаем случайный звук поражения для текущего персонажа
+                let soundSrc = null;
+                
+                if (activeCharacter && activeCharacter.sounds && activeCharacter.sounds.gameOver) {
+                    soundSrc = getRandomSound(activeCharacter.sounds.gameOver);
+                } else if (SOUNDS.gameOver) {
+                    soundSrc = getRandomSound(SOUNDS.gameOver);
+                }
+                
+                if (soundSrc) {
+                    try {
+                        // Используем новый экземпляр Audio для гарантированного воспроизведения
+                        const gameOverAudio = new Audio(soundSrc);
+                        gameOverAudio.volume = 1.0;
+                        gameOverAudio.play().catch(e => {
+                            console.log('Ошибка воспроизведения звука поражения через Audio:', e);
+                            
+                            // Используем стандартный элемент для резервного воспроизведения
+                            gameOverSound.src = soundSrc;
+                            gameOverSound.currentTime = 0;
+                            gameOverSound.play().catch(e => console.log('Ошибка резервного воспроизведения звука:', e));
+                        });
+                    } catch (error) {
+                        console.log('Произошла ошибка при воспроизведении звука поражения:', error);
+                    }
                 }
             }
             
@@ -4110,6 +4132,87 @@
                 }
             }
         }
+
+        // Инициализация игровых элементов и начальных установок
+        function initialize() {
+            initializeCharacter();
+            initializeShop();
+            
+            // Инициализируем звуки
+            preloadSounds();
+            
+            // API и авторизация
+            gameAPI = new GameAPI();
+            updateAuthUI();
+            
+            // Устанавливаем начальные настройки из localStorage
+            const savedSound = localStorage.getItem('sound');
+            if (savedSound === 'off') {
+                soundToggle.checked = false;
+                soundEnabled = false;
+            }
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                darkThemeToggle.checked = true;
+                document.body.setAttribute('data-theme', 'dark');
+            }
+            
+            // Запускаем фоновую музыку, если звук включен
+            if (soundEnabled) {
+                backgroundMusic.volume = 0.3;
+                backgroundMusic.loop = true;
+            }
+            
+            // Показываем экран приветствия
+            showWelcome();
+        }
+        
+        // Предзагрузка звуков для избежания задержек
+        function preloadSounds() {
+            console.log("Предзагрузка звуков...");
+            
+            // Предзагружаем звуки по умолчанию
+            for (const soundType in SOUNDS) {
+                if (Array.isArray(SOUNDS[soundType])) {
+                    SOUNDS[soundType].forEach(soundUrl => {
+                        const audio = new Audio();
+                        audio.src = soundUrl;
+                        audio.preload = 'auto';
+                        audio.load();
+                    });
+                } else {
+                    const audio = new Audio();
+                    audio.src = SOUNDS[soundType];
+                    audio.preload = 'auto';
+                    audio.load();
+                }
+            }
+            
+            // Предзагружаем звуки персонажей
+            CHARACTERS.forEach(character => {
+                if (character.sounds) {
+                    for (const soundType in character.sounds) {
+                        if (Array.isArray(character.sounds[soundType])) {
+                            character.sounds[soundType].forEach(soundUrl => {
+                                const audio = new Audio();
+                                audio.src = soundUrl;
+                                audio.preload = 'auto';
+                                audio.load();
+                            });
+                        } else if (character.sounds[soundType]) {
+                            const audio = new Audio();
+                            audio.src = character.sounds[soundType];
+                            audio.preload = 'auto';
+                            audio.load();
+                        }
+                    }
+                }
+            });
+        }
+
+        // Запускаем инициализацию игры после загрузки страницы
+        window.addEventListener('DOMContentLoaded', initialize);
     </script>
 </body>
 </html>
