@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Веб-сервер Nginx
   nginx:
@@ -18,8 +16,8 @@ services:
     build: ./api
     environment:
       - DB_HOST=db
-      - DB_USER=${DB_USER:-root}
-      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - DB_USER=root
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
       - DB_NAME=${DB_NAME:-loxozavrik_db}
       - JWT_SECRET=${JWT_SECRET:-secret}
     volumes:

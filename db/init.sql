@@ -1,12 +1,15 @@
-CREATE USER IF NOT EXISTS 'lohozavrik_app'@'%' IDENTIFIED BY 'Srvpenis16';
-GRANT SELECT, INSERT, UPDATE, DELETE ON lohozavrik_db.* TO 'lohozavrik_app'@'%';
+-- Создаем пользователя и права
+DROP USER IF EXISTS 'lohozavrik_app'@'%';
+CREATE USER 'lohozavrik_app'@'%' IDENTIFIED BY 'Srvpenis16';
+GRANT ALL PRIVILEGES ON loxozavrik_db.* TO 'lohozavrik_app'@'%';
 FLUSH PRIVILEGES;
+
 -- Таблица пользователей
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    email VARCHAR(100),backup.sh
+    email VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

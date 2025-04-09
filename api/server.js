@@ -14,9 +14,9 @@ app.use(cors());
 // Создаем пул соединений с базой данных
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'db',
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  user: process.env.DB_USER || 'lohozavrik_app',
+  password: process.env.DB_PASSWORD || 'Srvpenis16',
+  database: process.env.DB_NAME || 'loxozavrik_db',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
