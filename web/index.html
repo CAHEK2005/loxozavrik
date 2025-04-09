@@ -1177,10 +1177,6 @@
     <audio id="purchase-sound">
         <source src="/sounds/defaults/purchase.mp3" type="audio/mpeg">
     </audio>
-    
-    <audio id="bird-sound" loop>
-        <source src="/sounds/defaults/bird.mp3" type="audio/mpeg">
-    </audio>
 
     <script>
         // ============= НАСТРОЙКИ ИЗОБРАЖЕНИЙ И ЗВУКОВ =============
@@ -1382,18 +1378,18 @@
         const BONUSES = [
             {
                 id: 'shield',
-                image: '/images/bonus_shield.png',
+                image: '/images/bonuses/bonus_shield.png',
                 width: 35,
                 height: 35,
                 hitboxWidth: 30,
                 hitboxHeight: 30,
                 effect: 'shield', // Защита от одного столкновения
-                duration: 5000, // 10 секунд
+                duration: 10000, // 10 секунд
                 rarity: 0.05 // Вероятность появления (5%)
             },
             {
                 id: 'slow',
-                image: '/images/bonus_slow.png',
+                image: '/images/bonuses/bonus_slow.png',
                 width: 35,
                 height: 35,
                 hitboxWidth: 30,
@@ -1404,7 +1400,7 @@
             },
             {
                 id: 'magnet',
-                image: '/images/bonus_magnet.png',
+                image: '/images/bonuses/bonus_magnet.png',
                 width: 35,
                 height: 35,
                 hitboxWidth: 30,
@@ -1424,8 +1420,7 @@
             purchase: '/sounds/defaults/purchase.mp3',
             bonus: '/sounds/defaults/bonus.mp3', // Звук сбора бонуса
             shieldEnd: '/sounds/defaults/shield_end.mp3', // Звук окончания щита
-            levelUp: '/sounds/defaults/level_up.mp3', // Звук перехода на новый уровень
-            bird: '/sounds/defaults/bird.mp3' // Звук пролетающей птицы
+            levelUp: '/sounds/defaults/level_up.mp3' // Звук перехода на новый уровень
         };
         
         // API URL для работы с базой данных
@@ -1760,20 +1755,53 @@
         const leaderboardBody = document.getElementById('leaderboard-body');
         const themeToggle = document.getElementById('theme-toggle');
         const soundToggle = document.getElementById('sound-toggle');
-        const startButton = document.getElementById('start-button');
+        const musicToggle = document.getElementById('music-toggle');
         const shopButton = document.getElementById('shop-button');
         const profileButton = document.getElementById('profile-button');
-        const mobileJumpButton = document.getElementById('mobile-jump');
+        const shopModal = document.getElementById('shop-modal');
+        const shopClose = document.getElementById('shop-close');
         const modalOverlay = document.getElementById('modal-overlay');
-        const musicToggle = document.getElementById('music-toggle');
+        const characterList = document.getElementById('character-list');
+        const shopCoinsDisplay = document.getElementById('shop-coins');
+        const ownedCountDisplay = document.getElementById('owned-count');
+        const totalCountDisplay = document.getElementById('total-count');
+        const startButton = document.getElementById('start-button');
+        const mobileJumpButton = document.getElementById('mobile-jump');
         
-        // Звуковые элементы
+        // Элементы авторизации
+        const authContainer = document.getElementById('auth-container');
+        const loginButton = document.getElementById('login-button');
+        const registerButton = document.getElementById('register-button');
+        const loginModal = document.getElementById('login-modal');
+        const loginClose = document.getElementById('login-close');
+        const loginUsername = document.getElementById('login-username');
+        const loginPassword = document.getElementById('login-password');
+        const loginSubmit = document.getElementById('login-submit');
+        const loginMessage = document.getElementById('login-message');
+        const registerModal = document.getElementById('register-modal');
+        const registerClose = document.getElementById('register-close');
+        const registerUsername = document.getElementById('register-username');
+        const registerPassword = document.getElementById('register-password');
+        const registerConfirm = document.getElementById('register-confirm');
+        const registerSubmit = document.getElementById('register-submit');
+        const registerMessage = document.getElementById('register-message');
+        const toRegister = document.getElementById('to-register');
+        const toLogin = document.getElementById('to-login');
+        const profileModal = document.getElementById('profile-modal');
+        const profileClose = document.getElementById('profile-close');
+        const profileUsername = document.getElementById('profile-username');
+        const profileCoins = document.getElementById('profile-coins');
+        const profileHighscore = document.getElementById('profile-highscore');
+        const profileGames = document.getElementById('profile-games');
+        const profileTime = document.getElementById('profile-time');
+        const logoutButton = document.getElementById('logout-button');
+        
+        // Аудио элементы
         const backgroundMusic = document.getElementById('background-music');
         const jumpSound = document.getElementById('jump-sound');
         const coinSound = document.getElementById('coin-sound');
         const gameOverSound = document.getElementById('game-over-sound');
         const purchaseSound = document.getElementById('purchase-sound');
-        const birdSound = document.getElementById('bird-sound');
         
         // Установка источников звуков
         backgroundMusic.src = SOUNDS.background;
@@ -1781,7 +1809,6 @@
         coinSound.src = SOUNDS.coin;
         gameOverSound.src = SOUNDS.gameOver;
         purchaseSound.src = SOUNDS.purchase;
-        birdSound.src = SOUNDS.bird;
         
         // Игровые переменные
         let activeCharacter = null;
@@ -3355,7 +3382,20 @@
             }
             
             // Обновляем положение препятствий
-            updateObstacles();
+            for (let i = 0; i < obstacles.length; i++) {
+                const obstacle = obstacles[i];
+                
+                // Скорость движения с учетом типа препятствия
+                obstacle.x -= gameSpeed * obstacle.speed;
+                obstacle.element.style.left = obstacle.x + 'px';
+                
+                // Удаляем препятствия, которые ушли за экран
+                if (obstacle.x < -obstacle.width) {
+                    obstacle.element.remove();
+                    obstacles.splice(i, 1);
+                    i--;
+                }
+            }
             
             // Обновляем положение монеток
             for (let i = 0; i < coins.length; i++) {
@@ -3445,17 +3485,6 @@
             // Прячем кнопку прыжка
             mobileJumpButton.style.display = 'none';
             
-            // Останавливаем все звуки
-            if (soundEnabled) {
-                backgroundMusic.pause();
-                musicPlaying = false;
-                birdSound.pause();
-                
-                if (gameOverSound.src) {
-                    gameOverSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
-                }
-            }
-            
             // Обновляем статистику пользователя, если он авторизован
             if (gameAPI.currentUser) {
                 await gameAPI.updateUserStats(score, coinCount);
@@ -3468,6 +3497,16 @@
             // Показываем модальное окно "Игра окончена"
             gameOverScreen.style.display = 'block';
             modalOverlay.style.display = 'block';
+            
+            // Останавливаем фоновую музыку и проигрываем звук проигрыша
+            if (soundEnabled) {
+                backgroundMusic.pause();
+                musicPlaying = false;
+                
+                if (gameOverSound.src) {
+                    gameOverSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+                }
+            }
             
             // Обновляем таблицу рекордов
             await updateLeaderboard();
@@ -3821,73 +3860,6 @@
                 e.preventDefault();
             }
         }, { passive: false });
-
-        // Обновление положения препятствий
-        function updateObstacles() {
-            for (let i = 0; i < obstacles.length; i++) {
-                const obstacle = obstacles[i];
-                
-                // Скорость движения с учетом типа препятствия
-                obstacle.x -= gameSpeed * obstacle.speed;
-                obstacle.element.style.left = obstacle.x + 'px';
-
-                // Обработка звука для птицы
-                if (obstacle.type === 'bird' && soundEnabled) {
-                    handleBirdSound(obstacle);
-                }
-                
-                // Удаляем препятствия, которые ушли за экран
-                if (obstacle.x < -obstacle.width) {
-                    // Если это птица, прекращаем звук
-                    if (obstacle.type === 'bird' && soundEnabled) {
-                        birdSound.pause();
-                        birdSound.currentTime = 0;
-                    }
-                    
-                    obstacle.element.remove();
-                    obstacles.splice(i, 1);
-                    i--;
-                }
-            }
-        }
-
-        // Обработка звука для птицы в зависимости от положения на экране
-        function handleBirdSound(bird) {
-            const gameWidth = gameContainer.offsetWidth;
-            
-            // Если птица только что появилась на экране
-            if (bird.x <= gameWidth && bird.x > gameWidth - 10) {
-                if (birdSound.paused) {
-                    birdSound.volume = 0;
-                    birdSound.play().catch(e => console.log('Автоматическое воспроизведение звука птицы заблокировано:', e));
-                }
-            }
-            
-            // Регулируем громкость в зависимости от положения птицы
-            // Максимальная громкость, когда птица в середине экрана
-            let volume = 0;
-            const midPoint = gameWidth / 2;
-            
-            if (bird.x >= 0 && bird.x <= gameWidth) {
-                // Расстояние от центра экрана (в процентах от 0 до 1)
-                const distanceFromCenter = Math.abs(bird.x - midPoint) / midPoint;
-                // Громкость обратно пропорциональна расстоянию от центра
-                volume = 1 - distanceFromCenter;
-                
-                // Ограничиваем от 0.1 до 0.7 для более плавного эффекта
-                volume = Math.max(0.1, Math.min(0.7, volume));
-                birdSound.volume = volume;
-            }
-            
-            // Если птица уходит с экрана, постепенно уменьшаем громкость до 0
-            if (bird.x < 0) {
-                birdSound.volume = Math.max(0, birdSound.volume - 0.05);
-                if (birdSound.volume <= 0) {
-                    birdSound.pause();
-                    birdSound.currentTime = 0;
-                }
-            }
-        }
     </script>
 </body>
 </html>
