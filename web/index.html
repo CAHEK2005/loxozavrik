@@ -238,6 +238,7 @@
         .obstacle {
             position: absolute;
             bottom: 0;
+            z-index: 1; /* Добавляем z-index, чтобы препятствия были над дорожкой */
         }
         
         .coin {
@@ -268,7 +269,7 @@
                 rgba(45, 60, 48, 0.6) 80%, rgba(55, 75, 60, 0.5) 90%, 
                 rgba(45, 60, 48, 0.6) 100%);
             border-top: 5px solid rgba(35, 45, 40, 0.8);
-            z-index: 1;
+            z-index: 0; /* Уменьшаем z-index, чтобы препятствия были над дорожкой */
             box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.15);
         }
         
@@ -687,7 +688,7 @@
             border-radius: 30px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             z-index: 5;
-            display: none;
+            display: none; /* По умолчанию скрыта */
             transition: transform 0.2s, box-shadow 0.2s;
         }
         
@@ -953,59 +954,60 @@
             }
             
             h1 {
-                font-size: 20px;
+                font-size: 22px;
                 margin-bottom: 10px;
             }
             
             #game-container {
-                height: 240px; /* Адаптивная высота для мобильных */
+                height: 320px;
+                margin-bottom: 15px;
             }
             
             .toggle-container {
                 font-size: 12px;
             }
             
-            #settings {
-                gap: 10px;
+            .toggle {
+                width: 44px;
+                height: 22px;
+            }
+            
+            .slider:before {
+                height: 16px;
+                width: 16px;
+            }
+            
+            input:checked + .slider:before {
+                transform: translateX(22px);
+            }
+            
+            .game-button {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+            
+            table {
+                min-width: auto;
+            }
+            
+            th, td {
+                padding: 8px;
+                font-size: 13px;
             }
             
             .mobile-jump-button {
-                display: block;
-            }
-            
-            .shop-items {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            }
-            
-            .character-preview {
-                width: 50px;
-                height: 50px;
-            }
-            
-            .character-name, .character-price {
-                font-size: 12px;
-            }
-            
-            .buy-button, .select-button {
-                padding: 4px 8px;
-                font-size: 11px;
-            }
-            
-            .game-over-buttons {
-                flex-direction: column;
-            }
-            
-            .header-container {
-                flex-direction: column;
-                align-items: center;
+                padding: 12px 40px;
+                font-size: 16px;
+                bottom: 15px;
             }
             
             .auth-container {
-                margin: 0;
+                gap: 8px;
             }
             
-            .profile-stats-grid {
-                grid-template-columns: 1fr;
+            .game-modal {
+                padding: 15px;
+                width: 90%;
             }
         }
         
@@ -1300,10 +1302,10 @@
                 id: 'default',
                 name: 'Лохозаврик',
                 image: '/images/players/default/player_default.png',
-                width: 78,
-                height: 90,
-                hitboxWidth: 54,
-                hitboxHeight: 72,
+                width: 94, // Увеличено с 78
+                height: 108, // Увеличено с 90
+                hitboxWidth: 65, // Увеличено с 54
+                hitboxHeight: 86, // Увеличено с 72
                 jumpHeight: 204,
                 price: 0,
                 unlocked: true,
@@ -1319,10 +1321,10 @@
                 id: 'character1',
                 name: 'Сиськослав',
                 image: '/images/players/player_svyat.png',
-                width: 80,
-                height: 94,
-                hitboxWidth: 58,
-                hitboxHeight: 74,
+                width: 96, // Увеличено с 80
+                height: 113, // Увеличено с 94
+                hitboxWidth: 70, // Увеличено с 58
+                hitboxHeight: 89, // Увеличено с 74
                 jumpHeight: 222,
                 price: 10,
                 sounds: {
@@ -1335,12 +1337,12 @@
             },
             {
                 id: 'character2',
-                name: 'Скуфлик',
+                name: 'Сгусфлик',
                 image: '/images/players/player_skuflik.png',
-                width: 75,
-                height: 88,
-                hitboxWidth: 56,
-                hitboxHeight: 70,
+                width: 84, // Увеличено с 70
+                height: 106, // Увеличено с 88
+                hitboxWidth: 67, // Увеличено с 56
+                hitboxHeight: 84, // Увеличено с 70
                 jumpHeight: 198,
                 price: 15,
                 sounds: {
@@ -1355,10 +1357,10 @@
                 id: 'character3',
                 name: 'Леонид',
                 image: '/images/players/player_leonid.png',
-                width: 82,
-                height: 96,
-                hitboxWidth: 60,
-                hitboxHeight: 76,
+                width: 98, // Увеличено с 82
+                height: 115, // Увеличено с 96
+                hitboxWidth: 72, // Увеличено с 60
+                hitboxHeight: 91, // Увеличено с 76
                 jumpHeight: 210,
                 price: 20,
                 sounds: {
@@ -1373,10 +1375,10 @@
                 id: 'character4',
                 name: 'Пидиди',
                 image: '/images/players/player_pididi.png',
-                width: 70,
-                height: 84,
-                hitboxWidth: 52,
-                hitboxHeight: 68,
+                width: 84, // Увеличено с 70
+                height: 101, // Увеличено с 84
+                hitboxWidth: 62, // Увеличено с 52
+                hitboxHeight: 82, // Увеличено с 68
                 jumpHeight: 192,
                 price: 25,
                 sounds: {
@@ -1391,10 +1393,10 @@
                 id: 'character5',
                 name: 'Скибиди',
                 image: '/images/players/player_skibidi.png',
-                width: 78,
-                height: 90,
-                hitboxWidth: 55,
-                hitboxHeight: 72,
+                width: 94, // Увеличено с 78
+                height: 108, // Увеличено с 90
+                hitboxWidth: 66, // Увеличено с 55
+                hitboxHeight: 86, // Увеличено с 72
                 jumpHeight: 216,
                 price: 30,
                 sounds: {
@@ -1412,51 +1414,51 @@
             {
                 id: 'penguin',
                 image: '/images/obstacles/penguin.png',
-                width: 42,
-                height: 84,
-                hitboxWidth: 18, // Уменьшенный хитбокс
-                hitboxHeight: 56, // Уменьшенный хитбокс
+                width: 50, // Увеличено с 42
+                height: 101, // Увеличено с 84
+                hitboxWidth: 22, // Увеличено с 18
+                hitboxHeight: 67, // Увеличено с 56
                 speed: 1.0 // Множитель скорости (1.0 = стандарт)
             },
             {
                 id: 'rock',
                 image: '/images/obstacles/rock.png',
-                width: 48,
-                height: 42,
-                hitboxWidth: 28, // Уменьшенный хитбокс
-                hitboxHeight: 24, // Уменьшенный хитбокс
+                width: 58, // Увеличено с 48
+                height: 50, // Увеличено с 42
+                hitboxWidth: 34, // Увеличено с 28
+                hitboxHeight: 29, // Увеличено с 24
                 speed: 1.2 // Движется быстрее
             },
             {
                 id: 'bird',
                 image: '/images/obstacles/bird.png',
-                width: 54,
-                height: 42,
-                hitboxWidth: 32, // Уменьшенный хитбокс
-                hitboxHeight: 20, // Уменьшенный хитбокс
+                width: 65, // Увеличено с 54
+                height: 50, // Увеличено с 42
+                hitboxWidth: 38, // Увеличено с 32
+                hitboxHeight: 24, // Увеличено с 20
                 speed: 1.3, // Самый быстрый
                 isFlying: true, // Летающее препятствие
-                minHeight: 60, // Минимальная высота от земли (увеличена на 20%)
-                maxHeight: 144 // Максимальная высота от земли (увеличена на 20%)
+                minHeight: 72, // Увеличено с 60
+                maxHeight: 173 // Увеличено с 144
             },
             {
                 id: 'spike',
                 image: '/images/obstacles/spike.png',
-                width: 36,
-                height: 30,
-                hitboxWidth: 18, // Уменьшенный хитбокс
-                hitboxHeight: 14, // Уменьшенный хитбокс
+                width: 43, // Увеличено с 36
+                height: 36, // Увеличено с 30
+                hitboxWidth: 22, // Увеличено с 18
+                hitboxHeight: 17, // Увеличено с 14
                 speed: 0.9, // Медленнее
                 count: 3, // Может появляться группами
-                spacing: 48 // Расстояние между шипами в группе (увеличено на 20%)
+                spacing: 58 // Увеличено с 48
             },
             {
                 id: 'log',
                 image: '/images/obstacles/log.png',
-                width: 72,
-                height: 48,
-                hitboxWidth: 45, // Уменьшенный хитбокс
-                hitboxHeight: 24, // Уменьшенный хитбокс
+                width: 86, // Увеличено с 72
+                height: 58, // Увеличено с 48
+                hitboxWidth: 54, // Увеличено с 45
+                hitboxHeight: 29, // Увеличено с 24
                 speed: 0.8 // Самый медленный, но широкий
             }
         ];
@@ -2599,6 +2601,13 @@
                     e.preventDefault();
                 }
             });
+
+            // Делаем активной кнопку прыжка на мобильных
+            if (isMobileDevice()) {
+                mobileJumpButton.style.display = 'block';
+            } else {
+                mobileJumpButton.style.display = 'none';
+            }
         }
         
         // Отображение сообщения
@@ -2877,8 +2886,12 @@
             clearTimeout(magnetTimer);
             clearTimeout(slowTimer);
             
-            // Делаем активной кнопку прыжка на мобильных
-            mobileJumpButton.style.display = 'block';
+            // Делаем активной кнопку прыжка только на мобильных устройствах
+            if (isMobileDevice()) {
+                mobileJumpButton.style.display = 'block';
+            } else {
+                mobileJumpButton.style.display = 'none';
+            }
             
             // Очищаем все игровые объекты
             document.querySelectorAll('.obstacle, .coin, .bonus, .explosion, .floating-text, .level-up-container').forEach(el => el.remove());
@@ -3000,7 +3013,7 @@
             // Создаем стиль для индивидуальной анимации прыжка
             // Увеличиваем базовую высоту прыжка на 25% для всех персонажей
             const jumpHeight = (activeCharacter.jumpHeight || 150) * 1.25;
-            const jumpDuration = 600; // Увеличиваем длительность прыжка для более долгого пребывания в воздухе (было 450)
+            const jumpDuration = 750; // Увеличиваем длительность прыжка для более долгого пребывания в воздухе (было 600)
             
             // Создаем или получаем существующий стиль
             let jumpStyle = document.getElementById('jump-style');
@@ -3015,8 +3028,8 @@
             jumpStyle.textContent = `
                 @keyframes jump {
                     0% { bottom: 0; }
-                    40% { bottom: ${jumpHeight}px; }
-                    60% { bottom: ${jumpHeight}px; }
+                    35% { bottom: ${jumpHeight}px; }
+                    65% { bottom: ${jumpHeight}px; }
                     100% { bottom: 0; }
                 }
                 .jumping {
@@ -4220,6 +4233,42 @@
             backgroundMusic.volume = SOUND_VOLUME.background;
         }
 
+        // Функция для определения мобильного устройства
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Оптимизация для мобильных устройств
+        function optimizeForMobile() {
+            const isMobile = isMobileDevice();
+            
+            if (isMobile) {
+                // Показываем мобильную кнопку прыжка
+                mobileJumpButton.style.display = 'block';
+                
+                // Добавляем обработку жестов
+                document.addEventListener('touchmove', function(e) {
+                    // Предотвращаем прокрутку страницы во время игры
+                    if (isGameStarted && !isGameOver) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+                
+                // Оптимизация производительности для мобильных устройств
+                // Уменьшаем количество создаваемых объектов
+                obstacleInterval = 2000; // Увеличиваем интервал между препятствиями для мобильных
+                coinInterval = 1500; // Увеличиваем интервал между монетами
+                
+                // Уменьшаем потребление ресурсов
+                document.querySelectorAll('.obstacle, .coin').forEach(el => {
+                    el.style.willChange = 'transform';
+                });
+            } else {
+                // Скрываем мобильную кнопку прыжка на десктопе
+                mobileJumpButton.style.display = 'none';
+            }
+        }
+
         // Инициализация игровых элементов и начальных установок
         function initialize() {
             initializeCharacter();
@@ -4228,6 +4277,9 @@
             // Инициализируем звуки
             preloadSounds();
             setupAudioVolumes();
+            
+            // Оптимизация для мобильных устройств
+            optimizeForMobile();
             
             // API и авторизация
             gameAPI = new GameAPI();
