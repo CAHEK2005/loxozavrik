@@ -3021,9 +3021,9 @@
             isJumping = true;
             
             // Создаем стиль для индивидуальной анимации прыжка
-            // В Chrome динозаврике прыжок имеет характерную форму с быстрым подъемом и плавным спуском
+            // Используем более плавную анимацию с естественной траекторией
             const jumpHeight = (activeCharacter.jumpHeight || 150);
-            const jumpDuration = 600; // В Chrome прыжок длится около 600мс
+            const jumpDuration = 700; // Увеличиваем длительность для большей плавности
             
             // Создаем или получаем существующий стиль
             let jumpStyle = document.getElementById('jump-style');
@@ -3033,17 +3033,22 @@
                 document.head.appendChild(jumpStyle);
             }
             
-            // Обновляем стиль с новой высотой прыжка и анимацией в стиле Chrome
-            // Используем cubic-bezier, который имитирует физику прыжка Chrome-динозаврика
+            // Обновляем стиль с более плавной кривой прыжка
+            // Используем больше ключевых кадров для более плавной анимации
             jumpStyle.textContent = `
                 @keyframes jump {
-                    0% { bottom: 0; }
-                    40% { bottom: ${jumpHeight}px; }
-                    70% { bottom: ${jumpHeight * 0.7}px; }
-                    100% { bottom: 0; }
+                    0% { bottom: 0; transform: scaleY(1.03); }
+                    10% { bottom: ${jumpHeight * 0.2}px; transform: scaleY(1.05); }
+                    25% { bottom: ${jumpHeight * 0.6}px; transform: scaleY(1); }
+                    50% { bottom: ${jumpHeight}px; transform: scaleY(0.97); }
+                    70% { bottom: ${jumpHeight * 0.7}px; transform: scaleY(1); }
+                    85% { bottom: ${jumpHeight * 0.3}px; transform: scaleY(1.02); }
+                    95% { bottom: ${jumpHeight * 0.1}px; transform: scaleY(1.04); }
+                    100% { bottom: 0; transform: scaleY(1); }
                 }
                 .jumping {
-                    animation: jump ${jumpDuration}ms cubic-bezier(0.4, 0.0, 0.2, 1);
+                    animation: jump ${jumpDuration}ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
+                    will-change: transform, bottom;
                 }
             `;
             
@@ -3275,19 +3280,32 @@
         
         // Получение текущей высоты прыжка (для коллизий)
         function getJumpHeight() {
-            // Адаптируем для новой длительности прыжка 600мс
-            const jumpTime = Date.now() % 600;
-            let jumpProgress;
+            // Адаптируем для новой длительности прыжка 700мс
+            const jumpTime = Date.now() % 700;
+            const jumpHeight = activeCharacter.jumpHeight || 150;
             
-            // Воспроизводим ту же кривую прыжка, что и в CSS-анимации
-            if (jumpTime < 240) { // Первые 40% времени - подъем
-                jumpProgress = jumpTime / 240;
-                return Math.sin(jumpProgress * Math.PI/2) * (gameContainer.offsetHeight * 0.7);
-            } else if (jumpTime < 360) { // Следующие 20% - зависание в верхней точке
-                return gameContainer.offsetHeight * 0.7;
-            } else { // Оставшиеся 40% - спуск
-                jumpProgress = (jumpTime - 360) / 240;
-                return Math.sin((1 - jumpProgress) * Math.PI/2) * (gameContainer.offsetHeight * 0.7);
+            // Создаем более плавную параболическую траекторию прыжка
+            // для соответствия новой CSS-анимации с большим числом ключевых кадров
+            if (jumpTime < 70) { // 0-10%
+                return (jumpTime / 70) * jumpHeight * 0.2;
+            } else if (jumpTime < 175) { // 10-25%
+                const progress = (jumpTime - 70) / 105;
+                return jumpHeight * 0.2 + progress * (jumpHeight * 0.4);
+            } else if (jumpTime < 350) { // 25-50%
+                const progress = (jumpTime - 175) / 175;
+                return jumpHeight * 0.6 + progress * (jumpHeight * 0.4);
+            } else if (jumpTime < 490) { // 50-70%
+                const progress = (jumpTime - 350) / 140;
+                return jumpHeight - progress * (jumpHeight * 0.3);
+            } else if (jumpTime < 595) { // 70-85%
+                const progress = (jumpTime - 490) / 105;
+                return jumpHeight * 0.7 - progress * (jumpHeight * 0.4);
+            } else if (jumpTime < 665) { // 85-95%
+                const progress = (jumpTime - 595) / 70;
+                return jumpHeight * 0.3 - progress * (jumpHeight * 0.2);
+            } else { // 95-100%
+                const progress = (jumpTime - 665) / 35;
+                return jumpHeight * 0.1 - progress * (jumpHeight * 0.1);
             }
         }
         
