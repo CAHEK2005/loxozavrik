@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # Веб-сервер Nginx
+  nginx:
+    build: ./nginx
+    ports:
+      - "666:80"
+    volumes:
+      - ./web:/usr/share/nginx/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - api
+    restart: always
+
+  # API сервер (Node.js для примера)
+  api:
+    build: ./api
+    environment:
+      - DB_HOST=db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    restart: always
+
+  # База данных MySQL
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+
+  # Инструмент для управления базой данных (опционально)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "6666:80"
+    depends_on:
+      - db
+  backup:
+    image: mysql:8.0
+    volumes:
+      - ./db/backup:/backup
+      - ./db/backup/backup.sh:/backup.sh
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    entrypoint: /bin/bash
+    command: -c "chmod +x /backup.sh && (crontab -l 2>/dev/null; echo '0 0 * * * /backup.sh >> /backup/backup.log 2>&1') | crontab - && cron -f"
+    depends_on:
+      - db
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - api
+      - db
+  # Grafana для визуализации метрик
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+volumes:
+  mysql_data:
+  grafana_data:

@@ -1,0 +1,3771 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЛохоZаVрик</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        :root {
+            --background-color: #e8f5e9;
+            --text-color: #1b5e20;
+            --game-background: #ffffff;
+            --border-color: #a5d6a7;
+            --button-color: #4caf50;
+            --button-text: #ffffff;
+            --table-header: #c8e6c9;
+            --table-border: #a5d6a7;
+            --record-highlight: #f1f8e9;
+            --modal-bg: rgba(0, 0, 0, 0.7);
+            --card-bg: #ffffff;
+            --shop-item-hover: #f1f8e9;
+            --shop-button-disabled: #cccccc;
+            --shop-button-buy: #2e7d32;
+            --shop-button-select: #43a047;
+            --current-character: #e8f5e9;
+            --shop-button: #8bc34a;
+            --error-color: #f44336;
+            --success-color: #4caf50;
+            --profile-bg: #c8e6c9;
+            --logout-button: #e53935;
+            --header-bg: #2e7d32;
+            --header-text: #ffffff;
+        }
+        
+        [data-theme="dark"] {
+            --background-color: #0a1f0a;
+            --text-color: #e8f5e9;
+            --game-background: #1b2e1b;
+            --border-color: #2e462e;
+            --button-color: #66bb6a;
+            --button-text: #ffffff;
+            --table-header: #2e462e;
+            --table-border: #1b2e1b;
+            --record-highlight: #1b2e1b;
+            --modal-bg: rgba(0, 0, 0, 0.8);
+            --card-bg: #1b2e1b;
+            --shop-item-hover: #2e462e;
+            --shop-button-disabled: #555555;
+            --shop-button-buy: #388e3c;
+            --shop-button-select: #43a047;
+            --current-character: #2e462e;
+            --shop-button: #7cb342;
+            --error-color: #ff6659;
+            --success-color: #66bb6a;
+            --profile-bg: #1b2e1b;
+            --logout-button: #e53935;
+            --header-bg: #1b5e20;
+            --header-text: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-color: var(--background-color);
+            background-image: url('/images/background-pattern.png');
+            background-attachment: fixed;
+            color: var(--text-color);
+            padding: 0;
+            margin: 0;
+            touch-action: manipulation;
+        }
+        
+        .main-container {
+            padding: 0 15px 20px 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+        
+        #settings {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+        
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--button-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            height: 280px;
+            margin: 0 auto 20px auto;
+            background-color: var(--game-background);
+            background-image: url('/images/game-background.png');
+            background-repeat: repeat-x;
+            background-position: bottom;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        #player {
+            position: absolute;
+            bottom: 0;
+            left: 50px;
+            z-index: 2;
+        }
+        
+        .obstacle {
+            position: absolute;
+            bottom: 0;
+        }
+        
+        .coin {
+            position: absolute;
+            z-index: 1;
+        }
+        
+        #ground {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: 0;
+            background-color: var(--border-color);
+        }
+        
+        #score-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: right;
+            padding: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .game-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--game-background);
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            z-index: 15;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            min-width: 280px;
+            max-width: 90%;
+        }
+        
+        .game-modal h2 {
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        input[type="text"], input[type="password"] {
+            padding: 8px 12px;
+            margin: 10px 0;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        
+        button {
+            padding: 8px 16px;
+            margin-top: 15px;
+            background-color: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        #stats-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 30px auto;
+            text-align: left;
+            background-color: var(--game-background);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        #stats-container h2 {
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--button-color);
+            font-size: 24px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        #stats-container h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--button-color);
+            border-radius: 3px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 500px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--table-header);
+            font-weight: 600;
+            color: var(--button-color);
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        td {
+            border-bottom: 1px solid var(--table-border);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:nth-child(even) {
+            background-color: var(--record-highlight);
+        }
+        
+        tr:hover {
+            background-color: var(--shop-item-hover);
+        }
+        
+        .jumping {
+            animation: jump 0.5s ease-out;
+        }
+        
+        @keyframes jump {
+            0% {
+                bottom: 0;
+            }
+            50% {
+                bottom: 150px;
+            }
+            100% {
+                bottom: 0;
+            }
+        }
+        
+        #controls {
+            margin: 15px auto;
+            padding: 10px;
+            background-color: var(--game-background);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: inline-block;
+            font-size: 14px;
+        }
+        
+        .game-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .game-button {
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            background-color: var(--button-color);
+            color: var(--button-text);
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .game-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .game-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+            pointer-events: none;
+        }
+        
+        #music-controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 3;
+        }
+        
+        #music-controls button {
+            background-color: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px;
+            opacity: 0.7;
+            margin: 0;
+        }
+        
+        #music-controls button:hover {
+            opacity: 1;
+        }
+        
+        #shop-button, .shop-button {
+            background-color: var(--shop-button);
+        }
+        
+        #shop-modal {
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--modal-bg);
+            z-index: 10;
+            display: none;
+        }
+        
+        .shop-balance {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: var(--background-color);
+            border-radius: 8px;
+        }
+        
+        .coin-balance {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        
+        .coin-icon {
+            width: 20px;
+            height: 20px;
+            background-color: gold;
+            border-radius: 50%;
+            border: 1px solid #b8860b;
+        }
+        
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .shop-item {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: var(--card-bg);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        
+        .shop-item:hover {
+            background-color: var(--shop-item-hover);
+            transform: translateY(-3px);
+        }
+        
+        .shop-item.selected {
+            border: 2px solid var(--button-color);
+            background-color: var(--current-character);
+        }
+        
+        .character-preview {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+            object-fit: contain;
+        }
+        
+        .character-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .character-price {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .character-actions {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .buy-button, .select-button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 5px;
+        }
+        
+        .buy-button {
+            background-color: var(--shop-button-buy);
+        }
+        
+        .buy-button:disabled {
+            background-color: var(--shop-button-disabled);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .select-button {
+            background-color: var(--shop-button-select);
+        }
+        
+        .close-button {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+        }
+        
+        .mobile-jump-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 50px;
+            font-size: 18px;
+            background-color: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 5;
+            display: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .mobile-jump-button:active {
+            transform: translateX(-50%) scale(0.95);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Анимация пульсации для кнопки прыжка */
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        
+        .auth-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .auth-link {
+            color: var(--button-color);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .form-row {
+            margin-bottom: 15px;
+        }
+        
+        .form-row label {
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .error {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+        
+        .success {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+        
+        .game-over-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background-color: var(--profile-bg);
+            border-radius: 20px;
+            margin-left: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .user-profile:hover .profile-menu {
+            display: block;
+        }
+        
+        .profile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 5px 0;
+            z-index: 100;
+            min-width: 150px;
+            margin-top: 5px;
+        }
+        
+        .profile-menu-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            text-align: left;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+        }
+        
+        .profile-menu-item:hover {
+            background-color: var(--shop-item-hover);
+        }
+        
+        .profile-menu-item.logout {
+            color: var(--logout-button);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .profile-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--button-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--button-text);
+            font-weight: bold;
+        }
+        
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: 14px;
+        }
+        
+        .profile-name {
+            font-weight: 500;
+        }
+        
+        .profile-stats {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .auth-container {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            gap: 15px; /* Добавляем отступ между кнопками */
+        }
+        
+        .site-header {
+            background-color: var(--header-bg);
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 15px 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .site-header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .game-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        .game-title {
+            color: var(--header-text);
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .profile-modal {
+            max-width: 500px;
+        }
+        
+        .profile-heading {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .profile-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-item {
+            background-color: var(--background-color);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .profile-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .logout-button {
+            background-color: var(--logout-button);
+        }
+        
+        /* Media Queries для мобильных устройств */
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            h1 {
+                font-size: 20px;
+                margin-bottom: 10px;
+            }
+            
+            #game-container {
+                height: 240px; /* Адаптивная высота для мобильных */
+            }
+            
+            .toggle-container {
+                font-size: 12px;
+            }
+            
+            #settings {
+                gap: 10px;
+            }
+            
+            .mobile-jump-button {
+                display: block;
+            }
+            
+            .shop-items {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            
+            .character-preview {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .character-name, .character-price {
+                font-size: 12px;
+            }
+            
+            .buy-button, .select-button {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+            
+            .game-over-buttons {
+                flex-direction: column;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .auth-container {
+                margin: 0;
+            }
+            
+            .profile-stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            #game-container {
+                height: 200px; /* Еще меньше для очень маленьких экранов */
+            }
+            
+            .shop-items {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+            
+            .shop-item {
+                padding: 5px;
+            }
+            
+            .character-preview {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .mobile-jump-button {
+                padding: 12px 40px;
+                font-size: 16px;
+            }
+        }
+
+        #loading-spinner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <img src="/images/header-bg.png" alt="Фон шапки" class="site-header-bg" id="header-bg">
+        <div class="header-container">
+            <div class="game-logo">
+                <img src="/images/logo.png" alt="Лого" class="logo-image" id="logo-image">
+                <h1 class="game-title">ЛохоZаVрик</h1>
+            </div>
+            
+            <div id="auth-container" class="auth-container">
+                <!-- Здесь будет профиль пользователя или кнопки входа/регистрации -->
+                <button id="login-button" class="game-button">Войти</button>
+                <button id="register-button" class="game-button">Регистрация</button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+    
+    <div id="settings">
+        <div class="toggle-container">
+            <span>Светлая</span>
+            <label class="toggle">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider"></span>
+            </label>
+            <span>Тёмная</span>
+        </div>
+        
+        <div class="toggle-container">
+            <span>Звук выкл</span>
+            <label class="toggle">
+                <input type="checkbox" id="sound-toggle" checked>
+                <span class="slider"></span>
+            </label>
+            <span>Звук вкл</span>
+        </div>
+    </div>
+    
+    <div id="game-container">
+        <img id="player" src="/api/placeholder/48/52" alt="Player">
+        
+        <div id="ground"></div>
+        
+        <div id="score-container">
+            <div>Счёт: <span id="score">0</span></div>
+            <div>Монет: <span id="coins">0</span></div>
+        </div>
+        
+        <div id="music-controls">
+            <button id="music-toggle">🔊</button>
+        </div>
+    </div>
+    
+    <div class="game-buttons">
+        <button id="start-button" class="game-button">Начать игру</button>
+        <button id="shop-button" class="game-button">Магазин</button>
+        <button id="profile-button" class="game-button" style="display: none;">Профиль</button>
+    </div>
+    
+    <div id="controls">
+        <p>Нажмите на экран или кнопку "Прыжок"</p>
+    </div>
+    
+    <button id="mobile-jump" class="mobile-jump-button">Прыжок</button>
+    
+    <div id="stats-container">
+        <h2>Таблица рекордов</h2>
+        <table id="leaderboard">
+            <thead>
+                <tr>
+                    <th>Место</th>
+                    <th>Имя</th>
+                    <th>Счёт</th>
+                    <th>Игр</th>
+                    <th>Дата</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+                <!-- Данные будут добавлены через JavaScript -->
+                <tr>
+                    <td colspan="5">Загрузка данных...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Индикатор загрузки -->
+    <div id="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+    <div id="modal-overlay" class="modal-overlay"></div>
+    
+    <!-- Модальное окно входа -->
+    <div id="login-modal" class="game-modal">
+        <button class="close-button" id="login-close">&times;</button>
+        <h2>Вход в игру</h2>
+        <div id="login-message" class="message" style="display: none;"></div>
+        
+        <div class="form-row">
+            <label for="login-username">Имя пользователя:</label>
+            <input type="text" id="login-username" placeholder="Введите имя пользователя">
+        </div>
+        
+        <div class="form-row">
+            <label for="login-password">Пароль:</label>
+            <input type="password" id="login-password" placeholder="Введите пароль">
+        </div>
+        
+        <button id="login-submit" class="game-button">Войти</button>
+        
+        <div class="auth-links">
+            <span class="auth-link" id="to-register">Создать аккаунт</span>
+        </div>
+    </div>
+    
+    <!-- Модальное окно регистрации -->
+    <div id="register-modal" class="game-modal">
+        <button class="close-button" id="register-close">&times;</button>
+        <h2>Регистрация</h2>
+        <div id="register-message" class="message" style="display: none;"></div>
+        
+        <div class="form-row">
+            <label for="register-username">Имя пользователя:</label>
+            <input type="text" id="register-username" placeholder="Придумайте имя пользователя" maxlength="20">
+        </div>
+        
+        <div class="form-row">
+            <label for="register-password">Пароль:</label>
+            <input type="password" id="register-password" placeholder="Придумайте пароль">
+        </div>
+        
+        <div class="form-row">
+            <label for="register-confirm">Подтверждение пароля:</label>
+            <input type="password" id="register-confirm" placeholder="Повторите пароль">
+        </div>
+        
+        <button id="register-submit" class="game-button">Зарегистрироваться</button>
+        
+        <div class="auth-links">
+            <span class="auth-link" id="to-login">Уже есть аккаунт? Войти</span>
+        </div>
+    </div>
+    
+    <!-- Модальное окно профиля -->
+    <div id="profile-modal" class="game-modal profile-modal">
+        <button class="close-button" id="profile-close">&times;</button>
+        <h2 class="profile-heading">Профиль игрока <span id="profile-username">Username</span></h2>
+        
+        <div class="profile-stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="profile-coins">0</div>
+                <div class="stat-label">Монет</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="profile-highscore">0</div>
+                <div class="stat-label">Рекорд</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="profile-games">0</div>
+                <div class="stat-label">Игр сыграно</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="profile-time">0</div>
+                <div class="stat-label">Время на сайте (мин)</div>
+            </div>
+        </div>
+        
+        <div class="profile-actions">
+            <button id="logout-button" class="game-button logout-button">Выйти из аккаунта</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно конца игры (с двумя кнопками) -->
+    <div id="game-over" class="game-modal">
+        <button class="close-button" id="game-over-close">&times;</button>
+        <h2>Игра окончена!</h2>
+        <p>Ваш счёт: <span id="final-score">0</span></p>
+        <p>Собрано монет: <span id="final-coins">0</span></p>
+        <div class="game-over-buttons">
+            <button id="restart-btn">Начать заново</button>
+            <button id="shop-btn-modal" class="shop-button">Магазин</button>
+        </div>
+    </div>
+    
+    <div id="shop-modal" class="game-modal">
+        <button class="close-button" id="shop-close">&times;</button>
+        <h2>Магазин персонажей</h2>
+        
+        <div class="shop-balance">
+            <div class="coin-balance">
+                <div class="coin-icon"></div>
+                <span id="shop-coins">0</span> монет
+            </div>
+            <div id="char-owned">Персонажей: <span id="owned-count">1</span> из <span id="total-count">5</span></div>
+        </div>
+        
+        <div class="shop-items" id="character-list">
+            <!-- Персонажи будут добавлены через JavaScript -->
+        </div>
+    </div>
+
+    <!-- Аудио элементы для музыки и звуковых эффектов -->
+    <audio id="background-music" loop>
+        <source src="/sounds/defaults/background.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="jump-sound">
+        <source src="/sounds/defaults/jump.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="coin-sound">
+        <source src="/sounds/defaults/coin.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="game-over-sound">
+        <source src="/sounds/defaults/game-over.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="purchase-sound">
+        <source src="/sounds/defaults/purchase.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ============= НАСТРОЙКИ ИЗОБРАЖЕНИЙ И ЗВУКОВ =============
+        // Список персонажей с их характеристиками и уникальными звуками
+        const CHARACTERS = [
+            {
+                id: 'default',
+                name: 'Лохозаврик',
+                image: '/images/players/default/player_default.png',
+                width: 60,
+                height: 65,
+                hitboxWidth: 42,
+                hitboxHeight: 50,
+                jumpHeight: 150,
+                price: 0,
+                unlocked: true,
+                sounds: {
+                    jump: '/sounds/players/default/jump.mp3',
+                    coin: '/sounds/players/default/coin.mp3',
+                    gameOver: '/sounds/players/default/game_over.mp3'
+                },
+                color: '#4285f4'
+            },
+            {
+                id: 'character1',
+                name: 'Сиськослав',
+                image: '/images/players/player_svyat.png',
+                width: 62,
+                height: 68,
+                hitboxWidth: 44,
+                hitboxHeight: 52,
+                jumpHeight: 165,
+                price: 10,
+                sounds: {
+                    jump: '/sounds/svyat/jump.mp3',
+                    coin: '/sounds/svyat/coin.mp3',
+                    gameOver: '/sounds/svyat/game_over.mp3'
+                },
+                color: '#d81b60'
+            },
+            {
+                id: 'character2',
+                name: 'Скуфлик',
+                image: '/images/players/player_skuflik.png',
+                width: 58,
+                height: 64,
+                hitboxWidth: 40,
+                hitboxHeight: 48,
+                jumpHeight: 140,
+                price: 25,
+                sounds: {
+                    jump: '/sounds/skuflik/jump.mp3',
+                    coin: '/sounds/skuflik/coin.mp3',
+                    gameOver: '/sounds/skuflik/game_over.mp3'
+                },
+                color: '#43a047'
+            },
+            {
+                id: 'character3',
+                name: 'Зуаайцэнид',
+                image: '/images/players/player_leonid.png',
+                width: 64,
+                height: 70,
+                hitboxWidth: 46,
+                hitboxHeight: 54,
+                jumpHeight: 175,
+                price: 50,
+                sounds: {
+                    jump: '/sounds/leonid/jump.mp3',
+                    coin: '/sounds/leonid/coin.mp3',
+                    gameOver: '/sounds/leonid/game_over.mp3'
+                },
+                color: '#fb8c00'
+            },
+            {
+                id: 'character4',
+                name: 'Пидиди',
+                image: '/images/players/player_pididi.png',
+                width: 62,
+                height: 72,
+                hitboxWidth: 42,
+                hitboxHeight: 58,
+                jumpHeight: 160,
+                price: 100,
+                sounds: {
+                    jump: '/sounds/pididi/jump.mp3',
+                    coin: '/sounds/pididi/coin.mp3',
+                    gameOver: '/sounds/pididi/game_over.mp3'
+                },
+                color: '#00897b'
+            },
+            {
+                id: 'character5',
+                name: 'Скибиди Туалет',
+                image: '/images/players/player_skibidi.png',
+                width: 66,
+                height: 70,
+                hitboxWidth: 48,
+                hitboxHeight: 56,
+                jumpHeight: 180,
+                price: 100,
+                sounds: {
+                    jump: '/sounds/skibidi/jump.mp3',
+                    coin: '/sounds/skibidi/coin.mp3',
+                    gameOver: '/sounds/skibidi/game_over.mp3'
+                },
+                color: '#7b1fa2'
+            }
+        ];
+
+        // Изображения для игры (препятствия и монеты)
+        const OBSTACLES = [
+            {
+                id: 'penguin',
+                image: '/images/obstacles/penguin.png',
+                width: 35,
+                height: 70,
+                hitboxWidth: 20, // Уменьшил с 25
+                hitboxHeight: 60, // Уменьшил с 65
+                speed: 1.0 // Множитель скорости (1.0 = стандарт)
+            },
+            {
+                id: 'rock',
+                image: '/images/obstacles/rock.png',
+                width: 40,
+                height: 35,
+                hitboxWidth: 30, // Уменьшил с 38
+                hitboxHeight: 28, // Уменьшил с 32
+                speed: 1.2 // Движется быстрее
+            },
+            {
+                id: 'bird',
+                image: '/images/obstacles/bird.png',
+                width: 45,
+                height: 35,
+                hitboxWidth: 35, // Уменьшил с 40
+                hitboxHeight: 25, // Уменьшил с 30
+                speed: 1.3, // Самый быстрый
+                isFlying: true, // Летающее препятствие
+                minHeight: 50, // Минимальная высота от земли
+                maxHeight: 120 // Максимальная высота от земли
+            },
+            {
+                id: 'spike',
+                image: '/images/obstacles/spike.png',
+                width: 30,
+                height: 25,
+                hitboxWidth: 22, // Уменьшил с 27
+                hitboxHeight: 18, // Уменьшил с 22
+                speed: 0.9, // Медленнее
+                count: 3, // Может появляться группами
+                spacing: 40 // Расстояние между шипами в группе
+            },
+            {
+                id: 'log',
+                image: '/images/obstacles/log.png',
+                width: 60,
+                height: 40,
+                hitboxWidth: 50, // Уменьшил с 58
+                hitboxHeight: 30, // Уменьшил с 35
+                speed: 0.8 // Самый медленный, но широкий
+            }
+        ];
+
+        // Различные типы монет с разной стоимостью
+        const COINS = [
+            {
+                id: 'bronze',
+                image: '/images/coin_bronze.png',
+                width: 25,
+                height: 25,
+                hitboxWidth: 20,
+                hitboxHeight: 20,
+                value: 1 // Обычная монета
+            },
+            {
+                id: 'silver',
+                image: '/images/coin_silver.png',
+                width: 28,
+                height: 28,
+                hitboxWidth: 22,
+                hitboxHeight: 22,
+                value: 3, // Серебряная монета = 3 очка
+                rarity: 0.3 // Вероятность появления (30%)
+            },
+            {
+                id: 'gold',
+                image: '/images/coin_gold.png',
+                width: 30,
+                height: 30,
+                hitboxWidth: 24,
+                hitboxHeight: 24,
+                value: 5, // Золотая монета = 5 очков
+                rarity: 0.1 // Вероятность появления (10%)
+            }
+        ];
+        
+        // Бонусы, которые могут появляться во время игры
+        const BONUSES = [
+            {
+                id: 'shield',
+                image: '/images/bonus_shield.png',
+                width: 35,
+                height: 35,
+                hitboxWidth: 30,
+                hitboxHeight: 30,
+                effect: 'shield', // Защита от одного столкновения
+                duration: 10000, // 10 секунд
+                rarity: 0.05 // Вероятность появления (5%)
+            },
+            {
+                id: 'slow',
+                image: '/images/bonus_slow.png',
+                width: 35,
+                height: 35,
+                hitboxWidth: 30,
+                hitboxHeight: 30,
+                effect: 'slow', // Замедление игры
+                duration: 5000, // 5 секунд
+                rarity: 0.08 // Вероятность появления (8%)
+            },
+            {
+                id: 'magnet',
+                image: '/images/bonus_magnet.png',
+                width: 35,
+                height: 35,
+                hitboxWidth: 30,
+                hitboxHeight: 30,
+                effect: 'magnet', // Притягивает монеты
+                duration: 8000, // 8 секунд
+                rarity: 0.07 // Вероятность появления (7%)
+            }
+        ];
+        
+        // Звуковые эффекты для игры
+        const SOUNDS = {
+            background: '/sounds/defaults/background.mp3',
+            jump: '/sounds/defaults/jump.mp3', // Стандартный звук прыжка (если у персонажа нет своего)
+            coin: '/sounds/defaults/coin.mp3', // Стандартный звук монеты
+            gameOver: '/sounds/defaults/game-over.mp3', // Стандартный звук проигрыша
+            purchase: '/sounds/defaults/purchase.mp3',
+            bonus: '/sounds/defaults/bonus.mp3', // Звук сбора бонуса
+            shieldEnd: '/sounds/defaults/shield_end.mp3', // Звук окончания щита
+            levelUp: '/sounds/defaults/level_up.mp3' // Звук перехода на новый уровень
+        };
+        
+        // API URL для работы с базой данных
+        const API_URL = 'http://192.168.0.240/api';
+        
+        // ============= СИСТЕМА АВТОРИЗАЦИИ И БАЗЫ ДАННЫХ =============
+        // Класс для работы с API
+        class GameAPI {
+            constructor() {
+                this.currentUser = null;
+                this.sessionStartTime = null;
+                this.timeInterval = null;
+                this.apiToken = localStorage.getItem('lohozavrikToken') || null;
+                this.apiUrl = '/api'; // Путь к API через прокси Nginx
+                
+                // Проверяем токен при инициализации
+                if (this.apiToken) {
+                    this.verifyToken();
+                }
+            }
+            
+            // Проверка токена
+            async verifyToken() {
+                try {
+                    showLoading();
+                    const response = await fetch(`${this.apiUrl}/verify-token`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${this.apiToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    hideLoading();
+                    
+                    if (data.success && data.user) {
+                        this.currentUser = data.user;
+                        this.startTimeTracking();
+                        return true;
+                    } else {
+                        // Токен недействителен, удаляем его
+                        this.logout();
+                        return false;
+                    }
+                } catch (error) {
+                    console.error('Ошибка проверки токена:', error);
+                    hideLoading();
+                    return false;
+                }
+            }
+            
+            // Регистрация нового пользователя
+            async register(username, password) {
+                try {
+                    showLoading();
+                    const response = await fetch(`${this.apiUrl}/register`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
+                    
+                    const data = await response.json();
+                    hideLoading();
+                    
+                    if (data.success && data.token && data.user) {
+                        // Сохраняем токен
+                        this.apiToken = data.token;
+                        this.currentUser = data.user;
+                        localStorage.setItem('lohozavrikToken', this.apiToken);
+                        
+                        // Начинаем отслеживать время
+                        this.startTimeTracking();
+                    }
+                    
+                    return data;
+                } catch (error) {
+                    console.error('Ошибка регистрации:', error);
+                    hideLoading();
+                    return { success: false, message: 'Ошибка соединения с сервером' };
+                }
+            }
+            
+            // Авторизация пользователя
+            async login(username, password) {
+                try {
+                    showLoading();
+                    const response = await fetch(`${this.apiUrl}/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
+                    
+                    const data = await response.json();
+                    hideLoading();
+                    
+                    if (data.success && data.token && data.user) {
+                        this.apiToken = data.token;
+                        this.currentUser = data.user;
+                        
+                        // Сохраняем токен
+                        localStorage.setItem('lohozavrikToken', this.apiToken);
+                        
+                        // Начинаем отслеживать время
+                        this.startTimeTracking();
+                    }
+                    
+                    return data;
+                } catch (error) {
+                    console.error('Ошибка авторизации:', error);
+                    hideLoading();
+                    return { success: false, message: 'Ошибка соединения с сервером' };
+                }
+            }
+            
+            // Выход пользователя
+            logout() {
+                if (this.currentUser) {
+                    // Сохраняем накопленное время перед выходом
+                    this.saveTimeSpent();
+                    
+                    // Очищаем данные текущего пользователя и токен
+                    this.currentUser = null;
+                    this.apiToken = null;
+                    localStorage.removeItem('lohozavrikToken');
+                    clearInterval(this.timeInterval);
+                    
+                    return { success: true, message: "Вы успешно вышли из системы" };
+                }
+                
+                return { success: false, message: "Вы не авторизованы" };
+            }
+            
+            // Начинаем отслеживать время
+            startTimeTracking() {
+                // Сохраняем время начала сессии
+                this.sessionStartTime = new Date();
+                
+                // Обновляем время каждую минуту
+                clearInterval(this.timeInterval);
+                this.timeInterval = setInterval(() => {
+                    this.saveTimeSpent();
+                }, 60000); // каждую минуту
+            }
+            
+            // Сохраняем время, проведенное на сайте
+            async saveTimeSpent() {
+                if (this.currentUser && this.sessionStartTime && this.apiToken) {
+                    const now = new Date();
+                    const minutesSpent = Math.floor((now - this.sessionStartTime) / 60000);
+                    
+                    if (minutesSpent > 0) {
+                        try {
+                            await fetch(`${this.apiUrl}/update-time`, {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${this.apiToken}`,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ minutesSpent })
+                            });
+                            
+                            // Обновляем локальные данные
+                            if (this.currentUser.totalTimeMinutes) {
+                                this.currentUser.totalTimeMinutes += minutesSpent;
+                            }
+                            
+                            // Сбрасываем время начала сессии
+                            this.sessionStartTime = now;
+                        } catch (error) {
+                            console.error('Ошибка обновления времени:', error);
+                        }
+                    }
+                }
+            }
+            
+            // Обновляем данные пользователя после игры
+            async updateUserStats(score, coinsCollected) {
+                if (!this.currentUser || !this.apiToken) {
+                    return { success: false, message: "Пользователь не авторизован" };
+                }
+                
+                try {
+                    const duration = Math.floor((Date.now() - gameStartTime) / 1000); // Длительность игры в секундах
+                    
+                    showLoading();
+                    const response = await fetch(`${this.apiUrl}/update-stats`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.apiToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ score, coinsCollected, duration })
+                    });
+                    
+                    const data = await response.json();
+                    hideLoading();
+                    
+                    if (data.success && data.user) {
+                        // Обновляем локальные данные пользователя
+                        this.currentUser = data.user;
+                    }
+                    
+                    return data;
+                } catch (error) {
+                    console.error('Ошибка обновления статистики:', error);
+                    hideLoading();
+                    return { success: false, message: 'Ошибка соединения с сервером' };
+                }
+            }
+            
+            // Покупка персонажа
+            async buyCharacter(characterId) {
+                if (!this.currentUser || !this.apiToken) {
+                    return { success: false, message: "Вы не авторизованы" };
+                }
+                
+                try {
+                    showLoading();
+                    const response = await fetch(`${this.apiUrl}/buy-character`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.apiToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ characterId })
+                    });
+                    
+                    const data = await response.json();
+                    hideLoading();
+                    
+                    if (data.success && data.user) {
+                        // Обновляем локальные данные пользователя
+                        this.currentUser = data.user;
+                    }
+                    
+                    return data;
+                } catch (error) {
+                    console.error('Ошибка покупки персонажа:', error);
+                    hideLoading();
+                    return { success: false, message: 'Ошибка соединения с сервером' };
+                }
+            }
+            
+            // Устанавливаем активного персонажа
+            async setActiveCharacter(characterId) {
+                if (!this.currentUser || !this.apiToken) {
+                    return { success: false, message: "Вы не авторизованы" };
+                }
+                
+                // Проверяем, есть ли у пользователя этот персонаж
+                if (!this.currentUser.characters.includes(characterId)) {
+                    return { success: false, message: "У вас нет этого персонажа" };
+                }
+                
+                try {
+                    showLoading();
+                    const response = await fetch(`${this.apiUrl}/set-active-character`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.apiToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ characterId })
+                    });
+                    
+                    const data = await response.json();
+                    hideLoading();
+                    
+                    if (data.success && data.user) {
+                        // Обновляем локальные данные пользователя
+                        this.currentUser = data.user;
+                    }
+                    
+                    return data;
+                } catch (error) {
+                    console.error('Ошибка установки персонажа:', error);
+                    hideLoading();
+                    return { success: false, message: 'Ошибка соединения с сервером' };
+                }
+            }
+            
+            // Получаем глобальную таблицу рекордов
+            async getGlobalLeaderboard() {
+                try {
+                    showLoading();
+                    const response = await fetch(`${this.apiUrl}/leaderboard`);
+                    const data = await response.json();
+                    hideLoading();
+                    
+                    if (data.success && data.leaderboard) {
+                        return data.leaderboard;
+                    }
+                    
+                    return [];
+                } catch (error) {
+                    console.error('Ошибка получения таблицы рекордов:', error);
+                    hideLoading();
+                    return [];
+                }
+            }
+        }
+        
+        // Инициализируем API
+        const gameAPI = new GameAPI();
+        
+        // Показать индикатор загрузки
+        function showLoading() {
+            document.getElementById('loading-spinner').style.display = 'flex';
+        }
+        
+        // Скрыть индикатор загрузки
+        function hideLoading() {
+            document.getElementById('loading-spinner').style.display = 'none';
+        }
+        
+        // Элементы DOM
+        const gameContainer = document.getElementById('game-container');
+        const player = document.getElementById('player');
+        const scoreDisplay = document.getElementById('score');
+        const coinsDisplay = document.getElementById('coins');
+        const gameOverScreen = document.getElementById('game-over');
+        const gameOverClose = document.getElementById('game-over-close');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const finalCoinsDisplay = document.getElementById('final-coins');
+        const restartBtn = document.getElementById('restart-btn');
+        const shopBtnModal = document.getElementById('shop-btn-modal');
+        const leaderboardBody = document.getElementById('leaderboard-body');
+        const themeToggle = document.getElementById('theme-toggle');
+        const soundToggle = document.getElementById('sound-toggle');
+        const musicToggle = document.getElementById('music-toggle');
+        const shopButton = document.getElementById('shop-button');
+        const profileButton = document.getElementById('profile-button');
+        const shopModal = document.getElementById('shop-modal');
+        const shopClose = document.getElementById('shop-close');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const characterList = document.getElementById('character-list');
+        const shopCoinsDisplay = document.getElementById('shop-coins');
+        const ownedCountDisplay = document.getElementById('owned-count');
+        const totalCountDisplay = document.getElementById('total-count');
+        const startButton = document.getElementById('start-button');
+        const mobileJumpButton = document.getElementById('mobile-jump');
+        
+        // Элементы авторизации
+        const authContainer = document.getElementById('auth-container');
+        const loginButton = document.getElementById('login-button');
+        const registerButton = document.getElementById('register-button');
+        const loginModal = document.getElementById('login-modal');
+        const loginClose = document.getElementById('login-close');
+        const loginUsername = document.getElementById('login-username');
+        const loginPassword = document.getElementById('login-password');
+        const loginSubmit = document.getElementById('login-submit');
+        const loginMessage = document.getElementById('login-message');
+        const registerModal = document.getElementById('register-modal');
+        const registerClose = document.getElementById('register-close');
+        const registerUsername = document.getElementById('register-username');
+        const registerPassword = document.getElementById('register-password');
+        const registerConfirm = document.getElementById('register-confirm');
+        const registerSubmit = document.getElementById('register-submit');
+        const registerMessage = document.getElementById('register-message');
+        const toRegister = document.getElementById('to-register');
+        const toLogin = document.getElementById('to-login');
+        const profileModal = document.getElementById('profile-modal');
+        const profileClose = document.getElementById('profile-close');
+        const profileUsername = document.getElementById('profile-username');
+        const profileCoins = document.getElementById('profile-coins');
+        const profileHighscore = document.getElementById('profile-highscore');
+        const profileGames = document.getElementById('profile-games');
+        const profileTime = document.getElementById('profile-time');
+        const logoutButton = document.getElementById('logout-button');
+        
+        // Аудио элементы
+        const backgroundMusic = document.getElementById('background-music');
+        const jumpSound = document.getElementById('jump-sound');
+        const coinSound = document.getElementById('coin-sound');
+        const gameOverSound = document.getElementById('game-over-sound');
+        const purchaseSound = document.getElementById('purchase-sound');
+        
+        // Установка источников звуков
+        backgroundMusic.src = SOUNDS.background;
+        jumpSound.src = SOUNDS.jump;
+        coinSound.src = SOUNDS.coin;
+        gameOverSound.src = SOUNDS.gameOver;
+        purchaseSound.src = SOUNDS.purchase;
+        
+        // Игровые переменные
+        let activeCharacter = null;
+        let gameSpeed = 10; // Увеличиваем начальную скорость с 7 до 10
+        let backgroundPos = 0;
+        let score = 0;
+        let coinCount = 0;
+        let currentLevel = 1;
+        let gameStartTime = 0;
+        let gameTime = 0;
+        let isJumping = false;
+        let isGameOver = false;
+        let isGameStarted = false;
+        let debugMode = false;
+        let gameLoop;
+        
+        // Массивы игровых объектов
+        let obstacles = [];
+        let coins = [];
+        let bonuses = [];
+        
+        // Интервалы генерации объектов
+        let obstacleInterval = 1800; // 1.8 секунды между препятствиями (было 2)
+        let coinInterval = 1200; // 1.2 секунды между монетами (было 1.5)
+        let bonusInterval = 12000; // 12 секунд между бонусами (было 15)
+        let nextObstacleTime = 0;
+        let nextCoinTime = 0;
+        let nextBonusTime = 0;
+        
+        // Состояния бонусов
+        let hasShield = false;
+        let hasMagnet = false;
+        let hasSlowMotion = false;
+        let shieldTimer, magnetTimer, slowTimer;
+        
+        // Звук
+        let soundEnabled = true;
+        let musicPlaying = false;
+        
+        // Обновление интерфейса авторизации
+        function updateAuthUI() {
+            // Если пользователь авторизован
+            if (gameAPI.currentUser) {
+                // Очищаем контейнер авторизации
+                authContainer.innerHTML = '';
+                
+                // Создаем профиль пользователя
+                const userProfile = document.createElement('div');
+                userProfile.className = 'user-profile';
+                
+                // Первая буква имени пользователя для аватара
+                const avatarLetter = gameAPI.currentUser.username.charAt(0).toUpperCase();
+                
+                userProfile.innerHTML = `
+                    <div class="profile-avatar">${avatarLetter}</div>
+                    <div class="profile-details">
+                        <div class="profile-name">${gameAPI.currentUser.username}</div>
+                        <div class="profile-stats">${gameAPI.currentUser.coins} монет • Рекорд: ${gameAPI.currentUser.highScore}</div>
+                    </div>
+                    <div class="profile-menu">
+                        <div class="profile-menu-item" id="menu-profile">Мой профиль</div>
+                        <div class="profile-menu-item" id="menu-shop">Магазин</div>
+                        <div class="profile-menu-item logout" id="menu-logout">Выйти</div>
+                    </div>
+                `;
+                
+                // Добавляем профиль в контейнер авторизации
+                authContainer.appendChild(userProfile);
+                
+                // Добавляем обработчики событий для меню профиля
+                document.getElementById('menu-profile').addEventListener('click', showProfileModal);
+                document.getElementById('menu-shop').addEventListener('click', openShop);
+                document.getElementById('menu-logout').addEventListener('click', function() {
+                    const result = gameAPI.logout();
+                    if (result.success) {
+                        updateAuthUI();
+                        createShopItems();
+                    }
+                });
+                
+                // Показываем кнопку профиля
+                profileButton.style.display = 'block';
+                
+                // Обновляем данные персонажа
+                setActiveCharacter(gameAPI.currentUser.activeCharacter);
+            } else {
+                // Если пользователь не авторизован, показываем кнопки входа/регистрации
+                authContainer.innerHTML = '';
+                authContainer.appendChild(loginButton);
+                authContainer.appendChild(registerButton);
+                
+                // Скрываем кнопку профиля
+                profileButton.style.display = 'none';
+            }
+        }
+        
+        // Обновление профиля пользователя
+        function updateProfileModal() {
+            if (gameAPI.currentUser) {
+                profileUsername.textContent = gameAPI.currentUser.username;
+                profileCoins.textContent = gameAPI.currentUser.coins;
+                profileHighscore.textContent = gameAPI.currentUser.highScore;
+                profileGames.textContent = gameAPI.currentUser.gamesPlayed;
+                profileTime.textContent = gameAPI.currentUser.totalTimeMinutes;
+            }
+        }
+        
+        // Функция для переключения темы
+        function toggleTheme() {
+            if (themeToggle.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        // Функция для переключения звука
+        function toggleSound() {
+            soundEnabled = soundToggle.checked;
+            localStorage.setItem('sound', soundEnabled ? 'on' : 'off');
+            
+            if (!soundEnabled) {
+                backgroundMusic.pause();
+                musicPlaying = false;
+                musicToggle.textContent = '🔇';
+            } else if (isGameStarted && !isGameOver) {
+                musicToggle.textContent = '🔊';
+            }
+        }
+        
+        // Функция для переключения музыки
+        function toggleMusic() {
+            if (soundEnabled) {
+                if (musicPlaying) {
+                    backgroundMusic.pause();
+                    musicPlaying = false;
+                    musicToggle.textContent = '🔇';
+                } else {
+                    backgroundMusic.play().catch(e => console.log('Автоматическое воспроизведение музыки заблокировано:', e));
+                    musicPlaying = true;
+                    musicToggle.textContent = '🔊';
+                }
+            }
+        }
+        
+        // Обновление таблицы рекордов
+        async function updateLeaderboard() {
+            // Показываем сообщение о загрузке
+            leaderboardBody.innerHTML = '<tr><td colspan="5">Загрузка данных...</td></tr>';
+            
+            // Получаем глобальную таблицу рекордов с сервера
+            const globalLeaderboard = await gameAPI.getGlobalLeaderboard();
+            
+            // Очищаем текущую таблицу
+            leaderboardBody.innerHTML = '';
+            
+            // Добавляем данные из глобальной таблицы рекордов
+            if (globalLeaderboard.length > 0) {
+                globalLeaderboard.forEach(entry => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${entry.rank}</td>
+                        <td>${entry.username}</td>
+                        <td>${entry.highScore}</td>
+                        <td>${entry.gamesPlayed}</td>
+                        <td>${entry.date}</td>
+                    `;
+                    
+                    leaderboardBody.appendChild(row);
+                });
+            } else {
+                // Если данных нет, показываем сообщение
+                leaderboardBody.innerHTML = '<tr><td colspan="5">Нет данных для отображения</td></tr>';
+            }
+        }
+        
+        // Установка активного персонажа
+        async function setActiveCharacter(characterId) {
+            // Находим персонажа по ID
+            const character = CHARACTERS.find(char => char.id === characterId);
+            if (!character) return;
+            
+            if (gameAPI.currentUser) {
+                // Используем API для установки персонажа
+                const result = await gameAPI.setActiveCharacter(characterId);
+                
+                if (result.success) {
+                    // Сохраняем активного персонажа
+                    activeCharacter = character;
+                    
+                    // Обновляем изображение
+                    player.src = character.image;
+                    player.style.width = character.width + 'px';
+                    player.style.height = character.height + 'px';
+                    
+                    // Обновляем звуки персонажа
+                    if (character.sounds) {
+                        jumpSound.src = character.sounds.jump || SOUNDS.jump;
+                        coinSound.src = character.sounds.coin || SOUNDS.coin;
+                        gameOverSound.src = character.sounds.gameOver || SOUNDS.gameOver;
+                    }
+                    
+                    // Обновляем магазин
+                    createShopItems();
+                }
+            } else {
+                // Для неавторизованных пользователей просто меняем изображение и звуки
+                activeCharacter = character;
+                player.src = character.image;
+                player.style.width = character.width + 'px';
+                player.style.height = character.height + 'px';
+                
+                // Обновляем звуки персонажа
+                if (character.sounds) {
+                    jumpSound.src = character.sounds.jump || SOUNDS.jump;
+                    coinSound.src = character.sounds.coin || SOUNDS.coin;
+                    gameOverSound.src = character.sounds.gameOver || SOUNDS.gameOver;
+                }
+                
+                // Сохраняем выбор в localStorage
+                localStorage.setItem('guestActiveCharacter', characterId);
+            }
+        }
+        
+        // Создание элементов магазина
+        function createShopItems() {
+            characterList.innerHTML = '';
+            
+            // Определяем списки разблокированных персонажей и активного персонажа
+            let unlockedCharacters = ['default'];
+            let activeCharacterId = 'default';
+            
+            if (gameAPI.currentUser) {
+                unlockedCharacters = gameAPI.currentUser.characters;
+                activeCharacterId = gameAPI.currentUser.activeCharacter;
+                
+                // Обновляем отображение монет
+                shopCoinsDisplay.textContent = gameAPI.currentUser.coins;
+                ownedCountDisplay.textContent = unlockedCharacters.length;
+            } else {
+                // Для гостя используем данные из localStorage
+                activeCharacterId = localStorage.getItem('guestActiveCharacter') || 'default';
+                shopCoinsDisplay.textContent = '0 (гость)';
+                ownedCountDisplay.textContent = '1';
+            }
+            
+            // Отображаем всех персонажей
+            CHARACTERS.forEach(character => {
+                const isUnlocked = unlockedCharacters.includes(character.id);
+                const isActive = activeCharacterId === character.id;
+                
+                const characterItem = document.createElement('div');
+                characterItem.className = `shop-item ${isActive ? 'selected' : ''}`;
+                characterItem.dataset.id = character.id;
+                
+                const characterImage = document.createElement('img');
+                characterImage.src = character.image;
+                characterImage.className = 'character-preview';
+                characterImage.alt = character.name;
+                
+                const characterName = document.createElement('div');
+                characterName.className = 'character-name';
+                characterName.textContent = character.name;
+                
+                const characterPrice = document.createElement('div');
+                characterPrice.className = 'character-price';
+                
+                if (character.price > 0) {
+                    const coinIcon = document.createElement('div');
+                    coinIcon.className = 'coin-icon';
+                    
+                    const priceText = document.createElement('span');
+                    priceText.textContent = character.price;
+                    
+                    characterPrice.appendChild(coinIcon);
+                    characterPrice.appendChild(priceText);
+                } else {
+                    characterPrice.textContent = 'Бесплатно';
+                }
+                
+                const characterActions = document.createElement('div');
+                characterActions.className = 'character-actions';
+                
+                if (isUnlocked) {
+                    // Если персонаж разблокирован, показываем кнопку выбора
+                    const selectButton = document.createElement('button');
+                    selectButton.className = 'select-button';
+                    selectButton.textContent = isActive ? 'Выбран' : 'Выбрать';
+                    selectButton.disabled = isActive;
+                    
+                    selectButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        setActiveCharacter(character.id);
+                    });
+                    
+                    characterActions.appendChild(selectButton);
+                } else if (gameAPI.currentUser) {
+                    // Если персонаж не разблокирован и пользователь авторизован, показываем кнопку покупки
+                    const buyButton = document.createElement('button');
+                    buyButton.className = 'buy-button';
+                    buyButton.textContent = 'Купить';
+                    buyButton.disabled = gameAPI.currentUser.coins < character.price;
+                    
+                    buyButton.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        
+                        // Покупаем персонажа через API
+                        const result = await gameAPI.buyCharacter(character.id);
+                        
+                        if (result.success) {
+                            // Проигрываем звук покупки
+                            if (soundEnabled && purchaseSound.src) {
+                                purchaseSound.currentTime = 0;
+                                purchaseSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+                            }
+                            
+                            // Обновляем интерфейс
+                            createShopItems();
+                            updateAuthUI();
+                        } else {
+                            alert(result.message);
+                        }
+                    });
+                    
+                    characterActions.appendChild(buyButton);
+                } else {
+                    // Если пользователь не авторизован, показываем сообщение о необходимости входа
+                    const loginButton = document.createElement('button');
+                    loginButton.className = 'buy-button';
+                    loginButton.textContent = 'Войдите';
+                    
+                    loginButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        closeShop();
+                        showLoginModal();
+                    });
+                    
+                    characterActions.appendChild(loginButton);
+                }
+                
+                // Добавляем все элементы
+                characterItem.appendChild(characterImage);
+                characterItem.appendChild(characterName);
+                characterItem.appendChild(characterPrice);
+                characterItem.appendChild(characterActions);
+                
+                characterList.appendChild(characterItem);
+            });
+            
+            totalCountDisplay.textContent = CHARACTERS.length;
+        }
+        
+        // Инициализация изображения игрока
+        function initPlayerImage() {
+            // Определяем активного персонажа
+            let characterId = 'default';
+            
+            if (gameAPI.currentUser) {
+                characterId = gameAPI.currentUser.activeCharacter;
+            } else {
+                characterId = localStorage.getItem('guestActiveCharacter') || 'default';
+            }
+            
+            // Находим персонажа по ID
+            const character = CHARACTERS.find(char => char.id === characterId);
+            if (character) {
+                activeCharacter = character;
+                player.src = character.image;
+                player.style.width = character.width + 'px';
+                player.style.height = character.height + 'px';
+                
+                // Инициализируем звуки персонажа
+                if (character.sounds) {
+                    jumpSound.src = character.sounds.jump || SOUNDS.jump;
+                    coinSound.src = character.sounds.coin || SOUNDS.coin;
+                    gameOverSound.src = character.sounds.gameOver || SOUNDS.gameOver;
+                }
+            }
+        }
+        
+        // Инициализация игры
+        async function init() {
+            // Загружаем тему из localStorage
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                themeToggle.checked = true;
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+            
+            // Загружаем настройки звука из localStorage
+            const savedSound = localStorage.getItem('sound') || 'on';
+            soundToggle.checked = savedSound === 'on';
+            soundEnabled = savedSound === 'on';
+            
+            // Инициализируем изображение игрока
+            initPlayerImage();
+            
+            // Обновляем интерфейс авторизации
+            updateAuthUI();
+            
+            // Создаем элементы магазина
+            createShopItems();
+            
+            // Обновляем таблицу рекордов
+            await updateLeaderboard();
+            
+            // Добавляем обработчики событий
+            themeToggle.addEventListener('change', toggleTheme);
+            soundToggle.addEventListener('change', toggleSound);
+            musicToggle.addEventListener('click', toggleMusic);
+            
+            // Обработчик прыжка для клавиатуры - предотвращаем прокрутку страницы при нажатии пробела
+            document.addEventListener('keydown', function(event) {
+                if (event.code === 'Space') {
+                    event.preventDefault(); // Предотвращаем прокрутку
+                    if (!isJumping && isGameStarted && !isGameOver) {
+                        jump();
+                    }
+                } else if (event.key === 'ArrowUp' && !isJumping && isGameStarted && !isGameOver) {
+                    event.preventDefault();
+                    jump();
+                }
+            });
+            
+            // Обработчик касания для игрового поля
+            gameContainer.addEventListener('touchstart', function(e) {
+                if (!isJumping && isGameStarted && !isGameOver) {
+                    e.preventDefault();
+                    jump();
+                }
+            });
+            
+            // Обработчик для мобильной кнопки прыжка
+            mobileJumpButton.addEventListener('touchstart', function(e) {
+                if (!isJumping && isGameStarted && !isGameOver) {
+                    e.preventDefault();
+                    jump();
+                }
+            });
+            
+            // Кнопка запуска игры
+            startButton.addEventListener('click', function() {
+                if (!isGameStarted || isGameOver) {
+                    startGame();
+                }
+            });
+            
+            // Кнопка рестарта
+            restartBtn.addEventListener('click', function() {
+                saveScore();
+                restartGame();
+            });
+            
+            // Кнопка закрытия модального окна игры окончена
+            gameOverClose.addEventListener('click', function() {
+                saveScore();
+                closeGameOver();
+            });
+            
+            // Кнопка магазина в модальном окне
+            shopBtnModal.addEventListener('click', function() {
+                saveScore();
+                closeGameOver();
+                openShop();
+            });
+            
+            // Обработчики магазина
+            shopButton.addEventListener('click', openShop);
+            shopClose.addEventListener('click', closeShop);
+            
+            // Обработчики авторизации
+            loginButton.addEventListener('click', showLoginModal);
+            registerButton.addEventListener('click', showRegisterModal);
+            loginClose.addEventListener('click', closeLoginModal);
+            registerClose.addEventListener('click', closeRegisterModal);
+            toRegister.addEventListener('click', function() {
+                closeLoginModal();
+                showRegisterModal();
+            });
+            toLogin.addEventListener('click', function() {
+                closeRegisterModal();
+                showLoginModal();
+            });
+            
+            // Обработчики формы входа
+            loginSubmit.addEventListener('click', async function() {
+                const username = loginUsername.value.trim();
+                const password = loginPassword.value;
+                
+                if (!username || !password) {
+                    showMessage(loginMessage, "Заполните все поля", "error");
+                    return;
+                }
+                
+                const result = await gameAPI.login(username, password);
+                
+                if (result.success) {
+                    showMessage(loginMessage, result.message, "success");
+                    
+                    // Закрываем модальное окно после успешного входа
+                    setTimeout(() => {
+                        closeLoginModal();
+                        updateAuthUI();
+                        createShopItems();
+                    }, 1000);
+                } else {
+                    showMessage(loginMessage, result.message, "error");
+                }
+            });
+            
+            // Обработчики формы регистрации
+            registerSubmit.addEventListener('click', async function() {
+                const username = registerUsername.value.trim();
+                const password = registerPassword.value;
+                const confirm = registerConfirm.value;
+                
+                if (!username || !password || !confirm) {
+                    showMessage(registerMessage, "Заполните все поля", "error");
+                    return;
+                }
+                
+                if (password !== confirm) {
+                    showMessage(registerMessage, "Пароли не совпадают", "error");
+                    return;
+                }
+                
+                const result = await gameAPI.register(username, password);
+                
+                if (result.success) {
+                    showMessage(registerMessage, result.message, "success");
+                    
+                    // Закрываем модальное окно после успешной регистрации
+                    setTimeout(() => {
+                        closeRegisterModal();
+                        updateAuthUI();
+                        createShopItems();
+                    }, 1000);
+                } else {
+                    showMessage(registerMessage, result.message, "error");
+                }
+            });
+            
+            // Обработчики профиля
+            profileButton.addEventListener('click', showProfileModal);
+            profileClose.addEventListener('click', closeProfileModal);
+            logoutButton.addEventListener('click', function() {
+                const result = gameAPI.logout();
+                
+                if (result.success) {
+                    closeProfileModal();
+                    updateAuthUI();
+                    createShopItems();
+                }
+            });
+            
+            // Обработчик клика на оверлей
+            modalOverlay.addEventListener('click', function(e) {
+                // Закрываем только если клик был на самом оверлее, а не на модальном окне
+                if (e.target === modalOverlay) {
+                    closeAllModals();
+                }
+            });
+            
+            // Запрещаем прокрутку страницы при нажатии пробела
+            window.addEventListener('keydown', function(e) {
+                if(e.code === 'Space' && e.target === document.body) {
+                    e.preventDefault();
+                }
+            });
+        }
+        
+        // Отображение сообщения
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = `message ${type}`;
+            element.style.display = 'block';
+        }
+        
+        // Показать модальное окно входа
+        function showLoginModal() {
+            loginModal.style.display = 'block';
+            modalOverlay.style.display = 'block';
+            loginMessage.style.display = 'none';
+            loginUsername.focus();
+        }
+        
+        // Закрыть модальное окно входа
+        function closeLoginModal() {
+            loginModal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+            loginUsername.value = '';
+            loginPassword.value = '';
+        }
+        
+        // Показать модальное окно регистрации
+        function showRegisterModal() {
+            registerModal.style.display = 'block';
+            modalOverlay.style.display = 'block';
+            registerMessage.style.display = 'none';
+            registerUsername.focus();
+        }
+        
+        // Закрыть модальное окно регистрации
+        function closeRegisterModal() {
+            registerModal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+            registerUsername.value = '';
+            registerPassword.value = '';
+            registerConfirm.value = '';
+        }
+        
+        // Показать модальное окно профиля
+        function showProfileModal() {
+            if (gameAPI.currentUser) {
+                updateProfileModal();
+                profileModal.style.display = 'block';
+                modalOverlay.style.display = 'block';
+            }
+        }
+        
+        // Закрыть модальное окно профиля
+        function closeProfileModal() {
+            profileModal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+        }
+        
+        // Закрыть все модальные окна
+        function closeAllModals() {
+            loginModal.style.display = 'none';
+            registerModal.style.display = 'none';
+            shopModal.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            profileModal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+        }
+        
+        // Открытие магазина
+        function openShop() {
+            shopModal.style.display = 'block';
+            modalOverlay.style.display = 'block';
+            
+            // Обновляем отображение монет
+            if (gameAPI.currentUser) {
+                shopCoinsDisplay.textContent = gameAPI.currentUser.coins;
+            } else {
+                shopCoinsDisplay.textContent = '0 (гость)';
+            }
+        }
+        
+        // Закрытие магазина
+        function closeShop() {
+            shopModal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+        }
+        
+        // Закрытие окна "Игра окончена"
+        function closeGameOver() {
+            gameOverScreen.style.display = 'none';
+            modalOverlay.style.display = 'none';
+        }
+        
+        // Создание препятствия с учетом типов препятствий
+        function createObstacle() {
+            // Определяем, будет ли это группа препятствий (меньший шанс появления групп)
+            const isGroup = Math.random() < 0.12 && score > 400; // Уменьшил с 0.15 до 0.12
+            
+            // Выбираем тип препятствия с учетом текущей сложности
+            let availableObstacles = [...OBSTACLES];
+            
+            // Летающие препятствия появляются только после определенного счета
+            if (score < 600) {
+                availableObstacles = availableObstacles.filter(o => !o.isFlying);
+            }
+            
+            // Предотвращаем появление слишком сложных комбинаций препятствий
+            // Проверяем, если на экране уже есть препятствия, избегаем слишком частого появления новых
+            const existingObstacles = obstacles.filter(o => o.x > gameContainer.offsetWidth * 0.7); // Увеличил с 0.6 до 0.7
+            if (existingObstacles.length > 0) {
+                // Если недавно было создано препятствие, уменьшаем шанс создания группы
+                return;
+            }
+            
+            // Выбираем препятствие - с более равномерным распределением типов
+            const obstacleIndex = Math.floor(Math.random() * availableObstacles.length);
+            const obstacleType = availableObstacles[obstacleIndex];
+            
+            // Определяем количество препятствий в группе (макс 2 для более простой игры)
+            const count = isGroup && obstacleType.count ? 
+                          Math.min(2, Math.floor(Math.random() * obstacleType.count) + 1) : 1;
+            
+            // Увеличиваем расстояние между препятствиями в группе для баланса (больше пространства для прыжка)
+            const spacing = obstacleType.spacing ? obstacleType.spacing * 1.5 : 90; // Увеличил с 1.2/70 до 1.5/90
+            
+            // Создаем каждое препятствие
+            for (let i = 0; i < count; i++) {
+                const obstacle = document.createElement('img');
+                obstacle.src = obstacleType.image;
+                obstacle.style.width = obstacleType.width + 'px';
+                obstacle.style.height = obstacleType.height + 'px';
+                obstacle.classList.add('obstacle');
+                
+                // Базовая позиция плюс смещение для групп
+                let posX = gameContainer.offsetWidth + (i * spacing);
+                obstacle.style.left = posX + 'px';
+                
+                // Высота для летающих препятствий
+                let posY = 0;
+                if (obstacleType.isFlying) {
+                    posY = Math.floor(Math.random() * 
+                           (obstacleType.maxHeight - obstacleType.minHeight)) + 
+                           obstacleType.minHeight;
+                    obstacle.style.bottom = posY + 'px';
+                }
+                
+                // Добавляем препятствие в DOM
+                gameContainer.appendChild(obstacle);
+                
+                // Добавляем в массив препятствий для отслеживания
+                obstacles.push({
+                    element: obstacle,
+                    type: obstacleType.id,
+                    x: posX,
+                    y: posY,
+                    width: obstacleType.width,
+                    height: obstacleType.height,
+                    hitboxWidth: obstacleType.hitboxWidth,
+                    hitboxHeight: obstacleType.hitboxHeight,
+                    speed: obstacleType.speed || 1.0,
+                    isFlying: obstacleType.isFlying || false
+                });
+            }
+        }
+        
+        // Создание монетки с учетом разных типов монет
+        function createCoin() {
+            // Выбираем тип монеты на основе вероятности
+            let coinType = COINS[0]; // По умолчанию бронзовая (обычная)
+            
+            // Определяем, будет ли это редкая монета
+            const rnd = Math.random();
+            
+            if (rnd < 0.1 && score > 500) { // 10% шанс золотой после 500 очков
+                coinType = COINS[2]; // Золотая
+            } else if (rnd < 0.3 && score > 200) { // 20% шанс серебряной после 200 очков
+                coinType = COINS[1]; // Серебряная
+            }
+            
+            const coin = document.createElement('img');
+            coin.src = coinType.image;
+            coin.style.width = coinType.width + 'px';
+            coin.style.height = coinType.height + 'px';
+            coin.classList.add('coin');
+            coin.style.left = gameContainer.offsetWidth + 'px';
+            
+            // Определяем, будет ли это линия монет
+            const isLine = Math.random() < 0.3 && score > 300; // 30% шанс линии после 300 очков
+            const lineCount = isLine ? Math.floor(Math.random() * 3) + 3 : 1; // 3-5 монет в линии
+            
+            // Рандомная высота для монетки (адаптируем под размер контейнера)
+            const containerHeight = gameContainer.offsetHeight;
+            const height = Math.floor(Math.random() * (containerHeight / 2.5)) + 40;
+            
+            // Создаем линию монет или одиночную монету
+            for (let i = 0; i < lineCount; i++) {
+                const coinElement = i === 0 ? coin : coin.cloneNode(true);
+                const spacing = 40; // Расстояние между монетами в линии
+                
+                coinElement.style.left = (gameContainer.offsetWidth + i * spacing) + 'px';
+                coinElement.style.bottom = height + 'px';
+                
+                gameContainer.appendChild(coinElement);
+                
+                coins.push({
+                    element: coinElement,
+                    type: coinType.id,
+                    x: gameContainer.offsetWidth + i * spacing,
+                    y: height,
+                    width: coinType.width,
+                    height: coinType.height,
+                    hitboxWidth: coinType.hitboxWidth,
+                    hitboxHeight: coinType.hitboxHeight,
+                    value: coinType.value || 1,
+                    collected: false
+                });
+            }
+        }
+        
+        // Создание бонусов
+        function createBonus() {
+            // Бонусы появляются редко и только после определенного счета
+            if (Math.random() > 0.05 || score < 500) return; // 5% шанс после 500 очков
+            
+            // Выбираем случайный бонус
+            const bonusType = BONUSES[Math.floor(Math.random() * BONUSES.length)];
+            
+            const bonus = document.createElement('img');
+            bonus.src = bonusType.image;
+            bonus.style.width = bonusType.width + 'px';
+            bonus.style.height = bonusType.height + 'px';
+            bonus.classList.add('bonus');
+            bonus.style.left = gameContainer.offsetWidth + 'px';
+            
+            // Рандомная высота для бонуса
+            const containerHeight = gameContainer.offsetHeight;
+            const height = Math.floor(Math.random() * (containerHeight / 3)) + 60;
+            bonus.style.bottom = height + 'px';
+            
+            gameContainer.appendChild(bonus);
+            
+            // Добавляем бонус в специальный массив
+            bonuses.push({
+                element: bonus,
+                type: bonusType.id,
+                effect: bonusType.effect,
+                duration: bonusType.duration,
+                x: gameContainer.offsetWidth,
+                y: height,
+                width: bonusType.width,
+                height: bonusType.height,
+                hitboxWidth: bonusType.hitboxWidth,
+                hitboxHeight: bonusType.hitboxHeight,
+                collected: false
+            });
+        }
+        
+        // Запуск игры
+        function startGame() {
+            // Основные переменные
+            score = 0;
+            coinCount = 0;
+            gameSpeed = 10; // Увеличиваем начальную скорость с 7 до 10
+            backgroundPos = 0;
+            currentLevel = 1;
+            gameStartTime = Date.now();
+            gameTime = 0;
+            
+            // Массивы игровых объектов
+            obstacles = [];
+            coins = [];
+            bonuses = [];
+            
+            // Состояние игры
+            isGameOver = false;
+            isGameStarted = true;
+            debugMode = false; // Режим отладки (показывает хитбоксы)
+            
+            // Состояния бонусов
+            hasShield = false;
+            hasMagnet = false;
+            hasSlowMotion = false;
+            
+            // Очищаем таймеры, если они были активны
+            clearTimeout(shieldTimer);
+            clearTimeout(magnetTimer);
+            clearTimeout(slowTimer);
+            
+            // Делаем активной кнопку прыжка на мобильных
+            mobileJumpButton.style.display = 'block';
+            
+            // Очищаем все игровые объекты
+            document.querySelectorAll('.obstacle, .coin, .bonus, .explosion, .floating-text, .level-up-container').forEach(el => el.remove());
+            
+            // Очищаем отладочные хитбоксы
+            document.querySelectorAll('[id^="player-hitbox"], [id^="obstacle-hitbox"], [id^="coin-hitbox"], [id^="bonus-hitbox"]').forEach(el => el.remove());
+            
+            // Обновляем отображение
+            scoreDisplay.textContent = score;
+            coinsDisplay.textContent = coinCount;
+            gameOverScreen.style.display = 'none';
+            modalOverlay.style.display = 'none';
+            
+            // Сбрасываем стили персонажа
+            if (player) {
+                player.style.filter = 'none';
+            }
+            
+            // Настраиваем интервалы появления объектов с начальными значениями
+            nextObstacleTime = performance.now() + 2000; // 2 секунды до первого препятствия (было 2.5)
+            nextCoinTime = performance.now() + 800; // 0.8 секунды до первой монеты (было 1)
+            nextBonusTime = performance.now() + 8000; // 8 секунд до первого бонуса (было 10)
+            
+            obstacleInterval = 1800; // 1.8 секунды между препятствиями (было 2)
+            coinInterval = 1200; // 1.2 секунды между монетами (было 1.5)
+            bonusInterval = 12000; // 12 секунд между бонусами (было 15)
+            
+            // Запускаем фоновую музыку, если звук включен
+            if (soundEnabled && !musicPlaying) {
+                toggleMusic();
+            }
+            
+            // Показываем стартовую анимацию
+            showStartAnimation();
+            
+            // Запускаем игровой цикл
+            gameLoop = requestAnimationFrame(update);
+        }
+        
+        // Показываем стартовую анимацию
+        function showStartAnimation() {
+            const startCountdown = document.createElement('div');
+            startCountdown.className = 'start-countdown';
+            startCountdown.style.position = 'absolute';
+            startCountdown.style.top = '50%';
+            startCountdown.style.left = '50%';
+            startCountdown.style.transform = 'translate(-50%, -50%)';
+            startCountdown.style.color = '#fff';
+            startCountdown.style.fontSize = '48px';
+            startCountdown.style.fontWeight = 'bold';
+            startCountdown.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.5)';
+            startCountdown.style.zIndex = '5';
+            startCountdown.style.transition = 'transform 0.25s, opacity 0.25s'; // Ускорили анимацию в 2 раза
+            startCountdown.textContent = '3';
+            
+            gameContainer.appendChild(startCountdown);
+            
+            // Анимация обратного отсчета (ускорена в 2 раза)
+            setTimeout(() => {
+                startCountdown.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                startCountdown.style.opacity = '0';
+                
+                setTimeout(() => {
+                    startCountdown.style.transform = 'translate(-50%, -50%) scale(1)';
+                    startCountdown.style.opacity = '1';
+                    startCountdown.textContent = '2';
+                    
+                    setTimeout(() => {
+                        startCountdown.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                        startCountdown.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            startCountdown.style.transform = 'translate(-50%, -50%) scale(1)';
+                            startCountdown.style.opacity = '1';
+                            startCountdown.textContent = '1';
+                            
+                            setTimeout(() => {
+                                startCountdown.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                                startCountdown.style.opacity = '0';
+                                
+                                setTimeout(() => {
+                                    startCountdown.style.transform = 'translate(-50%, -50%) scale(1)';
+                                    startCountdown.style.opacity = '1';
+                                    startCountdown.textContent = 'GO!';
+                                    startCountdown.style.color = activeCharacter.color || '#4285f4';
+                                    
+                                    setTimeout(() => {
+                                        startCountdown.style.transform = 'translate(-50%, -50%) scale(2)';
+                                        startCountdown.style.opacity = '0';
+                                        
+                                        setTimeout(() => {
+                                            startCountdown.remove();
+                                        }, 250);
+                                    }, 250);
+                                }, 250);
+                            }, 250);
+                        }, 250);
+                    }, 250);
+                }, 250);
+            }, 250);
+        }
+        
+        // Прыжок с индивидуальной высотой для каждого персонажа
+        function jump() {
+            if (!activeCharacter) return;
+            
+            // Если уже в прыжке, не позволяем прыгать снова
+            if (isJumping) return;
+            
+            isJumping = true;
+            
+            // Создаем стиль для индивидуальной анимации прыжка
+            // Увеличиваем базовую высоту прыжка на 25% для всех персонажей
+            const jumpHeight = (activeCharacter.jumpHeight || 150) * 1.25;
+            const jumpDuration = 600; // Увеличиваем длительность прыжка для более долгого пребывания в воздухе (было 450)
+            
+            // Создаем или получаем существующий стиль
+            let jumpStyle = document.getElementById('jump-style');
+            if (!jumpStyle) {
+                jumpStyle = document.createElement('style');
+                jumpStyle.id = 'jump-style';
+                document.head.appendChild(jumpStyle);
+            }
+            
+            // Обновляем стиль с новой высотой прыжка и более плавной анимацией
+            // Используем специальную кривую безье, чтобы персонаж дольше оставался в верхней точке прыжка
+            jumpStyle.textContent = `
+                @keyframes jump {
+                    0% { bottom: 0; }
+                    40% { bottom: ${jumpHeight}px; }
+                    60% { bottom: ${jumpHeight}px; }
+                    100% { bottom: 0; }
+                }
+                .jumping {
+                    animation: jump ${jumpDuration}ms cubic-bezier(0.33, 0.1, 0.67, 1);
+                }
+            `;
+            
+            player.classList.add('jumping');
+            
+            // Проигрываем персональный звук прыжка
+            if (soundEnabled) {
+                const soundSrc = activeCharacter.sounds && activeCharacter.sounds.jump ?
+                              activeCharacter.sounds.jump : SOUNDS.jump;
+                                
+                if (jumpSound.src !== soundSrc) {
+                    jumpSound.src = soundSrc;
+                }
+                
+                jumpSound.currentTime = 0;
+                jumpSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+            }
+            
+            setTimeout(() => {
+                player.classList.remove('jumping');
+                isJumping = false;
+            }, jumpDuration);
+        }
+        
+        // Проверка столкновений с учетом хитбоксов пропорциональных размеру
+        function checkCollisions() {
+            if (!activeCharacter) return;
+            
+            // Создаем хитбокс для игрока с учетом текущего персонажа
+            // Центрируем хитбокс относительно спрайта для большей точности
+            const playerOffset = (activeCharacter.width - activeCharacter.hitboxWidth) / 2;
+            const playerRect = {
+                x: 50 + playerOffset, // Центрируем хитбокс
+                y: isJumping ? getJumpHeight() : 0,
+                width: activeCharacter.hitboxWidth,
+                height: activeCharacter.hitboxHeight
+            };
+            
+            // Отрисовка хитбокса игрока в режиме отладки
+            if (debugMode) {
+                drawHitbox(playerRect.x, playerRect.y, playerRect.width, playerRect.height, 'player-hitbox', 'rgba(0, 255, 0, 0.5)');
+            }
+            
+            // Проверка столкновений с препятствиями
+            for (let i = 0; i < obstacles.length; i++) {
+                const obstacle = obstacles[i];
+                
+                // Центрируем хитбокс относительно спрайта для большей точности
+                const obstacleOffset = (obstacle.width - obstacle.hitboxWidth) / 2;
+                
+                // Учитываем высоту для летающих препятствий
+                const obstacleY = obstacle.isFlying ? obstacle.y : 0;
+                
+                const obstacleRect = {
+                    x: obstacle.x + obstacleOffset, // Центрируем хитбокс
+                    y: obstacleY,
+                    width: obstacle.hitboxWidth,
+                    height: obstacle.hitboxHeight
+                };
+                
+                // Отрисовка хитбокса препятствия в режиме отладки
+                if (debugMode) {
+                    drawHitbox(obstacleRect.x, obstacleY, obstacleRect.width, obstacleRect.height, 
+                              `obstacle-hitbox-${i}`, 'rgba(255, 0, 0, 0.5)');
+                }
+                
+                // Даем небольшую погрешность для более комфортной игры (5% от размера хитбокса)
+                const tolerance = Math.min(obstacleRect.width, obstacleRect.height) * 0.05;
+                
+                // Проверка пересечения хитбоксов с учетом погрешности
+                if (
+                    playerRect.x + tolerance < obstacleRect.x + obstacleRect.width - tolerance &&
+                    playerRect.x + playerRect.width - tolerance > obstacleRect.x + tolerance &&
+                    playerRect.y + tolerance < obstacleRect.y + obstacleRect.height - tolerance &&
+                    playerRect.y + playerRect.height - tolerance > obstacleRect.y + tolerance
+                ) {
+                    // Если есть щит, используем его и продолжаем игру
+                    if (hasShield) {
+                        useShield(obstacle);
+                        return;
+                    }
+                    
+                    gameOver();
+                    return;
+                }
+            }
+            
+            // Проверка сбора монеток
+            for (let i = 0; i < coins.length; i++) {
+                const coin = coins[i];
+                if (coin.collected) continue;
+                
+                const coinRect = {
+                    x: coin.x,
+                    y: coin.y,
+                    width: coin.hitboxWidth,
+                    height: coin.hitboxHeight
+                };
+                
+                // Отрисовка хитбокса монеты в режиме отладки
+                if (debugMode) {
+                    drawHitbox(coin.x, coin.y, coinRect.width, coinRect.height, 
+                              `coin-hitbox-${i}`, 'rgba(255, 255, 0, 0.5)');
+                }
+                
+                // Проверка пересечения хитбоксов
+                if (
+                    playerRect.x < coinRect.x + coinRect.width &&
+                    playerRect.x + playerRect.width > coinRect.x &&
+                    playerRect.y < coinRect.y + coinRect.height &&
+                    playerRect.y + playerRect.height > coinRect.y
+                ) {
+                    collectCoin(coin);
+                }
+            }
+            
+            // Проверка сбора бонусов
+            for (let i = 0; i < bonuses.length; i++) {
+                const bonus = bonuses[i];
+                if (bonus.collected) continue;
+                
+                const bonusRect = {
+                    x: bonus.x,
+                    y: bonus.y,
+                    width: bonus.hitboxWidth,
+                    height: bonus.hitboxHeight
+                };
+                
+                // Отрисовка хитбокса бонуса в режиме отладки
+                if (debugMode) {
+                    drawHitbox(bonus.x, bonus.y, bonusRect.width, bonusRect.height, 
+                              `bonus-hitbox-${i}`, 'rgba(0, 255, 255, 0.5)');
+                }
+                
+                // Проверка пересечения хитбоксов
+                if (
+                    playerRect.x < bonusRect.x + bonusRect.width &&
+                    playerRect.x + playerRect.width > bonusRect.x &&
+                    playerRect.y < bonusRect.y + bonusRect.height &&
+                    playerRect.y + playerRect.height > bonusRect.y
+                ) {
+                    collectBonus(bonus);
+                }
+            }
+        }
+        
+        // Отрисовка хитбоксов для отладки
+        function drawHitbox(x, y, width, height, id, color) {
+            let hitbox = document.getElementById(id);
+            if (!hitbox) {
+                hitbox = document.createElement('div');
+                hitbox.id = id;
+                hitbox.style.position = 'absolute';
+                hitbox.style.pointerEvents = 'none';
+                hitbox.style.zIndex = '100';
+                gameContainer.appendChild(hitbox);
+            }
+            
+            hitbox.style.left = x + 'px';
+            hitbox.style.bottom = y + 'px';
+            hitbox.style.width = width + 'px';
+            hitbox.style.height = height + 'px';
+            hitbox.style.backgroundColor = color;
+            hitbox.style.border = '1px solid white';
+        }
+        
+        // Использование щита при столкновении
+        function useShield(obstacle) {
+            hasShield = false;
+            
+            // Удаляем щит
+            const shieldElement = document.getElementById('player-shield');
+            if (shieldElement) shieldElement.remove();
+            
+            // Очищаем таймер щита
+            clearTimeout(shieldTimer);
+            
+            // Удаляем препятствие, с которым столкнулись
+            const obstacleIndex = obstacles.indexOf(obstacle);
+            if (obstacleIndex !== -1) {
+                obstacle.element.remove();
+                obstacles.splice(obstacleIndex, 1);
+            }
+            
+            // Визуальный эффект уничтожения препятствия
+            const explosion = document.createElement('div');
+            explosion.className = 'explosion';
+            explosion.style.position = 'absolute';
+            explosion.style.left = obstacle.x + 'px';
+            explosion.style.bottom = (obstacle.isFlying ? obstacle.y : 0) + 'px';
+            explosion.style.width = obstacle.width * 1.5 + 'px';
+            explosion.style.height = obstacle.height * 1.5 + 'px';
+            explosion.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+            explosion.style.borderRadius = '50%';
+            explosion.style.zIndex = '3';
+            explosion.style.pointerEvents = 'none';
+            explosion.style.transition = 'transform 0.3s, opacity 0.3s';
+            explosion.style.opacity = '1';
+            explosion.style.transform = 'scale(0.5)';
+            
+            gameContainer.appendChild(explosion);
+            
+            // Анимация взрыва
+            setTimeout(() => {
+                explosion.style.transform = 'scale(2)';
+                explosion.style.opacity = '0';
+            }, 50);
+            
+            // Удаляем элемент после анимации
+            setTimeout(() => {
+                explosion.remove();
+            }, 350);
+            
+            // Проигрываем звук окончания щита
+            if (soundEnabled && SOUNDS.shieldEnd) {
+                const shieldEndSound = new Audio(SOUNDS.shieldEnd);
+                shieldEndSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+            }
+            
+            // Даем небольшой бонус к счету
+            score += 100;
+            scoreDisplay.textContent = score;
+            
+            // Показываем анимацию +100
+            showFloatingText('+100', obstacle.x, (obstacle.isFlying ? obstacle.y : 30), '#00ffff');
+        }
+        
+        // Получение текущей высоты прыжка (для коллизий)
+        function getJumpHeight() {
+            // Адаптируем для новой длительности прыжка 600мс
+            const jumpTime = Date.now() % 600;
+            let jumpProgress;
+            
+            // Воспроизводим ту же кривую прыжка, что и в CSS-анимации
+            if (jumpTime < 240) { // Первые 40% времени - подъем
+                jumpProgress = jumpTime / 240;
+                return Math.sin(jumpProgress * Math.PI/2) * (gameContainer.offsetHeight * 0.7);
+            } else if (jumpTime < 360) { // Следующие 20% - зависание в верхней точке
+                return gameContainer.offsetHeight * 0.7;
+            } else { // Оставшиеся 40% - спуск
+                jumpProgress = (jumpTime - 360) / 240;
+                return Math.sin((1 - jumpProgress) * Math.PI/2) * (gameContainer.offsetHeight * 0.7);
+            }
+        }
+        
+        // Сбор монетки с учетом ее стоимости
+        function collectCoin(coin) {
+            coin.collected = true;
+            coin.element.style.display = 'none';
+            
+            // Добавляем монеты в зависимости от типа
+            const coinValue = coin.value || 1;
+            coinCount += coinValue;
+            coinsDisplay.textContent = coinCount;
+            
+            // Показываем анимацию +Х над монетой
+            if (coinValue > 1) {
+                showFloatingText(`+${coinValue}`, coin.x, coin.y, coin.type === 'gold' ? '#ffd700' : '#c0c0c0');
+            }
+            
+            // Проигрываем звук сбора монеты (уникальный для персонажа)
+            if (soundEnabled) {
+                const soundSrc = activeCharacter && activeCharacter.sounds && activeCharacter.sounds.coin ?
+                              activeCharacter.sounds.coin : SOUNDS.coin;
+                                
+                if (coinSound.src !== soundSrc) {
+                    coinSound.src = soundSrc;
+                }
+                
+                coinSound.currentTime = 0;
+                coinSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+            }
+            
+            // Увеличиваем счет за монетку (разные типы = разные очки)
+            const scoreBonus = coinValue * 50;
+            score += scoreBonus;
+            scoreDisplay.textContent = score;
+            
+            // Проверка достижения нового уровня
+            checkLevelUp();
+        }
+        
+        // Проверка достижения нового уровня
+        function checkLevelUp() {
+            // Каждые 500 очков - новый уровень
+            const newLevel = Math.floor(score / 500) + 1;
+            
+            if (newLevel > currentLevel) {
+                currentLevel = newLevel;
+                
+                // Показываем анимацию нового уровня
+                showLevelUpAnimation(newLevel);
+                
+                // Проигрываем звук уровня
+                if (soundEnabled && SOUNDS.levelUp) {
+                    const levelUpSound = new Audio(SOUNDS.levelUp);
+                    levelUpSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+                }
+            }
+        }
+        
+        // Показываем всплывающий текст
+        function showFloatingText(text, x, y, color = '#ffffff') {
+            const floatingText = document.createElement('div');
+            floatingText.className = 'floating-text';
+            floatingText.textContent = text;
+            floatingText.style.position = 'absolute';
+            floatingText.style.left = x + 'px';
+            floatingText.style.bottom = y + 'px';
+            floatingText.style.color = color;
+            floatingText.style.fontSize = '18px';
+            floatingText.style.fontWeight = 'bold';
+            floatingText.style.textShadow = '1px 1px 2px rgba(0, 0, 0, 0.5)';
+            floatingText.style.zIndex = '5';
+            floatingText.style.pointerEvents = 'none';
+            floatingText.style.transition = 'transform 0.8s, opacity 0.8s';
+            floatingText.style.opacity = '1';
+            
+            gameContainer.appendChild(floatingText);
+            
+            // Анимация подъема и исчезновения
+            setTimeout(() => {
+                floatingText.style.transform = 'translateY(-30px)';
+                floatingText.style.opacity = '0';
+            }, 50);
+            
+            // Удаляем элемент после завершения анимации
+            setTimeout(() => {
+                floatingText.remove();
+            }, 800);
+        }
+        
+        // Анимация нового уровня
+        function showLevelUpAnimation(level) {
+            const levelUpContainer = document.createElement('div');
+            levelUpContainer.className = 'level-up-container';
+            levelUpContainer.style.position = 'absolute';
+            levelUpContainer.style.top = '50%';
+            levelUpContainer.style.left = '50%';
+            levelUpContainer.style.transform = 'translate(-50%, -50%)';
+            levelUpContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            levelUpContainer.style.color = '#FFD700';
+            levelUpContainer.style.padding = '15px 30px';
+            levelUpContainer.style.borderRadius = '10px';
+            levelUpContainer.style.fontSize = '24px';
+            levelUpContainer.style.fontWeight = 'bold';
+            levelUpContainer.style.zIndex = '10';
+            levelUpContainer.style.pointerEvents = 'none';
+            levelUpContainer.style.opacity = '0';
+            levelUpContainer.style.transition = 'opacity 0.3s';
+            levelUpContainer.textContent = `УРОВЕНЬ ${level}!`;
+            
+            gameContainer.appendChild(levelUpContainer);
+            
+            // Анимация появления и исчезновения
+            setTimeout(() => levelUpContainer.style.opacity = '1', 50);
+            setTimeout(() => levelUpContainer.style.opacity = '0', 1500);
+            setTimeout(() => levelUpContainer.remove(), 1800);
+        }
+        
+        // Сбор бонуса
+        function collectBonus(bonus) {
+            bonus.collected = true;
+            bonus.element.style.display = 'none';
+            
+            // Проигрываем звук сбора бонуса
+            if (soundEnabled && SOUNDS.bonus) {
+                const bonusSound = new Audio(SOUNDS.bonus);
+                bonusSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+            }
+            
+            // Показываем анимацию бонуса
+            showFloatingText(bonus.effect.toUpperCase(), bonus.x, bonus.y, '#00ffff');
+            
+            // Активируем эффект бонуса
+            activateBonus(bonus.effect, bonus.duration);
+        }
+        
+        // Активация эффекта бонуса
+        function activateBonus(effect, duration) {
+            switch (effect) {
+                case 'shield':
+                    hasShield = true;
+                    
+                    // Создаем щит вокруг игрока
+                    const shield = document.createElement('div');
+                    shield.id = 'player-shield';
+                    shield.style.position = 'absolute';
+                    shield.style.left = '50px';
+                    shield.style.bottom = '0';
+                    shield.style.width = (activeCharacter.width + 20) + 'px';
+                    shield.style.height = (activeCharacter.height + 20) + 'px';
+                    shield.style.borderRadius = '50%';
+                    shield.style.border = '3px solid #00ffff';
+                    shield.style.boxShadow = '0 0 10px #00ffff';
+                    shield.style.zIndex = '1';
+                    shield.style.pointerEvents = 'none';
+                    
+                    gameContainer.appendChild(shield);
+                    
+                    // Устанавливаем таймер для окончания щита
+                    shieldTimer = setTimeout(() => {
+                        hasShield = false;
+                        const shieldElement = document.getElementById('player-shield');
+                        if (shieldElement) shieldElement.remove();
+                        
+                        // Проигрываем звук окончания щита
+                        if (soundEnabled && SOUNDS.shieldEnd) {
+                            const shieldEndSound = new Audio(SOUNDS.shieldEnd);
+                            shieldEndSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+                        }
+                    }, duration);
+                    break;
+                    
+                case 'slow':
+                    const previousSpeed = gameSpeed;
+                    gameSpeed *= 0.5; // Замедляем игру
+                    
+                    // Визуальный эффект замедления
+                    gameContainer.style.filter = 'sepia(0.5)';
+                    
+                    // Устанавливаем таймер для окончания замедления
+                    slowTimer = setTimeout(() => {
+                        gameSpeed = previousSpeed;
+                        gameContainer.style.filter = 'none';
+                    }, duration);
+                    break;
+                    
+                case 'magnet':
+                    hasMagnet = true;
+                    
+                    // Визуальный эффект магнита
+                    player.style.filter = 'brightness(1.2) drop-shadow(0 0 5px gold)';
+                    
+                    // Устанавливаем таймер для окончания магнита
+                    magnetTimer = setTimeout(() => {
+                        hasMagnet = false;
+                        player.style.filter = 'none';
+                    }, duration);
+                    break;
+            }
+        }
+        
+        // Обновление игры
+        function update(timestamp) {
+            if (isGameOver) return;
+            
+            // Увеличиваем счет
+            score++;
+            scoreDisplay.textContent = score;
+            
+            // Продолжительность игры для подсчета статистики (в секундах)
+            gameTime = Math.floor((Date.now() - gameStartTime) / 1000);
+            
+            // Регулируем сложность с ростом счета более плавно
+            const baseSpeed = 10; // Увеличил с 7 до 10
+            const speedMultiplier = 1 + (Math.floor(score / 400) * 0.15); // +15% каждые 400 очков
+            gameSpeed = baseSpeed * speedMultiplier;
+            
+            // Интервал препятствий уменьшается с ростом счета
+            const minObstacleInterval = 700; // Минимальный интервал (было 800)
+            const maxObstacleInterval = 1800; // Максимальный интервал (было 2000)
+            const intervalReduction = Math.floor(score / 150) * 80; // Ускорил снижение интервала
+            obstacleInterval = Math.max(maxObstacleInterval - intervalReduction, minObstacleInterval);
+            
+            // Создаем новые препятствия
+            if (timestamp >= nextObstacleTime) {
+                createObstacle();
+                
+                // Немного случайности в следующем интервале с меньшим разбросом для предсказуемости
+                nextObstacleTime = timestamp + obstacleInterval + (Math.random() * 400 - 200); // Уменьшил разброс с 500
+            }
+            
+            // Создаем новые монетки
+            if (timestamp >= nextCoinTime) {
+                createCoin();
+                
+                // Немного случайности в следующем интервале
+                nextCoinTime = timestamp + coinInterval + (Math.random() * 1000 - 500);
+            }
+            
+            // Создаем бонусы
+            if (timestamp >= nextBonusTime) {
+                createBonus();
+                
+                // Большой интервал между бонусами
+                nextBonusTime = timestamp + bonusInterval + Math.random() * 5000;
+            }
+            
+            // Обновляем положение препятствий
+            for (let i = 0; i < obstacles.length; i++) {
+                const obstacle = obstacles[i];
+                
+                // Скорость движения с учетом типа препятствия
+                obstacle.x -= gameSpeed * obstacle.speed;
+                obstacle.element.style.left = obstacle.x + 'px';
+                
+                // Удаляем препятствия, которые ушли за экран
+                if (obstacle.x < -obstacle.width) {
+                    obstacle.element.remove();
+                    obstacles.splice(i, 1);
+                    i--;
+                }
+            }
+            
+            // Обновляем положение монеток
+            for (let i = 0; i < coins.length; i++) {
+                const coin = coins[i];
+                
+                // Если активен магнит, притягиваем монеты
+                if (hasMagnet && !coin.collected) {
+                    const playerCenterX = 50 + (activeCharacter.width / 2);
+                    const playerCenterY = isJumping ? getJumpHeight() + (activeCharacter.height / 2) : activeCharacter.height / 2;
+                    
+                    const coinCenterX = coin.x + (coin.width / 2);
+                    const coinCenterY = coin.y + (coin.height / 2);
+                    
+                    // Расстояние от игрока до монеты
+                    const dx = playerCenterX - coinCenterX;
+                    const dy = playerCenterY - coinCenterY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    // Если монета достаточно близко, притягиваем ее
+                    if (distance < 150) {
+                        const magnetStrength = 0.1;
+                        coin.x += dx * magnetStrength;
+                        coin.y += dy * magnetStrength;
+                    } else {
+                        coin.x -= gameSpeed;
+                    }
+                } else {
+                    coin.x -= gameSpeed;
+                }
+                
+                // Обновляем позицию
+                coin.element.style.left = coin.x + 'px';
+                coin.element.style.bottom = coin.y + 'px';
+                
+                // Удаляем монетки, которые ушли за экран
+                if (coin.x < -coin.width) {
+                    coin.element.remove();
+                    coins.splice(i, 1);
+                    i--;
+                }
+            }
+            
+            // Обновляем положение бонусов
+            for (let i = 0; i < bonuses.length; i++) {
+                const bonus = bonuses[i];
+                bonus.x -= gameSpeed;
+                bonus.element.style.left = bonus.x + 'px';
+                
+                // Удаляем бонусы, которые ушли за экран
+                if (bonus.x < -bonus.width) {
+                    bonus.element.remove();
+                    bonuses.splice(i, 1);
+                    i--;
+                }
+            }
+            
+            // Обновляем фон с учетом скорости
+            updateBackground();
+            
+            // Проверяем столкновения
+            checkCollisions();
+            
+            // Продолжаем игровой цикл
+            gameLoop = requestAnimationFrame(update);
+        }
+        
+        // Обновление фона для эффекта движения
+        function updateBackground() {
+            // Управление скоростью прокрутки фона
+            backgroundPos -= gameSpeed * 0.5; // Фон движется медленнее препятствий
+            
+            // Сбрасываем позицию, когда она выходит за пределы изображения
+            if (backgroundPos <= -1000) { // Ширина фона
+                backgroundPos = 0;
+            }
+            
+            // Обновляем позицию фона
+            gameContainer.style.backgroundPosition = `${backgroundPos}px bottom`;
+        }
+        
+        // Окончание игры
+        async function gameOver() {
+            isGameOver = true;
+            isGameStarted = false;
+            cancelAnimationFrame(gameLoop);
+            
+            // Прячем кнопку прыжка
+            mobileJumpButton.style.display = 'none';
+            
+            // Обновляем статистику пользователя, если он авторизован
+            if (gameAPI.currentUser) {
+                await gameAPI.updateUserStats(score, coinCount);
+                updateAuthUI();
+            }
+            
+            finalScoreDisplay.textContent = score;
+            finalCoinsDisplay.textContent = coinCount;
+            
+            // Показываем модальное окно "Игра окончена"
+            gameOverScreen.style.display = 'block';
+            modalOverlay.style.display = 'block';
+            
+            // Останавливаем фоновую музыку и проигрываем звук проигрыша
+            if (soundEnabled) {
+                backgroundMusic.pause();
+                musicPlaying = false;
+                
+                if (gameOverSound.src) {
+                    gameOverSound.play().catch(e => console.log('Автоматическое воспроизведение звука заблокировано:', e));
+                }
+            }
+            
+            // Обновляем таблицу рекордов
+            await updateLeaderboard();
+        }
+        
+        // Сохранение результата
+        async function saveScore() {
+            // Если пользователь авторизован, отправляем результат на сервер
+            if (gameAPI.currentUser) {
+                await gameAPI.updateUserStats(score, coinCount);
+            }
+            
+            // Обновляем таблицу рекордов
+            await updateLeaderboard();
+        }
+        
+        // Перезапуск игры
+        function restartGame() {
+            gameOverScreen.style.display = 'none';
+            modalOverlay.style.display = 'none';
+            startGame();
+        }
+        
+        // Создаем имитацию API для тестирования
+        // В реальном проекте это должен быть полноценный бэкенд с базой данных
+        const mockAPI = {
+            users: [],
+            leaderboard: [],
+            
+            async login(username, password) {
+                // Имитация задержки сети
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Поиск пользователя
+                const user = this.users.find(u => u.username === username && u.password === password);
+                
+                if (user) {
+                    // Успешный вход, генерируем токен
+                    const token = 'token_' + Math.random().toString(36).substring(2);
+                    return {
+                        success: true,
+                        message: 'Вход выполнен успешно',
+                        token,
+                        user: { ...user, password: undefined } // Не передаем пароль клиенту
+                    };
+                }
+                
+                return { success: false, message: 'Неверное имя пользователя или пароль' };
+            },
+            
+            async register(username, password) {
+                // Имитация задержки сети
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Проверка существования пользователя
+                if (this.users.some(u => u.username === username)) {
+                    return { success: false, message: 'Пользователь с таким именем уже существует' };
+                }
+                
+                // Создаем нового пользователя
+                const newUser = {
+                    id: Date.now(),
+                    username,
+                    password,
+                    coins: 0,
+                    highScore: 0,
+                    gamesPlayed: 0,
+                    totalTimeMinutes: 0,
+                    lastLogin: new Date().toISOString(),
+                    characters: ['default'],
+                    activeCharacter: 'default'
+                };
+                
+                this.users.push(newUser);
+                
+                // Генерируем токен для авторизации
+                const token = 'token_' + Math.random().toString(36).substring(2);
+                
+                return {
+                    success: true,
+                    message: 'Регистрация успешна',
+                    token,
+                    user: { ...newUser, password: undefined } // Не передаем пароль клиенту
+                };
+            },
+            
+            async verifyToken() {
+                // Имитация задержки сети
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                // В реальности здесь должна быть проверка токена
+                return { success: true, user: this.users[0] };
+            },
+            
+            async updateStats(userId, score, coinsCollected) {
+                // Имитация задержки сети
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                // Находим пользователя
+                const userIndex = this.users.findIndex(u => u.id === userId);
+                if (userIndex === -1) {
+                    return { success: false, message: 'Пользователь не найден' };
+                }
+                
+                const user = this.users[userIndex];
+                
+                // Обновляем статистику
+                if (score > user.highScore) {
+                    user.highScore = score;
+                }
+                
+                user.coins += coinsCollected;
+                user.gamesPlayed += 1;
+                user.lastLogin = new Date().toISOString();
+                
+                // Обновляем лидерборд
+                this.updateLeaderboard();
+                
+                return {
+                    success: true,
+                    user: { ...user, password: undefined }
+                };
+            },
+            
+            async buyCharacter(userId, characterId) {
+                // Имитация задержки сети
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                // Находим персонажа по ID
+                const character = CHARACTERS.find(char => char.id === characterId);
+                if (!character) {
+                    return { success: false, message: 'Персонаж не найден' };
+                }
+                
+                // Находим пользователя
+                const userIndex = this.users.findIndex(u => u.id === userId);
+                if (userIndex === -1) {
+                    return { success: false, message: 'Пользователь не найден' };
+                }
+                
+                const user = this.users[userIndex];
+                
+                // Проверяем, есть ли у пользователя этот персонаж
+                if (user.characters.includes(characterId)) {
+                    return { success: false, message: 'У вас уже есть этот персонаж' };
+                }
+                
+                // Проверяем, достаточно ли монет
+                if (user.coins < character.price) {
+                    return { success: false, message: 'Недостаточно монет' };
+                }
+                
+                // Покупаем персонажа
+                user.coins -= character.price;
+                user.characters.push(characterId);
+                
+                return {
+                    success: true,
+                    message: 'Персонаж успешно куплен',
+                    user: { ...user, password: undefined }
+                };
+            },
+            
+            async setActiveCharacter(userId, characterId) {
+                // Имитация задержки сети
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                // Находим пользователя
+                const userIndex = this.users.findIndex(u => u.id === userId);
+                if (userIndex === -1) {
+                    return { success: false, message: 'Пользователь не найден' };
+                }
+                
+                const user = this.users[userIndex];
+                
+                // Проверяем, есть ли у пользователя этот персонаж
+                if (!user.characters.includes(characterId)) {
+                    return { success: false, message: 'У вас нет этого персонажа' };
+                }
+                
+                // Устанавливаем активного персонажа
+                user.activeCharacter = characterId;
+                
+                return {
+                    success: true,
+                    message: 'Персонаж активирован',
+                    user: { ...user, password: undefined }
+                };
+            },
+            
+            async updateTime(userId, minutesSpent) {
+                // Имитация задержки сети
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+                // Находим пользователя
+                const userIndex = this.users.findIndex(u => u.id === userId);
+                if (userIndex === -1) {
+                    return { success: false, message: 'Пользователь не найден' };
+                }
+                
+                // Обновляем время
+                this.users[userIndex].totalTimeMinutes += minutesSpent;
+                
+                return { success: true };
+            },
+            
+            async getLeaderboard() {
+                // Имитация задержки сети
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                // Обновляем лидерборд
+                this.updateLeaderboard();
+                
+                return {
+                    success: true,
+                    leaderboard: this.leaderboard
+                };
+            },
+            
+            // Вспомогательный метод для обновления лидерборда
+            updateLeaderboard() {
+                // Сортируем пользователей по рекорду (от большего к меньшему)
+                this.leaderboard = this.users
+                    .map(user => ({
+                        rank: 0, // Заполним позже
+                        username: user.username,
+                        highScore: user.highScore,
+                        gamesPlayed: user.gamesPlayed,
+                        date: new Date(user.lastLogin).toLocaleDateString()
+                    }))
+                    .sort((a, b) => b.highScore - a.highScore)
+                    .map((user, index) => ({
+                        ...user,
+                        rank: index + 1
+                    }));
+            }
+        };
+        
+        // Подключаем мок API для тестирования
+        // В реальном проекте здесь будет настоящий API
+        async function setupAPI() {
+            // Перехватываем вызовы к API и перенаправляем их на мок
+            const origFetch = window.fetch;
+            window.fetch = async function(url, options) {
+                if (url.startsWith(API_URL)) {
+                    // Извлекаем endpoint из URL
+                    const endpoint = url.replace(API_URL + '/', '');
+                    
+                    // Получаем данные из тела запроса
+                    let body = {};
+                    if (options && options.body) {
+                        body = JSON.parse(options.body);
+                    }
+                    
+                    // Извлекаем токен, если он есть
+                    let token = null;
+                    let userId = null;
+                    if (options && options.headers && options.headers.Authorization) {
+                        token = options.headers.Authorization.replace('Bearer ', '');
+                        // В реальности здесь должна быть проверка токена
+                        // Для мока просто используем первого пользователя
+                        userId = mockAPI.users.length > 0 ? mockAPI.users[0].id : null;
+                    }
+                    
+                    // Обрабатываем запросы к разным эндпоинтам
+                    let response;
+                    
+                    switch (endpoint) {
+                        case 'login':
+                            response = await mockAPI.login(body.username, body.password);
+                            break;
+                        case 'register':
+                            response = await mockAPI.register(body.username, body.password);
+                            break;
+                        case 'verify-token':
+                            response = await mockAPI.verifyToken(token);
+                            break;
+                        case 'update-stats':
+                            response = await mockAPI.updateStats(userId, body.score, body.coinsCollected);
+                            break;
+                        case 'buy-character':
+                            response = await mockAPI.buyCharacter(userId, body.characterId);
+                            break;
+                        case 'set-active-character':
+                            response = await mockAPI.setActiveCharacter(userId, body.characterId);
+                            break;
+                        case 'update-time':
+                            response = await mockAPI.updateTime(userId, body.minutesSpent);
+                            break;
+                        case 'leaderboard':
+                            response = await mockAPI.getLeaderboard();
+                            break;
+                        default:
+                            return origFetch(url, options);
+                    }
+                    
+                    // Возвращаем ответ в формате, ожидаемом fetch
+                    return {
+                        ok: response.success,
+                        json: async () => response
+                    };
+                }
+                
+                // Для остальных запросов используем оригинальный fetch
+                return origFetch(url, options);
+            };
+            
+            // Создаем тестовые данные, если их еще нет
+            if (mockAPI.users.length === 0) {
+                // Создаем тестовых пользователей
+                await mockAPI.register('player1', 'password1');
+                await mockAPI.register('player2', 'password2');
+                await mockAPI.register('player3', 'password3');
+                
+                // Добавляем тестовые результаты
+                mockAPI.users[0].highScore = 1500;
+                mockAPI.users[0].coins = 200;
+                mockAPI.users[0].gamesPlayed = 10;
+                mockAPI.users[0].characters = ['default', 'character1'];
+                
+                mockAPI.users[1].highScore = 2000;
+                mockAPI.users[1].coins = 150;
+                mockAPI.users[1].gamesPlayed = 8;
+                
+                mockAPI.users[2].highScore = 1200;
+                mockAPI.users[2].coins = 100;
+                mockAPI.users[2].gamesPlayed = 5;
+                
+                // Обновляем лидерборд
+                mockAPI.updateLeaderboard();
+            }
+        }
+        
+        // Инициализируем игру при загрузке страницы
+        window.addEventListener('load', async function() {
+            // Настраиваем API для тестирования
+            await setupAPI();
+            
+            // Инициализируем игру
+            init();
+        });
+        
+        // Предотвращаем прокрутку при касании внутри игрового поля
+        gameContainer.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        // Предотвращаем двойное касание для масштабирования на мобильных
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
+            
