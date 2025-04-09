@@ -3537,7 +3537,7 @@
             // Интервал препятствий уменьшается с ростом счета
             const minObstacleInterval = 700; // Минимальный интервал
             const maxObstacleInterval = 2000; // Максимальный интервал в начале игры
-            const intervalReduction = Math.floor(score / 100) * 50; // Уменьшение интервала каждые 100 очков
+            const intervalReduction = Math.floor(score / 150) * 40; // Уменьшение интервала каждые 150 очков, меньше понижение
             obstacleInterval = Math.max(maxObstacleInterval - intervalReduction, minObstacleInterval);
             
             // Создаем новые препятствия
