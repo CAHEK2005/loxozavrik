@@ -3,139 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ЛохоZаVрик</title>
-    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <title>ЛохоZаVрик: Юрская Эра</title>
+    <link rel="icon" href="/images/favicon_jurassic.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <header class="site-header">
-        <img src="/images/header-bg.png" alt="Фон шапки" class="site-header-bg" id="header-bg">
+<body class="jurassic-theme">
+    <header class="site-header jurassic-header">
         <div class="header-container">
             <div class="game-logo">
-                <img src="/images/logo.png" alt="Лого" class="logo-image" id="logo-image">
-                <h1 class="game-title">ЛохоZаVрик</h1>
+                <img src="/images/logo_jurassic.png" alt="Лого Юрской Эры" class="logo-image" id="logo-image">
+                <h1 class="game-title jurassic-title">ЛохоZаVрик</h1>
             </div>
             
             <div id="auth-container" class="auth-container">
                 <!-- Здесь будет профиль пользователя или кнопки входа/регистрации -->
-                <button id="login-button" class="game-button">Войти</button>
-                <button id="register-button" class="game-button">Регистрация</button>
             </div>
         </div>
     </header>
     
-    <div class="main-container">
+    <div class="main-container jurassic-main">
     
-    <div id="settings">
+    <div id="settings" class="settings-panel">
         <div class="toggle-container">
-            <span>Светлая</span>
             <label class="toggle">
                 <input type="checkbox" id="theme-toggle">
                 <span class="slider"></span>
             </label>
-            <span>Тёмная</span>
+            <span class="toggle-label">Тёмная тема</span>
         </div>
         
         <div class="toggle-container">
-            <span>Звук выкл</span>
             <label class="toggle">
                 <input type="checkbox" id="sound-toggle" checked>
                 <span class="slider"></span>
             </label>
-            <span>Звук вкл</span>
+            <span class="toggle-label">Звук вкл/выкл</span>
         </div>
     </div>
     
-    <div id="game-container">
-        <img id="player" src="/api/placeholder/48/52" alt="Player">
+    <div id="game-container" class="jurassic-game-area">
+        <div id="background-layer-1" class="parallax-bg"></div>
+        <div id="background-layer-2" class="parallax-bg"></div>
+        <div id="background-layer-3" class="parallax-bg"></div>
         
-        <div id="ground"></div>
+        <img id="player" src="/api/placeholder/48/52" alt="Игрок">
         
-        <div id="track"></div>
+        <div id="ground" class="jurassic-ground"></div>
         
-        <div id="score-container">
-            <div>Счёт: <span id="score">0</span></div>
-            <div>Монет: <span id="coins">0</span></div>
+        <div id="score-container" class="game-hud">
+            <div class="hud-item">Счёт: <span id="score">0</span></div>
+            <div class="hud-item">Монет: <span id="coins">0</span></div>
+            <div id="music-controls" class="hud-item">
+                <button id="music-toggle" class="hud-button">🔊</button>
+            </div>
         </div>
-        
-        <div id="music-controls">
-            <button id="music-toggle">🔊</button>
+    </div>
+    
+    <div id="game-buttons" class="action-buttons">
+        <button id="start-button" class="action-button start">Начать игру</button>
+        <button id="shop-button" class="action-button shop">Магазин</button>
+        <button id="profile-button" class="action-button profile" style="display: none;">Профиль</button>
+    </div>
+    
+    <button id="mobile-jump" class="mobile-jump-button jurassic-jump">Прыжок</button>
+    
+    <div id="stats-container" class="leaderboard-section">
+        <h2 class="section-title">Таблица рекордов</h2>
+        <div class="table-wrapper">
+            <table id="leaderboard" class="jurassic-table">
+                <thead>
+                    <tr>
+                        <th>Место</th>
+                        <th>Имя</th>
+                        <th>Счёт</th>
+                        <th>Игр</th>
+                        <th>Дата</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <tr>
+                        <td colspan="5" class="loading-cell">Загрузка данных...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
-    
-    <div id="game-buttons">
-        <button id="start-button" class="game-button">Начать игру</button>
-        <button id="shop-button" class="game-button">Магазин</button>
-        <button id="profile-button" class="game-button" style="display: none;">Профиль</button>
-    </div>
-    
-    <div id="controls">
-        <p>Нажмите на экран или кнопку "Прыжок"</p>
-    </div>
-    
-    <button id="mobile-jump" class="mobile-jump-button">Прыжок</button>
-    
-    <div id="stats-container">
-        <h2>Таблица рекордов</h2>
-        <table id="leaderboard">
-            <thead>
-                <tr>
-                    <th>Место</th>
-                    <th>Имя</th>
-                    <th>Счёт</th>
-                    <th>Игр</th>
-                    <th>Дата</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboard-body">
-                <!-- Данные будут добавлены через JavaScript -->
-                <tr>
-                    <td colspan="5">Загрузка данных...</td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 
-    <!-- Индикатор загрузки -->
-    <div id="loading-spinner">
-        <div class="spinner"></div>
+    <div id="loading-spinner" class="jurassic-spinner">
+        <div class="spinner-inner"></div>
     </div>
 
-    <!-- Модальное окно авторизации -->
     <div id="modal-overlay" class="modal-overlay"></div>
     
-    <!-- Модальное окно входа -->
-    <div id="login-modal" class="game-modal">
+    <div id="login-modal" class="jurassic-modal auth-modal">
         <button class="close-button" id="login-close">&times;</button>
-        <h2>Вход в игру</h2>
+        <h2 class="modal-title">Вход в игру</h2>
         <div id="login-message" class="message" style="display: none;"></div>
         
         <div class="form-row">
-            <label for="login-username">Имя пользователя:</label>
-            <input type="text" id="login-username" placeholder="Введите имя пользователя">
+            <label for="login-username">Имя:</label>
+            <input type="text" id="login-username" placeholder="Ваш никнейм">
         </div>
         
         <div class="form-row">
             <label for="login-password">Пароль:</label>
-            <input type="password" id="login-password" placeholder="Введите пароль">
+            <input type="password" id="login-password" placeholder="Ваш пароль">
         </div>
         
-        <button id="login-submit" class="game-button">Войти</button>
+        <button id="login-submit" class="action-button submit">Войти</button>
         
         <div class="auth-links">
             <span class="auth-link" id="to-register">Создать аккаунт</span>
         </div>
     </div>
     
-    <!-- Модальное окно регистрации -->
-    <div id="register-modal" class="game-modal">
+    <div id="register-modal" class="jurassic-modal auth-modal">
         <button class="close-button" id="register-close">&times;</button>
-        <h2>Регистрация</h2>
+        <h2 class="modal-title">Регистрация</h2>
         <div id="register-message" class="message" style="display: none;"></div>
         
         <div class="form-row">
-            <label for="register-username">Имя пользователя:</label>
-            <input type="text" id="register-username" placeholder="Придумайте имя пользователя" maxlength="20">
+            <label for="register-username">Имя:</label>
+            <input type="text" id="register-username" placeholder="Придумайте никнейм" maxlength="20">
         </div>
         
         <div class="form-row">
@@ -144,167 +136,179 @@
         </div>
         
         <div class="form-row">
-            <label for="register-confirm">Подтверждение пароля:</label>
+            <label for="register-confirm">Повторите:</label>
             <input type="password" id="register-confirm" placeholder="Повторите пароль">
         </div>
         
-        <button id="register-submit" class="game-button">Зарегистрироваться</button>
+        <button id="register-submit" class="action-button submit">Зарегистрироваться</button>
         
         <div class="auth-links">
             <span class="auth-link" id="to-login">Уже есть аккаунт? Войти</span>
         </div>
     </div>
     
-    <!-- Модальное окно профиля -->
-    <div id="profile-modal" class="game-modal profile-modal">
+    <div id="profile-modal" class="jurassic-modal profile-display">
         <button class="close-button" id="profile-close">&times;</button>
-        <h2 class="profile-heading">Профиль игрока <span id="profile-username">Username</span></h2>
+        <h2 class="modal-title profile-title">Профиль: <span id="profile-username">Username</span></h2>
         
         <div class="profile-stats-grid">
             <div class="stat-item">
+                <span class="stat-icon coins"></span>
                 <div class="stat-value" id="profile-coins">0</div>
                 <div class="stat-label">Монет</div>
             </div>
             <div class="stat-item">
+                <span class="stat-icon highscore"></span>
                 <div class="stat-value" id="profile-highscore">0</div>
                 <div class="stat-label">Рекорд</div>
             </div>
             <div class="stat-item">
+                <span class="stat-icon games"></span>
                 <div class="stat-value" id="profile-games">0</div>
-                <div class="stat-label">Игр сыграно</div>
+                <div class="stat-label">Игр</div>
             </div>
             <div class="stat-item">
+                <span class="stat-icon time"></span>
                 <div class="stat-value" id="profile-time">0</div>
-                <div class="stat-label">Время на сайте (мин)</div>
+                <div class="stat-label">Время (мин)</div>
             </div>
         </div>
         
         <div class="profile-actions">
-            <button id="logout-button" class="game-button logout-button">Выйти из аккаунта</button>
+            <button id="logout-button" class="action-button logout">Выйти</button>
         </div>
     </div>
     
-    <!-- Модальное окно конца игры (с двумя кнопками) -->
-    <div id="game-over" class="game-modal">
+    <div id="game-over" class="jurassic-modal game-over-modal">
         <button class="close-button" id="game-over-close">&times;</button>
-        <h2>Игра окончена!</h2>
-        <p>Ваш счёт: <span id="final-score">0</span></p>
-        <p>Собрано монет: <span id="final-coins">0</span></p>
-        <div class="game-over-buttons">
-            <button id="restart-btn">Начать заново</button>
-            <button id="shop-btn-modal" class="shop-button">Магазин</button>
+        <h2 class="modal-title">Игра окончена!</h2>
+        <div class="game-over-stats">
+            <p>Счёт: <span id="final-score">0</span></p>
+            <p>Монет: <span id="final-coins">0</span></p>
+        </div>
+        <div class="game-over-buttons action-buttons">
+            <button id="restart-btn" class="action-button restart">Начать заново</button>
+            <button id="shop-btn-modal" class="action-button shop">Магазин</button>
         </div>
     </div>
     
-    <div id="shop-modal" class="game-modal">
+    <div id="shop-modal" class="jurassic-modal shop-display">
         <button class="close-button" id="shop-close">&times;</button>
-        <h2>Магазин персонажей</h2>
+        <h2 class="modal-title">Магазин</h2>
         
-        <div class="shop-balance">
-            <div class="coin-balance">
-                <div class="coin-icon"></div>
+        <div class="shop-header">
+            <div class="shop-balance">
+                <span class="coin-icon"></span>
                 <span id="shop-coins">0</span> монет
             </div>
-            <div id="char-owned">Персонажей: <span id="owned-count">1</span> из <span id="total-count">5</span></div>
+            <div id="char-owned" class="character-count">
+                Персонажей: <span id="owned-count">1</span> / <span id="total-count">?</span>
+            </div>
         </div>
         
-        <div class="shop-items" id="character-list">
+        <div class="shop-items scrollable-list" id="character-list">
             <!-- Персонажи будут добавлены через JavaScript -->
         </div>
     </div>
 
-    <!-- Аудио элементы для музыки и звуковых эффектов -->
-    <audio id="background-music" loop>
-        <source src="/sounds/defaults/background.mp3" type="audio/mpeg">
-    </audio>
-    
-    <audio id="jump-sound">
-        <source src="/sounds/defaults/jump.mp3" type="audio/mpeg">
-    </audio>
-    
-    <audio id="coin-sound">
-        <source src="/sounds/defaults/coin.mp3" type="audio/mpeg">
-    </audio>
-    
-    <audio id="game-over-sound">
-        <source src="/sounds/defaults/game-over.mp3" type="audio/mpeg">
-    </audio>
-    
-    <audio id="purchase-sound">
-        <source src="/sounds/defaults/purchase.mp3" type="audio/mpeg">
-    </audio>
-    
-    <audio id="game-start-sound">
-        <source src="/sounds/defaults/game-start.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="background-music" loop></audio>
+    <audio id="jump-sound"></audio>
+    <audio id="coin-sound"></audio>
+    <audio id="game-over-sound"></audio>
+    <audio id="purchase-sound"></audio>
+    <audio id="game-start-sound"></audio>
 
     <script>
         // ============= НАСТРОЙКИ ИЗОБРАЖЕНИЙ И ЗВУКОВ =============
-        // Список персонажей с их характеристиками и уникальными звуками
+        const JURASSIC_ASSETS = {
+            backgroundLayer1: '/images/jurassic/bg_layer_1.png',
+            backgroundLayer2: '/images/jurassic/bg_layer_2.png',
+            backgroundLayer3: '/images/jurassic/bg_layer_3.png',
+            ground: '/images/jurassic/ground.png',
+            playerDefault: '/images/players/default/player_jurassic.png',
+            obstaclePterodactyl: '/images/obstacles/jurassic/pterodactyl.png',
+            obstacleTRex: '/images/obstacles/jurassic/trex.png',
+            obstacleRaptor: '/images/obstacles/jurassic/raptor.png',
+            obstaclePlant: '/images/obstacles/jurassic/plant.png',
+            obstacleRock: '/images/obstacles/jurassic/rock_jurassic.png',
+            coinAmber: '/images/coins/jurassic/coin_amber.png',
+            coinFossil: '/images/coins/jurassic/coin_fossil.png',
+            coinEgg: '/images/coins/jurassic/coin_egg.png',
+            bonusShieldAmber: '/images/bonuses/jurassic/bonus_shield_amber.png',
+            bonusSlowTar: '/images/bonuses/jurassic/bonus_slow_tar.png',
+            bonusMagnetVine: '/images/bonuses/jurassic/bonus_magnet_vine.png',
+            logo: '/images/logo_jurassic.png',
+            headerBg: '/images/jurassic/header_bg_jurassic.png',
+            iconCoins: '/images/icons/coins_jurassic.png',
+            iconHighscore: '/images/icons/highscore_jurassic.png',
+            iconGames: '/images/icons/games_jurassic.png',
+            iconTime: '/images/icons/time_jurassic.png',
+        };
+
         const CHARACTERS = [
             {
                 id: 'default',
-                name: 'Лохозаврик',
-                image: '/images/players/default/player_default.png',
-                width: 70, // Увеличено с 78
-                height: 100, // Увеличено с 90
-                hitboxWidth: 65, // Увеличено с 54
-                hitboxHeight: 86, // Увеличено с 72
-                jumpHeight: 204,
+                name: 'Динозаврик Рекс',
+                image: JURASSIC_ASSETS.playerDefault,
+                width: 80,
+                height: 95,
+                hitboxWidth: 60,
+                hitboxHeight: 75,
+                jumpHeight: 210,
                 price: 0,
                 unlocked: true,
                 sounds: {
                     jump: '/sounds/players/default/jump.mp3',
                     coin: '/sounds/players/default/coin.mp3',
-                    gameOver: ['/sounds/players/default/game_over_0.mp3', '/sounds/players/default/game_over_1.mp3', '/sounds/players/default/game_over_2.mp3'],
-                    gameStart: ['/sounds/players/default/game_start_0.mp3', '/sounds/players/default/game_start_1.mp3', '/sounds/players/default/game_start_2.mp3']
+                    gameOver: ['/sounds/players/default/game_over_0.mp3', '/sounds/players/default/game_over_1.mp3'],
+                    gameStart: ['/sounds/players/default/game_start_0.mp3']
                 },
-                color: '#4285f4'
+                color: '#795548'
             },
             {
                 id: 'character1',
-                name: 'Сиськослав',
-                image: '/images/players/svyat/player_svyat.png',
-                width: 96, // Увеличено с 80
-                height: 113, // Увеличено с 94
-                hitboxWidth: 70, // Увеличено с 58
-                hitboxHeight: 89, // Увеличено с 74
-                jumpHeight: 222,
-                price: 20,
+                name: 'Птеродактиль',
+                image: '/images/players/jurassic/player_pterodactyl.png',
+                width: 100,
+                height: 80,
+                hitboxWidth: 75,
+                hitboxHeight: 50,
+                jumpHeight: 230,
+                price: 50,
                 sounds: {
-                    jump: '/sounds/svyat/jump.mp3',
-                    coin: '/sounds/svyat/coin.mp3',
-                    gameOver: ['/sounds/svyat/game_over_0.mp3', '/sounds/svyat/game_over_1.mp3', '/sounds/svyat/game_over_2.mp3'],
-                    gameStart: ['/sounds/svyat/game_start_0.mp3', '/sounds/svyat/game_start_1.mp3', '/sounds/svyat/game_start_2.mp3']
+                    jump: '/sounds/jurassic/jump_pterodactyl.mp3',
+                    coin: '/sounds/jurassic/coin_collect_amber.mp3',
+                    gameOver: ['/sounds/jurassic/game_over_roar_0.mp3', '/sounds/jurassic/game_over_roar_1.mp3'],
+                    gameStart: ['/sounds/jurassic/game_start_stomp_0.mp3']
                 },
-                color: '#d81b60'
+                color: '#FF9800'
             },
             {
                 id: 'character2',
-                name: 'Скуфлик',
-                image: '/images/players/skuflik/player_skuflik.png',
-                width: 84, // Увеличено с 70
-                height: 106, // Увеличено с 88
-                hitboxWidth: 67, // Увеличено с 56
-                hitboxHeight: 84, // Увеличено с 70
-                jumpHeight: 198,
-                price: 50,
+                name: 'Раптор',
+                image: '/images/players/jurassic/player_raptor.png',
+                width: 90,
+                height: 70,
+                hitboxWidth: 70,
+                hitboxHeight: 55,
+                jumpHeight: 190,
+                price: 100,
                 sounds: {
-                    jump: '/sounds/skuflik/jump.mp3',
-                    coin: '/sounds/skuflik/coin.mp3',
-                    gameOver: ['/sounds/skuflik/game_over_0.mp3', '/sounds/skuflik/game_over_1.mp3', '/sounds/skuflik/game_over_2.mp3'],
-                    gameStart: ['/sounds/skuflik/game_start_0.mp3', '/sounds/skuflik/game_start_1.mp3', '/sounds/skuflik/game_start_2.mp3']
+                    jump: '/sounds/jurassic/jump_raptor.mp3',
+                    coin: '/sounds/jurassic/coin_collect_fossil.mp3',
+                    gameOver: ['/sounds/jurassic/game_over_roar_0.mp3', '/sounds/jurassic/game_over_roar_1.mp3'],
+                    gameStart: ['/sounds/jurassic/game_start_stomp_0.mp3']
                 },
-                color: '#ff9800'
+                color: '#4CAF50'
             },
             {
                 id: 'character3',
                 name: 'Леонид',
                 image: '/images/players/leonid/player_leonid.png',
-                width: 98, // Увеличено с 82
-                height: 115, // Увеличено с 96
-                hitboxWidth: 72, // Увеличено с 60
-                hitboxHeight: 91, // Увеличено с 76
+                width: 98,
+                height: 115,
+                hitboxWidth: 72,
+                hitboxHeight: 91,
                 jumpHeight: 210,
                 price: 100,
                 sounds: {
@@ -319,10 +323,10 @@
                 id: 'character4',
                 name: 'Пидиди',
                 image: '/images/players/pididi/player_pididi.png',
-                width: 84, // Увеличено с 70
-                height: 101, // Увеличено с 84
-                hitboxWidth: 62, // Увеличено с 52
-                hitboxHeight: 82, // Увеличено с 68
+                width: 84,
+                height: 101,
+                hitboxWidth: 62,
+                hitboxHeight: 82,
                 jumpHeight: 192,
                 price: 100,
                 sounds: {
@@ -337,10 +341,10 @@
                 id: 'character5',
                 name: 'Скибиди',
                 image: '/images/players/skibidi/player_skibidi.png',
-                width: 94, // Увеличено с 78
-                height: 108, // Увеличено с 90
-                hitboxWidth: 66, // Увеличено с 55
-                hitboxHeight: 86, // Увеличено с 72
+                width: 94,
+                height: 108,
+                hitboxWidth: 66,
+                hitboxHeight: 86,
                 jumpHeight: 216,
                 price: 30,
                 sounds: {
@@ -353,169 +357,81 @@
             }
         ];
 
-        // Изображения для игры (препятствия и монеты)
         const OBSTACLES = [
             {
-                id: 'penguin',
-                image: '/images/obstacles/penguin.png',
-                width: 50, // Увеличено с 42
-                height: 101, // Увеличено с 84
-                hitboxWidth: 22, // Увеличено с 18
-                hitboxHeight: 67, // Увеличено с 56
-                speed: 1.0 // Множитель скорости (1.0 = стандарт)
+                id: 'pterodactyl',
+                image: JURASSIC_ASSETS.obstaclePterodactyl,
+                width: 70, height: 55, hitboxWidth: 50, hitboxHeight: 30,
+                speed: 1.2, isFlying: true, minHeight: 80, maxHeight: 180
             },
             {
-                id: 'rock',
-                image: '/images/obstacles/rock.png',
-                width: 58, // Увеличено с 48
-                height: 50, // Увеличено с 42
-                hitboxWidth: 34, // Увеличено с 28
-                hitboxHeight: 29, // Увеличено с 24
-                speed: 1 // Движется быстрее
+                id: 'plant',
+                image: JURASSIC_ASSETS.obstaclePlant,
+                width: 60, height: 70, hitboxWidth: 40, hitboxHeight: 50, speed: 0.9
             },
             {
-                id: 'bird',
-                image: '/images/obstacles/bird.png',
-                width: 65, // Увеличено с 54
-                height: 50, // Увеличено с 42
-                hitboxWidth: 38, // Увеличено с 32
-                hitboxHeight: 24, // Увеличено с 20
-                speed: 1.2, // Самый быстрый
-                isFlying: true, // Летающее препятствие
-                minHeight: 72, // Увеличено с 60
-                maxHeight: 173 // Увеличено с 144
+                id: 'rock_jurassic',
+                image: JURASSIC_ASSETS.obstacleRock,
+                width: 65, height: 55, hitboxWidth: 45, hitboxHeight: 35, speed: 1.0
             },
             {
-                id: 'spike',
-                image: '/images/obstacles/spike.png',
-                width: 43, // Увеличено с 36
-                height: 55, // Увеличено с 30
-                hitboxWidth: 22, // Увеличено с 18
-                hitboxHeight: 17, // Увеличено с 14
-                speed: 0.9, // Медленнее
-                count: 3, // Может появляться группами
-                spacing: 58 // Увеличено с 48
+                id: 'raptor',
+                image: JURASSIC_ASSETS.obstacleRaptor,
+                width: 80, height: 60, hitboxWidth: 60, hitboxHeight: 45, speed: 1.1
             },
             {
-                id: 'log',
-                image: '/images/obstacles/log.png',
-                width: 86, // Увеличено с 72
-                height: 58, // Увеличено с 48
-                hitboxWidth: 54, // Увеличено с 45
-                hitboxHeight: 29, // Увеличено с 24
-                speed: 0.8 // Самый медленный, но широкий
+                id: 'trex_head',
+                image: JURASSIC_ASSETS.obstacleTRex,
+                width: 90, height: 100, hitboxWidth: 70, hitboxHeight: 70,
+                speed: 0.8, isFlying: true,
+                minHeight: 150, maxHeight: 220
             }
         ];
 
-        // Различные типы монет с разной стоимостью
         const COINS = [
-            {
-                id: 'bronze',
-                image: '/images/coins/coin_bronze.png',
-                width: 30,
-                height: 30,
-                hitboxWidth: 24,
-                hitboxHeight: 24,
-                value: 1 // Обычная монета
-            },
-            {
-                id: 'silver',
-                image: '/images/coins/coin_silver.png',
-                width: 34,
-                height: 34,
-                hitboxWidth: 26,
-                hitboxHeight: 26,
-                value: 3, // Серебряная монета = 3 очка
-                rarity: 0.3 // Вероятность появления (30%)
-            },
-            {
-                id: 'gold',
-                image: '/images/coins/coin_gold.png',
-                width: 36,
-                height: 36,
-                hitboxWidth: 29,
-                hitboxHeight: 29,
-                value: 5, // Золотая монета = 5 очков
-                rarity: 0.1 // Вероятность появления (10%)
-            }
+            { id: 'amber', image: JURASSIC_ASSETS.coinAmber, width: 32, height: 32, hitboxWidth: 26, hitboxHeight: 26, value: 1 },
+            { id: 'fossil', image: JURASSIC_ASSETS.coinFossil, width: 36, height: 36, hitboxWidth: 30, hitboxHeight: 30, value: 3, rarity: 0.3 },
+            { id: 'egg', image: JURASSIC_ASSETS.coinEgg, width: 40, height: 40, hitboxWidth: 34, hitboxHeight: 34, value: 5, rarity: 0.1 }
         ];
-        
-        // Бонусы, которые могут появляться во время игры
+
         const BONUSES = [
-            {
-                id: 'shield',
-                image: '/images/bonuses/bonus_shield.png',
-                width: 42,
-                height: 42,
-                hitboxWidth: 36,
-                hitboxHeight: 36,
-                effect: 'shield', // Защита от одного столкновения
-                duration: 10000, // 10 секунд
-                rarity: 0.05 // Вероятность появления (5%)
-            },
-            {
-                id: 'slow',
-                image: '/images/bonuses/bonus_slow.png',
-                width: 42,
-                height: 42,
-                hitboxWidth: 36,
-                hitboxHeight: 36,
-                effect: 'slow', // Замедление игры
-                duration: 5000, // 5 секунд
-                rarity: 0.08 // Вероятность появления (8%)
-            },
-            {
-                id: 'magnet',
-                image: '/images/bonuses/bonus_magnet.png',
-                width: 42,
-                height: 42,
-                hitboxWidth: 36,
-                hitboxHeight: 36,
-                effect: 'magnet', // Притягивает монеты
-                duration: 8000, // 8 секунд
-                rarity: 0.07 // Вероятность появления (7%)
-            }
+            { id: 'shield_amber', image: JURASSIC_ASSETS.bonusShieldAmber, width: 45, height: 45, hitboxWidth: 40, hitboxHeight: 40, effect: 'shield', duration: 10000, rarity: 0.05 },
+            { id: 'slow_tar', image: JURASSIC_ASSETS.bonusSlowTar, width: 45, height: 45, hitboxWidth: 40, hitboxHeight: 40, effect: 'slow', duration: 5000, rarity: 0.08 },
+            { id: 'magnet_vine', image: JURASSIC_ASSETS.bonusMagnetVine, width: 45, height: 45, hitboxWidth: 40, hitboxHeight: 40, effect: 'magnet', duration: 8000, rarity: 0.07 }
         ];
-        
-        // Звуковые эффекты для игры
+
         const SOUNDS = {
-            background: '/sounds/defaults/background.mp3',
-            jump: '/sounds/defaults/jump.mp3', // Стандартный звук прыжка (если у персонажа нет своего)
-            coin: '/sounds/defaults/coin.mp3', // Стандартный звук монеты
-            gameOver: ['/sounds/defaults/game-over.mp3'], // Стандартный звук проигрыша
-            gameStart: ['/sounds/defaults/game-start.mp3'], // Стандартный звук начала игры
+            background: '/sounds/jurassic/background_ambient.mp3',
+            jump: '/sounds/defaults/jump.mp3',
+            coin: '/sounds/jurassic/coin_collect.mp3',
+            gameOver: ['/sounds/jurassic/game_over_roar.mp3'],
+            gameStart: ['/sounds/jurassic/game_start_stomp.mp3'],
             purchase: '/sounds/defaults/purchase.mp3',
-            bonus: '/sounds/defaults/bonus.mp3', // Звук сбора бонуса
-            shieldEnd: '/sounds/defaults/shield_end.mp3', // Звук окончания щита
-            levelUp: '/sounds/defaults/level_up.mp3' // Звук перехода на новый уровень
+            bonus: '/sounds/jurassic/bonus_collect.mp3',
+            shieldEnd: '/sounds/jurassic/shield_break.mp3',
+            levelUp: '/sounds/jurassic/level_up_roar.mp3'
         };
-        
-        // Настройки громкости звуков
+
         const SOUND_VOLUME = {
-            background: 0.09, // 30% от текущего значения 0.3
-            effects: 0.4,    // 40% громкость для всех эффектов
+            background: 0.09,
+            effects: 0.4,
         };
-        
-        // API URL для работы с базой данных
+
         const API_URL = 'http://192.168.0.240/api';
-        
-        // ============= СИСТЕМА АВТОРИЗАЦИИ И БАЗЫ ДАННЫХ =============
-        // Класс для работы с API
+
         class GameAPI {
             constructor() {
                 this.currentUser = null;
                 this.sessionStartTime = null;
                 this.timeInterval = null;
                 this.apiToken = localStorage.getItem('lohozavrikToken') || null;
-                this.apiUrl = '/api'; // Путь к API через прокси Nginx
+                this.apiUrl = '/api';
                 
-                // Проверяем токен при инициализации
                 if (this.apiToken) {
                     this.verifyToken();
                 }
             }
             
-            // Проверка токена
             async verifyToken() {
                 try {
                     showLoading();
@@ -535,7 +451,6 @@
                         this.startTimeTracking();
                         return true;
                     } else {
-                        // Токен недействителен, удаляем его
                         this.logout();
                         return false;
                     }
@@ -546,7 +461,6 @@
                 }
             }
             
-            // Регистрация нового пользователя
             async register(username, password) {
                 try {
                     showLoading();
@@ -562,12 +476,10 @@
                     hideLoading();
                     
                     if (data.success && data.token && data.user) {
-                        // Сохраняем токен
                         this.apiToken = data.token;
                         this.currentUser = data.user;
                         localStorage.setItem('lohozavrikToken', this.apiToken);
                         
-                        // Начинаем отслеживать время
                         this.startTimeTracking();
                     }
                     
@@ -579,7 +491,6 @@
                 }
             }
             
-            // Авторизация пользователя
             async login(username, password) {
                 try {
                     showLoading();
@@ -598,10 +509,8 @@
                         this.apiToken = data.token;
                         this.currentUser = data.user;
                         
-                        // Сохраняем токен
                         localStorage.setItem('lohozavrikToken', this.apiToken);
                         
-                        // Начинаем отслеживать время
                         this.startTimeTracking();
                     }
                     
@@ -613,13 +522,10 @@
                 }
             }
             
-            // Выход пользователя
             logout() {
                 if (this.currentUser) {
-                    // Сохраняем накопленное время перед выходом
                     this.saveTimeSpent();
                     
-                    // Очищаем данные текущего пользователя и токен
                     this.currentUser = null;
                     this.apiToken = null;
                     localStorage.removeItem('lohozavrikToken');
@@ -631,19 +537,15 @@
                 return { success: false, message: "Вы не авторизованы" };
             }
             
-            // Начинаем отслеживать время
             startTimeTracking() {
-                // Сохраняем время начала сессии
                 this.sessionStartTime = new Date();
                 
-                // Обновляем время каждую минуту
                 clearInterval(this.timeInterval);
                 this.timeInterval = setInterval(() => {
                     this.saveTimeSpent();
-                }, 60000); // каждую минуту
+                }, 60000);
             }
             
-            // Сохраняем время, проведенное на сайте
             async saveTimeSpent() {
                 if (this.currentUser && this.sessionStartTime && this.apiToken) {
                     const now = new Date();
@@ -660,12 +562,10 @@
                                 body: JSON.stringify({ minutesSpent })
                             });
                             
-                            // Обновляем локальные данные
                             if (this.currentUser.totalTimeMinutes) {
                                 this.currentUser.totalTimeMinutes += minutesSpent;
                             }
                             
-                            // Сбрасываем время начала сессии
                             this.sessionStartTime = now;
                         } catch (error) {
                             console.error('Ошибка обновления времени:', error);
@@ -674,14 +574,13 @@
                 }
             }
             
-            // Обновляем данные пользователя после игры
             async updateUserStats(score, coinsCollected) {
                 if (!this.currentUser || !this.apiToken) {
                     return { success: false, message: "Пользователь не авторизован" };
                 }
                 
                 try {
-                    const duration = Math.floor((Date.now() - gameStartTime) / 1000); // Длительность игры в секундах
+                    const duration = Math.floor((Date.now() - gameStartTime) / 1000);
                     
                     showLoading();
                     const response = await fetch(`${this.apiUrl}/update-stats`, {
@@ -697,7 +596,6 @@
                     hideLoading();
                     
                     if (data.success && data.user) {
-                        // Обновляем локальные данные пользователя
                         this.currentUser = data.user;
                     }
                     
@@ -709,7 +607,6 @@
                 }
             }
             
-            // Покупка персонажа
             async buyCharacter(characterId) {
                 if (!this.currentUser || !this.apiToken) {
                     return { success: false, message: "Вы не авторизованы" };
@@ -730,7 +627,6 @@
                     hideLoading();
                     
                     if (data.success && data.user) {
-                        // Обновляем локальные данные пользователя
                         this.currentUser = data.user;
                     }
                     
@@ -742,13 +638,11 @@
                 }
             }
             
-            // Устанавливаем активного персонажа
             async setActiveCharacter(characterId) {
                 if (!this.currentUser || !this.apiToken) {
                     return { success: false, message: "Вы не авторизованы" };
                 }
                 
-                // Проверяем, есть ли у пользователя этот персонаж
                 if (!this.currentUser.characters.includes(characterId)) {
                     return { success: false, message: "У вас нет этого персонажа" };
                 }
@@ -768,7 +662,6 @@
                     hideLoading();
                     
                     if (data.success && data.user) {
-                        // Обновляем локальные данные пользователя
                         this.currentUser = data.user;
                     }
                     
@@ -780,7 +673,6 @@
                 }
             }
             
-            // Получаем глобальную таблицу рекордов
             async getGlobalLeaderboard() {
                 try {
                     showLoading();
@@ -801,20 +693,16 @@
             }
         }
         
-        // Инициализируем API
         const gameAPI = new GameAPI();
         
-        // Показать индикатор загрузки
         function showLoading() {
             document.getElementById('loading-spinner').style.display = 'flex';
         }
         
-        // Скрыть индикатор загрузки
         function hideLoading() {
             document.getElementById('loading-spinner').style.display = 'none';
         }
         
-        // Элементы DOM
         const gameContainer = document.getElementById('game-container');
         const player = document.getElementById('player');
         const scoreDisplay = document.getElementById('score');
@@ -841,10 +729,7 @@
         const startButton = document.getElementById('start-button');
         const mobileJumpButton = document.getElementById('mobile-jump');
         
-        // Элементы авторизации
         const authContainer = document.getElementById('auth-container');
-        const loginButton = document.getElementById('login-button');
-        const registerButton = document.getElementById('register-button');
         const loginModal = document.getElementById('login-modal');
         const loginClose = document.getElementById('login-close');
         const loginUsername = document.getElementById('login-username');
@@ -869,7 +754,6 @@
         const profileTime = document.getElementById('profile-time');
         const logoutButton = document.getElementById('logout-button');
         
-        // Аудио элементы
         const backgroundMusic = document.getElementById('background-music');
         const jumpSound = document.getElementById('jump-sound');
         const coinSound = document.getElementById('coin-sound');
@@ -877,16 +761,14 @@
         const purchaseSound = document.getElementById('purchase-sound');
         const gameStartSound = document.getElementById('game-start-sound');
         
-        // Создаем дополнительные аудио-элементы для бонусов
         let bonusSound = document.createElement('audio');
         let shieldEndSound = document.createElement('audio');
         let levelUpSound = document.createElement('audio');
         
-        // Установка источников звуков
         backgroundMusic.src = SOUNDS.background;
         jumpSound.src = SOUNDS.jump;
         coinSound.src = SOUNDS.coin;
-        gameOverSound.src = SOUNDS.gameOver[0] || SOUNDS.gameOver; // Берем или первый из массива, или строку
+        gameOverSound.src = SOUNDS.gameOver[0] || SOUNDS.gameOver;
         purchaseSound.src = SOUNDS.purchase;
         gameStartSound.src = SOUNDS.gameStart[0] || SOUNDS.gameStart; // Берем или первый из массива, или строку
         bonusSound.src = SOUNDS.bonus;
@@ -906,7 +788,7 @@
         
         // Игровые переменные
         let activeCharacter = null;
-        let gameSpeed = 14; // Увеличено с 12 до 14 - повышаем базовую скорость игры
+        let gameSpeed = 16; // Увеличено с 14 до 16 - повышаем базовую скорость игры
         let backgroundPos = 0;
         let score = 0;
         let coinCount = 0;
@@ -925,9 +807,9 @@
         let bonuses = [];
         
         // Интервалы генерации объектов
-        let obstacleInterval = 1600; // Уменьшено с 1800 до 1600 мс между препятствиями для соответствия новой скорости
-        let coinInterval = 1100; // Уменьшено с 1200 до 1100 мс между монетами
-        let bonusInterval = 10000; // Уменьшено с 12000 до 10000 мс между бонусами
+        let obstacleInterval = 1400; // Уменьшено с 1600 до 1400 мс
+        let coinInterval = 1000; // Уменьшено с 1100 до 1000 мс
+        let bonusInterval = 8000; // Уменьшено с 10000 до 8000 мс
         let nextObstacleTime = 0;
         let nextCoinTime = 0;
         let nextBonusTime = 0;
@@ -1831,7 +1713,7 @@
         function startGame() {
             score = 0;
             coinCount = 0;
-            gameSpeed = 8; // Увеличено с 6 до 8 - начальная скорость во время старта
+            gameSpeed = 10; // Увеличено с 8 до 10 - начальная скорость во время старта
             backgroundPos = 0;
             currentLevel = 1;
             gameStartTime = Date.now();
@@ -1869,11 +1751,11 @@
             // Начальные интервалы генерации - как в Chrome Dino
             nextObstacleTime = performance.now() + 2000; // Первое препятствие чуть позже
             nextCoinTime = performance.now() + 800; 
-            nextBonusTime = performance.now() + 15000; // Бонусы реже
+            nextBonusTime = performance.now() + 12000; // Бонусы реже в начале
             
-            obstacleInterval = 1500; // Начальный интервал для update() 
-            coinInterval = 1200; 
-            bonusInterval = 15000; 
+            obstacleInterval = 1400; // Начальный интервал для update() (Уменьшено с 1500)
+            coinInterval = 1000; // (Уменьшено с 1200)
+            bonusInterval = 12000; // (Уменьшено с 15000)
 
             if (soundEnabled && !musicPlaying) {
                 toggleMusic();
@@ -2470,9 +2352,9 @@
             gameTime = Math.floor((Date.now() - gameStartTime) / 1000);
             
             // 2. Регулировка скорости игры (как в Chrome Dino)
-            const BASE_SPEED = 10; // Увеличено с 8 до 10 - базовая скорость (пикселей/кадр)
-            const MAX_SPEED = 19; // Увеличено с 16 до 19 - максимальная скорость
-            const ACCELERATION = 0.003; // Увеличено с 0.002 до 0.003 - коэффициент ускорения
+            const BASE_SPEED = 12; // Увеличено с 10 до 12 - базовая скорость (пикселей/кадр)
+            const MAX_SPEED = 22; // Увеличено с 19 до 22 - максимальная скорость
+            const ACCELERATION = 0.004; // Увеличено с 0.003 до 0.004 - коэффициент ускорения
             
             // Плавно увеличиваем скорость до максимальной
             if (gameSpeed < MAX_SPEED) {
@@ -2484,9 +2366,9 @@
             
             // 3. Интервал препятствий (как в Chrome Dino)
             // Уменьшается с ростом скорости, но имеет минимальный предел
-            const BASE_OBSTACLE_INTERVAL_MS = 1400; // Уменьшено с 1500 до 1400 - начальный интервал в мс
-            const MIN_OBSTACLE_INTERVAL_MS = 550; // Уменьшено с 600 до 550 - минимальный интервал
-            const INTERVAL_SPEED_FACTOR = 55; // Увеличено с 50 до 55 - на сколько мс уменьшать интервал на единицу скорости
+            const BASE_OBSTACLE_INTERVAL_MS = 1250; // Уменьшено с 1400 до 1250 - начальный интервал в мс
+            const MIN_OBSTACLE_INTERVAL_MS = 500; // Уменьшено с 550 до 500 - минимальный интервал
+            const INTERVAL_SPEED_FACTOR = 60; // Увеличено с 55 до 60 - на сколько мс уменьшать интервал на единицу скорости
             
             obstacleInterval = Math.max(
                 MIN_OBSTACLE_INTERVAL_MS,
@@ -2507,13 +2389,13 @@
             // 5. Генерация монеток (оставляем как было, но можно настроить)
             if (timestamp >= nextCoinTime) {
                 createCoin();
-                nextCoinTime = timestamp + coinInterval + (Math.random() * 1000 - 500);
+                nextCoinTime = timestamp + coinInterval + (Math.random() * 800 - 400); // Уменьшен диапазон рандома
             }
             
             // 6. Генерация бонусов (оставляем как было)
             if (timestamp >= nextBonusTime) {
                 createBonus();
-                nextBonusTime = timestamp + bonusInterval + Math.random() * 5000;
+                nextBonusTime = timestamp + bonusInterval + Math.random() * 4000; // Уменьшен диапазон рандома
             }
             
             // 7. Обновление позиций объектов (препятствия, монеты, бонусы)
