@@ -18,15 +18,15 @@
             
             <div id="auth-container" class="auth-container">
                 <!-- Здесь будет профиль пользователя или кнопки входа/регистрации -->
-                <button id="login-button" class="game-button">Войти</button>
-                <button id="register-button" class="game-button">Регистрация</button>
+                <button id="login-button" class="game-button jurassic-button">Войти</button>
+                <button id="register-button" class="game-button jurassic-button">Регистрация</button>
             </div>
         </div>
     </header>
     
     <div class="main-container">
     
-    <div id="settings">
+    <div id="settings" class="jurassic-panel">
         <div class="toggle-container">
             <span>Светлая</span>
             <label class="toggle">
@@ -47,11 +47,22 @@
     </div>
     
     <div id="game-container">
+        <!-- Слои для параллакс-эффекта -->
+        <div class="parallax-layer layer-sky"></div>
+        <div class="parallax-layer layer-far-bg"></div>
+        <div class="parallax-layer layer-mid-bg"></div>
+        <div class="parallax-layer layer-close-bg"></div>
+        
         <img id="player" src="/api/placeholder/48/52" alt="Player">
         
         <div id="ground"></div>
         
-        <div id="track"></div>
+        <div id="track">
+            <!-- Перемещаем слои трека сюда для корректного z-index с параллаксом -->
+            <div id="track-grass" class="track-layer"></div>
+            <div id="track-footprints" class="track-layer"></div>
+            <div id="track-leaves" class="track-layer"></div>
+        </div>
         
         <div id="score-container">
             <div>Счёт: <span id="score">0</span></div>
@@ -64,20 +75,20 @@
     </div>
     
     <div id="game-buttons">
-        <button id="start-button" class="game-button">Начать игру</button>
-        <button id="shop-button" class="game-button">Магазин</button>
-        <button id="profile-button" class="game-button" style="display: none;">Профиль</button>
+        <button id="start-button" class="game-button jurassic-button">Начать игру</button>
+        <button id="shop-button" class="game-button jurassic-button">Магазин</button>
+        <button id="profile-button" class="game-button jurassic-button" style="display: none;">Профиль</button>
     </div>
     
     <div id="controls">
         <p>Нажмите на экран или кнопку "Прыжок"</p>
     </div>
     
-    <button id="mobile-jump" class="mobile-jump-button">Прыжок</button>
+    <button id="mobile-jump" class="mobile-jump-button jurassic-button">Прыжок</button>
     
-    <div id="stats-container">
+    <div id="stats-container" class="jurassic-panel">
         <h2>Таблица рекордов</h2>
-        <table id="leaderboard">
+        <table id="leaderboard" class="jurassic-table">
             <thead>
                 <tr>
                     <th>Место</th>
@@ -105,7 +116,7 @@
     <div id="modal-overlay" class="modal-overlay"></div>
     
     <!-- Модальное окно входа -->
-    <div id="login-modal" class="game-modal">
+    <div id="login-modal" class="game-modal jurassic-panel">
         <button class="close-button" id="login-close">&times;</button>
         <h2>Вход в игру</h2>
         <div id="login-message" class="message" style="display: none;"></div>
@@ -120,7 +131,7 @@
             <input type="password" id="login-password" placeholder="Введите пароль">
         </div>
         
-        <button id="login-submit" class="game-button">Войти</button>
+        <button id="login-submit" class="game-button jurassic-button">Войти</button>
         
         <div class="auth-links">
             <span class="auth-link" id="to-register">Создать аккаунт</span>
@@ -128,7 +139,7 @@
     </div>
     
     <!-- Модальное окно регистрации -->
-    <div id="register-modal" class="game-modal">
+    <div id="register-modal" class="game-modal jurassic-panel">
         <button class="close-button" id="register-close">&times;</button>
         <h2>Регистрация</h2>
         <div id="register-message" class="message" style="display: none;"></div>
@@ -148,7 +159,7 @@
             <input type="password" id="register-confirm" placeholder="Повторите пароль">
         </div>
         
-        <button id="register-submit" class="game-button">Зарегистрироваться</button>
+        <button id="register-submit" class="game-button jurassic-button">Зарегистрироваться</button>
         
         <div class="auth-links">
             <span class="auth-link" id="to-login">Уже есть аккаунт? Войти</span>
@@ -156,7 +167,7 @@
     </div>
     
     <!-- Модальное окно профиля -->
-    <div id="profile-modal" class="game-modal profile-modal">
+    <div id="profile-modal" class="game-modal profile-modal jurassic-panel">
         <button class="close-button" id="profile-close">&times;</button>
         <h2 class="profile-heading">Профиль игрока <span id="profile-username">Username</span></h2>
         
@@ -180,23 +191,23 @@
         </div>
         
         <div class="profile-actions">
-            <button id="logout-button" class="game-button logout-button">Выйти из аккаунта</button>
+            <button id="logout-button" class="game-button logout-button jurassic-button">Выйти из аккаунта</button>
         </div>
     </div>
     
     <!-- Модальное окно конца игры (с двумя кнопками) -->
-    <div id="game-over" class="game-modal">
+    <div id="game-over" class="game-modal jurassic-panel">
         <button class="close-button" id="game-over-close">&times;</button>
         <h2>Игра окончена!</h2>
         <p>Ваш счёт: <span id="final-score">0</span></p>
         <p>Собрано монет: <span id="final-coins">0</span></p>
         <div class="game-over-buttons">
-            <button id="restart-btn">Начать заново</button>
-            <button id="shop-btn-modal" class="shop-button">Магазин</button>
+            <button id="restart-btn" class="jurassic-button">Начать заново</button>
+            <button id="shop-btn-modal" class="shop-button jurassic-button">Магазин</button>
         </div>
     </div>
     
-    <div id="shop-modal" class="game-modal">
+    <div id="shop-modal" class="game-modal jurassic-panel">
         <button class="close-button" id="shop-close">&times;</button>
         <h2>Магазин персонажей</h2>
         
@@ -1293,7 +1304,7 @@
                 } else if (gameAPI.currentUser) {
                     // Если персонаж не разблокирован и пользователь авторизован, показываем кнопку покупки
                     const buyButton = document.createElement('button');
-                    buyButton.className = 'buy-button';
+                    buyButton.className = 'buy-button jurassic-button'; // Добавлен класс
                     buyButton.textContent = 'Купить';
                     buyButton.disabled = gameAPI.currentUser.coins < character.price;
                     
@@ -1323,7 +1334,7 @@
                 } else {
                     // Если пользователь не авторизован, показываем сообщение о необходимости входа
                     const loginButton = document.createElement('button');
-                    loginButton.className = 'buy-button';
+                    loginButton.className = 'buy-button jurassic-button'; // Добавлен класс
                     loginButton.textContent = 'Войдите';
                     
                     loginButton.addEventListener('click', (e) => {
@@ -1831,8 +1842,10 @@
         function startGame() {
             score = 0;
             coinCount = 0;
-            gameSpeed = 8; // Увеличено с 6 до 8 - начальная скорость во время старта
+            gameSpeed = 8; // Начальная скорость ниже для старта
             backgroundPos = 0;
+            // Сброс позиций параллакс слоев
+            parallaxLayerPositions = { sky: 0, far: 0, mid: 0, close: 0, track: 0 };
             currentLevel = 1;
             gameStartTime = Date.now();
             gameTime = 0;
