@@ -2482,7 +2482,7 @@
             
             // Плавно увеличиваем скорость до максимальной
             if (gameSpeed < MAX_SPEED) {
-                gameSpeed += ACCELERATION * frameTimeFactor;
+                gameSpeed += ACCELERATION;
                 gameSpeed = Math.min(gameSpeed, MAX_SPEED); // Не превышаем максимум
             }
             
