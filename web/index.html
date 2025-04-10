@@ -1812,7 +1812,7 @@
         
         // Игровые переменные
         let activeCharacter = null;
-        let gameSpeed = 10; // Увеличиваем начальную скорость с 7 до 10
+        let gameSpeed = 12; // Увеличено с 10 до 12 - базовая скорость игры
         let backgroundPos = 0;
         let score = 0;
         let coinCount = 0;
@@ -2726,31 +2726,22 @@
         
         // Запуск игры
         function startGame() {
-            // Основные переменные
             score = 0;
             coinCount = 0;
-            gameSpeed = 10; // Увеличиваем начальную скорость с 7 до 10
+            gameSpeed = 8; // Увеличено с 6 до 8 - начальная скорость во время старта
             backgroundPos = 0;
             currentLevel = 1;
             gameStartTime = Date.now();
             gameTime = 0;
-            
-            // Массивы игровых объектов
             obstacles = [];
             coins = [];
             bonuses = [];
-            
-            // Состояние игры
             isGameOver = false;
             isGameStarted = true;
-            debugMode = false; // Режим отладки (показывает хитбоксы)
-            
-            // Состояния бонусов
+            debugMode = false;
             hasShield = false;
             hasMagnet = false;
             hasSlowMotion = false;
-            
-            // Очищаем таймеры, если они были активны
             clearTimeout(shieldTimer);
             clearTimeout(magnetTimer);
             clearTimeout(slowTimer);
@@ -3339,17 +3330,42 @@
         function update(timestamp) {
             if (isGameOver) return;
             
-            // Увеличиваем счет
-            score++;
+            // 1. Начисление очков (пропорционально времени/скорости)
+            // В Chrome Dino счет увеличивается примерно каждые 100мс при базовой скорости
+            // и ускоряется с ростом скорости игры.
+            
+            // Более умеренный коэффициент увеличения счета 
+            const SCORE_INCREASE_FACTOR = 0.08; // Оставляем текущее значение
+            
+            // Расчет дельты времени между вызовами для более стабильного увеличения счета
+            const now = timestamp || performance.now();
+            if (!update.lastTime) update.lastTime = now;
+            const deltaTime = now - update.lastTime;
+            update.lastTime = now;
+            
+            // Корректируем прирост очков с учетом прошедшего времени
+            const frameTimeFactor = deltaTime / 16.7; // 16.7мс ≈ 60FPS
+            // Используем Math.ceil для гарантированного увеличения минимум на 1, но только каждые ~4 кадра
+            if (Math.random() < 0.25) { // Примерно 1 раз в 4 кадра
+                score += Math.ceil(gameSpeed * SCORE_INCREASE_FACTOR * frameTimeFactor);
+            }
+            
+            // Обновляем отображение счета
             scoreDisplay.textContent = score;
             
             // Продолжительность игры для подсчета статистики (в секундах)
             gameTime = Math.floor((Date.now() - gameStartTime) / 1000);
             
-            // Регулируем сложность с ростом счета более плавно
-            const baseSpeed = 10; // Увеличил с 7 до 10
-            const speedMultiplier = 1 + (Math.floor(score / 400) * 0.15); // +15% каждые 400 очков
-            gameSpeed = baseSpeed * speedMultiplier;
+            // 2. Регулировка скорости игры (как в Chrome Dino)
+            const BASE_SPEED = 8; // Увеличено с 6 до 8 - базовая скорость (пикселей/кадр)
+            const MAX_SPEED = 16; // Увеличено с 13 до 16 - максимальная скорость
+            const ACCELERATION = 0.002; // Увеличено с 0.001 до 0.002 - коэффициент ускорения
+            
+            // Плавно увеличиваем скорость до максимальной
+            if (gameSpeed < MAX_SPEED) {
+                gameSpeed += ACCELERATION * frameTimeFactor;
+                gameSpeed = Math.min(gameSpeed, MAX_SPEED); // Не превышаем максимум
+            }
             
             // Интервал препятствий уменьшается с ростом счета
             const minObstacleInterval = 700; // Минимальный интервал (было 800)
