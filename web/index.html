@@ -906,7 +906,7 @@
         
         // Игровые переменные
         let activeCharacter = null;
-        let gameSpeed = 14; // Увеличено с 12 до 14 - повышаем базовую скорость игры
+        let gameSpeed = 12; // Увеличено с 10 до 12 - базовая скорость игры
         let backgroundPos = 0;
         let score = 0;
         let coinCount = 0;
@@ -925,9 +925,9 @@
         let bonuses = [];
         
         // Интервалы генерации объектов
-        let obstacleInterval = 1600; // Уменьшено с 1800 до 1600 мс между препятствиями для соответствия новой скорости
-        let coinInterval = 1100; // Уменьшено с 1200 до 1100 мс между монетами
-        let bonusInterval = 10000; // Уменьшено с 12000 до 10000 мс между бонусами
+        let obstacleInterval = 1800; // 1.8 секунды между препятствиями (было 2)
+        let coinInterval = 1200; // 1.2 секунды между монетами (было 1.5)
+        let bonusInterval = 12000; // 12 секунд между бонусами (было 15)
         let nextObstacleTime = 0;
         let nextCoinTime = 0;
         let nextBonusTime = 0;
@@ -2470,9 +2470,9 @@
             gameTime = Math.floor((Date.now() - gameStartTime) / 1000);
             
             // 2. Регулировка скорости игры (как в Chrome Dino)
-            const BASE_SPEED = 10; // Увеличено с 8 до 10 - базовая скорость (пикселей/кадр)
-            const MAX_SPEED = 19; // Увеличено с 16 до 19 - максимальная скорость
-            const ACCELERATION = 0.003; // Увеличено с 0.002 до 0.003 - коэффициент ускорения
+            const BASE_SPEED = 8; // Увеличено с 6 до 8 - базовая скорость (пикселей/кадр)
+            const MAX_SPEED = 16; // Увеличено с 13 до 16 - максимальная скорость
+            const ACCELERATION = 0.002; // Увеличено с 0.001 до 0.002 - коэффициент ускорения
             
             // Плавно увеличиваем скорость до максимальной
             if (gameSpeed < MAX_SPEED) {
@@ -2480,13 +2480,17 @@
                 gameSpeed = Math.min(gameSpeed, MAX_SPEED); // Не превышаем максимум
             }
             
-            // Убираем дублирование кода для увеличения скорости
+            // Плавно увеличиваем скорость до максимальной
+            if (gameSpeed < MAX_SPEED) {
+                gameSpeed += ACCELERATION;
+                gameSpeed = Math.min(gameSpeed, MAX_SPEED); // Не превышаем максимум
+            }
             
             // 3. Интервал препятствий (как в Chrome Dino)
             // Уменьшается с ростом скорости, но имеет минимальный предел
-            const BASE_OBSTACLE_INTERVAL_MS = 1400; // Уменьшено с 1500 до 1400 - начальный интервал в мс
-            const MIN_OBSTACLE_INTERVAL_MS = 550; // Уменьшено с 600 до 550 - минимальный интервал
-            const INTERVAL_SPEED_FACTOR = 55; // Увеличено с 50 до 55 - на сколько мс уменьшать интервал на единицу скорости
+            const BASE_OBSTACLE_INTERVAL_MS = 1500; // Начальный интервал в мс
+            const MIN_OBSTACLE_INTERVAL_MS = 600; // Минимальный интервал
+            const INTERVAL_SPEED_FACTOR = 50; // На сколько мс уменьшать интервал на единицу скорости
             
             obstacleInterval = Math.max(
                 MIN_OBSTACLE_INTERVAL_MS,
@@ -2593,7 +2597,7 @@
         // Обновление фона для эффекта движения
         function updateBackground() {
             // Управление скоростью прокрутки фона в стиле Chrome динозаврика
-            backgroundPos -= gameSpeed * 0.7; // Увеличено с 0.6 до 0.7 - фон движется быстрее
+            backgroundPos -= gameSpeed * 0.6; // В Chrome фон движется чуть быстрее чем было раньше (0.5)
             
             // Сбрасываем позицию, когда она выходит за пределы изображения
             if (backgroundPos <= -1000) { // Ширина фона
@@ -2605,13 +2609,13 @@
             
             // Обновляем слои трека для параллакс-эффекта
             if (document.getElementById('track-grass')) {
-                document.getElementById('track-grass').style.transform = `translateX(${backgroundPos * 0.9}px)`; // Увеличено с 0.8 до 0.9
+                document.getElementById('track-grass').style.transform = `translateX(${backgroundPos * 0.8}px)`;
             }
             if (document.getElementById('track-footprints')) {
-                document.getElementById('track-footprints').style.transform = `translateX(${backgroundPos * 1.1}px)`; // Увеличено с 1.0 до 1.1
+                document.getElementById('track-footprints').style.transform = `translateX(${backgroundPos}px)`;
             }
             if (document.getElementById('track-leaves')) {
-                document.getElementById('track-leaves').style.transform = `translateX(${backgroundPos * 0.7}px)`; // Увеличено с 0.6 до 0.7
+                document.getElementById('track-leaves').style.transform = `translateX(${backgroundPos * 0.6}px)`;
             }
         }
         
