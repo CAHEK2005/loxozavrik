@@ -18,15 +18,15 @@
             
             <div id="auth-container" class="auth-container">
                 <!-- Здесь будет профиль пользователя или кнопки входа/регистрации -->
-                <button id="login-button" class="game-button jurassic-button">Войти</button>
-                <button id="register-button" class="game-button jurassic-button">Регистрация</button>
+                <button id="login-button" class="game-button">Войти</button>
+                <button id="register-button" class="game-button">Регистрация</button>
             </div>
         </div>
     </header>
     
     <div class="main-container">
     
-    <div id="settings" class="jurassic-panel">
+    <div id="settings">
         <div class="toggle-container">
             <span>Светлая</span>
             <label class="toggle">
@@ -47,22 +47,11 @@
     </div>
     
     <div id="game-container">
-        <!-- Слои для параллакс-эффекта -->
-        <div class="parallax-layer layer-sky"></div>
-        <div class="parallax-layer layer-far-bg"></div>
-        <div class="parallax-layer layer-mid-bg"></div>
-        <div class="parallax-layer layer-close-bg"></div>
-        
         <img id="player" src="/api/placeholder/48/52" alt="Player">
         
         <div id="ground"></div>
         
-        <div id="track">
-            <!-- Перемещаем слои трека сюда для корректного z-index с параллаксом -->
-            <div id="track-grass" class="track-layer"></div>
-            <div id="track-footprints" class="track-layer"></div>
-            <div id="track-leaves" class="track-layer"></div>
-        </div>
+        <div id="track"></div>
         
         <div id="score-container">
             <div>Счёт: <span id="score">0</span></div>
@@ -75,20 +64,20 @@
     </div>
     
     <div id="game-buttons">
-        <button id="start-button" class="game-button jurassic-button">Начать игру</button>
-        <button id="shop-button" class="game-button jurassic-button">Магазин</button>
-        <button id="profile-button" class="game-button jurassic-button" style="display: none;">Профиль</button>
+        <button id="start-button" class="game-button">Начать игру</button>
+        <button id="shop-button" class="game-button">Магазин</button>
+        <button id="profile-button" class="game-button" style="display: none;">Профиль</button>
     </div>
     
     <div id="controls">
         <p>Нажмите на экран или кнопку "Прыжок"</p>
     </div>
     
-    <button id="mobile-jump" class="mobile-jump-button jurassic-button">Прыжок</button>
+    <button id="mobile-jump" class="mobile-jump-button">Прыжок</button>
     
-    <div id="stats-container" class="jurassic-panel">
+    <div id="stats-container">
         <h2>Таблица рекордов</h2>
-        <table id="leaderboard" class="jurassic-table">
+        <table id="leaderboard">
             <thead>
                 <tr>
                     <th>Место</th>
@@ -116,7 +105,7 @@
     <div id="modal-overlay" class="modal-overlay"></div>
     
     <!-- Модальное окно входа -->
-    <div id="login-modal" class="game-modal jurassic-panel">
+    <div id="login-modal" class="game-modal">
         <button class="close-button" id="login-close">&times;</button>
         <h2>Вход в игру</h2>
         <div id="login-message" class="message" style="display: none;"></div>
@@ -131,7 +120,7 @@
             <input type="password" id="login-password" placeholder="Введите пароль">
         </div>
         
-        <button id="login-submit" class="game-button jurassic-button">Войти</button>
+        <button id="login-submit" class="game-button">Войти</button>
         
         <div class="auth-links">
             <span class="auth-link" id="to-register">Создать аккаунт</span>
@@ -139,7 +128,7 @@
     </div>
     
     <!-- Модальное окно регистрации -->
-    <div id="register-modal" class="game-modal jurassic-panel">
+    <div id="register-modal" class="game-modal">
         <button class="close-button" id="register-close">&times;</button>
         <h2>Регистрация</h2>
         <div id="register-message" class="message" style="display: none;"></div>
@@ -159,7 +148,7 @@
             <input type="password" id="register-confirm" placeholder="Повторите пароль">
         </div>
         
-        <button id="register-submit" class="game-button jurassic-button">Зарегистрироваться</button>
+        <button id="register-submit" class="game-button">Зарегистрироваться</button>
         
         <div class="auth-links">
             <span class="auth-link" id="to-login">Уже есть аккаунт? Войти</span>
@@ -167,7 +156,7 @@
     </div>
     
     <!-- Модальное окно профиля -->
-    <div id="profile-modal" class="game-modal profile-modal jurassic-panel">
+    <div id="profile-modal" class="game-modal profile-modal">
         <button class="close-button" id="profile-close">&times;</button>
         <h2 class="profile-heading">Профиль игрока <span id="profile-username">Username</span></h2>
         
@@ -191,23 +180,23 @@
         </div>
         
         <div class="profile-actions">
-            <button id="logout-button" class="game-button logout-button jurassic-button">Выйти из аккаунта</button>
+            <button id="logout-button" class="game-button logout-button">Выйти из аккаунта</button>
         </div>
     </div>
     
     <!-- Модальное окно конца игры (с двумя кнопками) -->
-    <div id="game-over" class="game-modal jurassic-panel">
+    <div id="game-over" class="game-modal">
         <button class="close-button" id="game-over-close">&times;</button>
         <h2>Игра окончена!</h2>
         <p>Ваш счёт: <span id="final-score">0</span></p>
         <p>Собрано монет: <span id="final-coins">0</span></p>
         <div class="game-over-buttons">
-            <button id="restart-btn" class="jurassic-button">Начать заново</button>
-            <button id="shop-btn-modal" class="shop-button jurassic-button">Магазин</button>
+            <button id="restart-btn">Начать заново</button>
+            <button id="shop-btn-modal" class="shop-button">Магазин</button>
         </div>
     </div>
     
-    <div id="shop-modal" class="game-modal jurassic-panel">
+    <div id="shop-modal" class="game-modal">
         <button class="close-button" id="shop-close">&times;</button>
         <h2>Магазин персонажей</h2>
         
@@ -917,7 +906,7 @@
         
         // Игровые переменные
         let activeCharacter = null;
-        let gameSpeed = 12; // Увеличено с 10 до 12 - базовая скорость игры
+        let gameSpeed = 14; // Увеличено с 12 до 14 - повышаем базовую скорость игры
         let backgroundPos = 0;
         let score = 0;
         let coinCount = 0;
@@ -936,9 +925,9 @@
         let bonuses = [];
         
         // Интервалы генерации объектов
-        let obstacleInterval = 1800; // 1.8 секунды между препятствиями (было 2)
-        let coinInterval = 1200; // 1.2 секунды между монетами (было 1.5)
-        let bonusInterval = 12000; // 12 секунд между бонусами (было 15)
+        let obstacleInterval = 1600; // Уменьшено с 1800 до 1600 мс между препятствиями для соответствия новой скорости
+        let coinInterval = 1100; // Уменьшено с 1200 до 1100 мс между монетами
+        let bonusInterval = 10000; // Уменьшено с 12000 до 10000 мс между бонусами
         let nextObstacleTime = 0;
         let nextCoinTime = 0;
         let nextBonusTime = 0;
@@ -1304,7 +1293,7 @@
                 } else if (gameAPI.currentUser) {
                     // Если персонаж не разблокирован и пользователь авторизован, показываем кнопку покупки
                     const buyButton = document.createElement('button');
-                    buyButton.className = 'buy-button jurassic-button'; // Добавлен класс
+                    buyButton.className = 'buy-button';
                     buyButton.textContent = 'Купить';
                     buyButton.disabled = gameAPI.currentUser.coins < character.price;
                     
@@ -1334,7 +1323,7 @@
                 } else {
                     // Если пользователь не авторизован, показываем сообщение о необходимости входа
                     const loginButton = document.createElement('button');
-                    loginButton.className = 'buy-button jurassic-button'; // Добавлен класс
+                    loginButton.className = 'buy-button';
                     loginButton.textContent = 'Войдите';
                     
                     loginButton.addEventListener('click', (e) => {
@@ -1842,10 +1831,8 @@
         function startGame() {
             score = 0;
             coinCount = 0;
-            gameSpeed = 8; // Начальная скорость ниже для старта
+            gameSpeed = 8; // Увеличено с 6 до 8 - начальная скорость во время старта
             backgroundPos = 0;
-            // Сброс позиций параллакс слоев
-            parallaxLayerPositions = { sky: 0, far: 0, mid: 0, close: 0, track: 0 };
             currentLevel = 1;
             gameStartTime = Date.now();
             gameTime = 0;
@@ -2483,9 +2470,9 @@
             gameTime = Math.floor((Date.now() - gameStartTime) / 1000);
             
             // 2. Регулировка скорости игры (как в Chrome Dino)
-            const BASE_SPEED = 8; // Увеличено с 6 до 8 - базовая скорость (пикселей/кадр)
-            const MAX_SPEED = 16; // Увеличено с 13 до 16 - максимальная скорость
-            const ACCELERATION = 0.002; // Увеличено с 0.001 до 0.002 - коэффициент ускорения
+            const BASE_SPEED = 10; // Увеличено с 8 до 10 - базовая скорость (пикселей/кадр)
+            const MAX_SPEED = 19; // Увеличено с 16 до 19 - максимальная скорость
+            const ACCELERATION = 0.003; // Увеличено с 0.002 до 0.003 - коэффициент ускорения
             
             // Плавно увеличиваем скорость до максимальной
             if (gameSpeed < MAX_SPEED) {
@@ -2493,17 +2480,13 @@
                 gameSpeed = Math.min(gameSpeed, MAX_SPEED); // Не превышаем максимум
             }
             
-            // Плавно увеличиваем скорость до максимальной
-            if (gameSpeed < MAX_SPEED) {
-                gameSpeed += ACCELERATION;
-                gameSpeed = Math.min(gameSpeed, MAX_SPEED); // Не превышаем максимум
-            }
+            // Убираем дублирование кода для увеличения скорости
             
             // 3. Интервал препятствий (как в Chrome Dino)
             // Уменьшается с ростом скорости, но имеет минимальный предел
-            const BASE_OBSTACLE_INTERVAL_MS = 1500; // Начальный интервал в мс
-            const MIN_OBSTACLE_INTERVAL_MS = 600; // Минимальный интервал
-            const INTERVAL_SPEED_FACTOR = 50; // На сколько мс уменьшать интервал на единицу скорости
+            const BASE_OBSTACLE_INTERVAL_MS = 1400; // Уменьшено с 1500 до 1400 - начальный интервал в мс
+            const MIN_OBSTACLE_INTERVAL_MS = 550; // Уменьшено с 600 до 550 - минимальный интервал
+            const INTERVAL_SPEED_FACTOR = 55; // Увеличено с 50 до 55 - на сколько мс уменьшать интервал на единицу скорости
             
             obstacleInterval = Math.max(
                 MIN_OBSTACLE_INTERVAL_MS,
@@ -2610,7 +2593,7 @@
         // Обновление фона для эффекта движения
         function updateBackground() {
             // Управление скоростью прокрутки фона в стиле Chrome динозаврика
-            backgroundPos -= gameSpeed * 0.6; // В Chrome фон движется чуть быстрее чем было раньше (0.5)
+            backgroundPos -= gameSpeed * 0.7; // Увеличено с 0.6 до 0.7 - фон движется быстрее
             
             // Сбрасываем позицию, когда она выходит за пределы изображения
             if (backgroundPos <= -1000) { // Ширина фона
@@ -2622,13 +2605,13 @@
             
             // Обновляем слои трека для параллакс-эффекта
             if (document.getElementById('track-grass')) {
-                document.getElementById('track-grass').style.transform = `translateX(${backgroundPos * 0.8}px)`;
+                document.getElementById('track-grass').style.transform = `translateX(${backgroundPos * 0.9}px)`; // Увеличено с 0.8 до 0.9
             }
             if (document.getElementById('track-footprints')) {
-                document.getElementById('track-footprints').style.transform = `translateX(${backgroundPos}px)`;
+                document.getElementById('track-footprints').style.transform = `translateX(${backgroundPos * 1.1}px)`; // Увеличено с 1.0 до 1.1
             }
             if (document.getElementById('track-leaves')) {
-                document.getElementById('track-leaves').style.transform = `translateX(${backgroundPos * 0.6}px)`;
+                document.getElementById('track-leaves').style.transform = `translateX(${backgroundPos * 0.7}px)`; // Увеличено с 0.6 до 0.7
             }
         }
         
